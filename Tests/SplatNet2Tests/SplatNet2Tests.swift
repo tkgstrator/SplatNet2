@@ -38,7 +38,7 @@ final class SplatNet2Tests: XCTestCase {
 //            print("VALIDATION", SplatNet2.isValid(iksm_session: iksm_session))
 //            response = try SplatNet2.genIksmSession(session_token, version: version)
 //            print(response)
-            let iksm_session = "f686c6c3cca76704b45f10a70835c716b2be1d91"
+            let iksm_session = "f686c6c3cca76704b45f10a70835c716b2be1d92"
             let nsaid = try SplatNet2.getPlayerId(iksm_session)
             print(iksm_session, nsaid)
         } catch {

@@ -157,7 +157,8 @@ public class SplatNet2 {
         request.allHTTPHeaderFields = header.dictionary
         
         let response: JSON = try SplatNet2.request(request)
-        return response["nsaid"].stringValue
+        guard let nsaid = response["nsaid"].string else { throw APPError.invalid }
+        return nsaid
     }
     
     public class func isValid(iksm_session: String) -> Bool {

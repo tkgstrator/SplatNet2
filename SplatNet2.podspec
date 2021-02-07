@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = "SplatNet2"
-  spec.version      = "0.1.6"
+  spec.version      = "0.1.7"
   spec.summary      = "SplatNet2 is the framework to generate iksm_session using internal and external API."
   spec.homepage     = "https://github.com/tkgstrator/SplatNet2"
   spec.license      =  { :type => "MIT:", :file => "LICENSE.md" }
@@ -11,6 +11,6 @@ Pod::Spec.new do |spec|
   spec.source_files = "Classes", "Sources/**/*.{swift}"
   spec.requires_arc = true
   spec.swift_version = "5"
-  spec.dependency "Alamofire", "5.4.0"
+  spec.dependency "Alamofire", "5.4.1"
   spec.dependency "SwiftyJSON", "5.0.0"
 end
