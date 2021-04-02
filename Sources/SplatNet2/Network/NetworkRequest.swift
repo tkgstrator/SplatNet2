@@ -143,14 +143,17 @@ public class APIRequest {
 
     public class IksmSession: RequestProtocol {
         var method: HTTPMethod = .get
-        var path: String
+        var baseURL = URL(string: "https://app.splatoon2.nintendo.net/")!
+        var path: String = ""
         var parameters: Parameters?
         var headers: [String: String]?
         typealias ResponseType = APIResponse.IksmSession
 
-        init(jobId: Int, accessToken: String) {
-            self.path = "coop_results/\(jobId)"
-            self.headers = ["cookie": "iksm_session=\(accessToken)"]
+        init(accessToken: String) {
+            self.headers = [
+                "Cookie": "iksm_session=",
+                "X-GameWebToken": accessToken
+            ]
         }
     }
 

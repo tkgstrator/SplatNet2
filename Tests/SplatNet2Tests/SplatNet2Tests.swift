@@ -7,8 +7,9 @@ import Foundation
 final class SplatNet2Tests: XCTestCase {
     let redirectURL = "npf71b963c1b7b6d119://auth#session_state=697c722e7694131d6f0110ab61d77523b3bcd3518a4fcd3e29a75fc93121bca2&session_token_code=eyJhbGciOiJIUzI1NiJ9.eyJzdGM6c2NwIjpbMCw4LDksMTcsMjNdLCJzdWIiOiI1YWU4ZjdhNzhiMGNjYTRkIiwiYXVkIjoiNzFiOTYzYzFiN2I2ZDExOSIsInR5cCI6InNlc3Npb25fdG9rZW5fY29kZSIsImp0aSI6IjM0NjU4NjA0NTkxIiwiZXhwIjoxNjE3MzgwNjk1LCJpc3MiOiJodHRwczovL2FjY291bnRzLm5pbnRlbmRvLmNvbSIsInN0YzptIjoiUzI1NiIsImlhdCI6MTYxNzM4MDA5NSwic3RjOmMiOiJVTEt5QjctWWwwZWNkcnh1RGR4YkpOYUlPY0pQSk9zaW51Z3ZXN1h3dXNRIn0._tSq0YBmH9Sh6yCuTM1qGZEgC_EPPmiXDi21KU8Ir3M&state=v1MguHzdCzhY7W7DMciwfFGPbzV0qdukFOnPX6czsT7m2END726qGJRrScHUT5AmZ2oS7RArsVj2z4eDH4BqThJpvQv7rgLIrHSOzp4NtwS3kFG3kIOqSE4vHCDUYE0X"
     let sessionToken: String = "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MTczODAxMTIsImp0aSI6IjQ4Njk4NjAwMjIiLCJpc3MiOiJodHRwczovL2FjY291bnRzLm5pbnRlbmRvLmNvbSIsImF1ZCI6IjcxYjk2M2MxYjdiNmQxMTkiLCJleHAiOjE2ODA0NTIxMTIsInR5cCI6InNlc3Npb25fdG9rZW4iLCJzdDpzY3AiOlswLDgsOSwxNywyM10sInN1YiI6IjVhZThmN2E3OGIwY2NhNGQifQ.KD0a5NaQnVB6Ct3cV1DiCx_ULBmXbxIGZf8EIK6_JT4"
-    let accessToken: String = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdmODlmZjk5LTdkZDAtNDdjZS1iOWVlLTgxZWQ4YzVkMjEyZCIsImprdSI6Imh0dHBzOi8vYWNjb3VudHMubmludGVuZG8uY29tLzEuMC4wL2NlcnRpZmljYXRlcyJ9.eyJhYzpzY3AiOlswLDgsOSwxNywyM10sImlhdCI6MTYxNzM4NjI1NCwiZXhwIjoxNjE3Mzg3MTU0LCJzdWIiOiI1YWU4ZjdhNzhiMGNjYTRkIiwidHlwIjoidG9rZW4iLCJpc3MiOiJodHRwczovL2FjY291bnRzLm5pbnRlbmRvLmNvbSIsImF1ZCI6IjcxYjk2M2MxYjdiNmQxMTkiLCJhYzpncnQiOjY0LCJqdGkiOiIzMGU0OGU3Yy1iMWNhLTQxYTEtODFiMi04NDZmMGYwMTI0ZGIifQ.k-Hozdb4yPrF7UM7BdCh7bJdT9VHPXw_0LbAbltHuC5pL5R0TVHvK0KD-wd76cpKwq8kameg3VdHAxFtZ_GN4TrisdutHsLh6G2ax9xMEqIWie1qjPd6c8Y-NhBQ5qI3grV-SpF1aaxXAc_IQnEWfp3heVxq5oLYl29q9ZNd-3c-hIZSZJ-hklJfulAkjQAm_sIfqQb7w-KDXWxAqURpqdFMBIpyfsn3u806EpxcXmAh3CaKBpezAiSddMejqz4giYSIq978qflbricvhTVNCxTDbmRrFbjmblJY9MeGL-G4sEPFfS-CnsCvYYsMjlV_jWFQ43hb1ls3n-4KsZ4lXQ"
-    let splatoonToken: String = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjQ3MzczNjA4MzEzODE1MDQsImlhdCI6MTYxNzM4NjI4MCwidHlwIjoiaWRfdG9rZW4iLCJtZW1iZXJzaGlwIjp7ImFjdGl2ZSI6dHJ1ZX0sImlzcyI6ImFwaS1scDEuem5jLnNydi5uaW50ZW5kby5uZXQiLCJhdWQiOiJmNDE3ZTF0aWJqcWQ5MWNoOTl1NDlpd3o1c245Y2h5MyIsImV4cCI6MTYxNzM5MzQ4MH0.YJiRG4DFCoPZGi8XRCZqFc8JDzfuw8RAYj3d0RTRA_c"
+    let accessToken: String = "eyJqa3UiOiJodHRwczovL2FjY291bnRzLm5pbnRlbmRvLmNvbS8xLjAuMC9jZXJ0aWZpY2F0ZXMiLCJhbGciOiJSUzI1NiIsImtpZCI6IjdmODlmZjk5LTdkZDAtNDdjZS1iOWVlLTgxZWQ4YzVkMjEyZCJ9.eyJhYzpzY3AiOlswLDgsOSwxNywyM10sImFjOmdydCI6NjQsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMubmludGVuZG8uY29tIiwiZXhwIjoxNjE3Mzk1MzcxLCJ0eXAiOiJ0b2tlbiIsImp0aSI6IjRlODBiNmZjLWEwZjQtNGY3My1hZDQxLTZkYWMxODdhZjY3ZSIsInN1YiI6IjVhZThmN2E3OGIwY2NhNGQiLCJpYXQiOjE2MTczOTQ0NzEsImF1ZCI6IjcxYjk2M2MxYjdiNmQxMTkifQ.R0OVDTgTPg0RdKmD5ZEe9SAWVgHf2s3iTR_9uOPEtvWzsomOJSTI1SoSh2W7z-B6-9RsfJT0aqopJHrW2obnLlpdb6i4JrVU0nW7CRIj_59I1QrN-YbDpaEI4uQCiGVrwoyaWqv5u1FwS1ZlSEaDiRExET_4fST4G_YfyYC35oUGt36LBg_xLVCbV0zwDaa2kK-xp6wMM04XYO2rv2vb9K6U8TDPe7egBhcbKepfwEP4wzMFWGiGC61gmMvlMXdheuEEPYBxPFqyifap-eX20K4wfKRfeWR09s1TF8ZjvlEReCk5GQmPwg8VydQmOfRk1GWnrDl01OgRb9bNPUhGvA"
+    let splatoonToken: String = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcGktbHAxLnpuYy5zcnYubmludGVuZG8ubmV0IiwibWVtYmVyc2hpcCI6eyJhY3RpdmUiOnRydWV9LCJhdWQiOiJmNDE3ZTF0aWJqcWQ5MWNoOTl1NDlpd3o1c245Y2h5MyIsImlhdCI6MTYxNzM5MzAwNCwic3ViIjo0NzM3MzYwODMxMzgxNTA0LCJleHAiOjE2MTc0MDAyMDQsInR5cCI6ImlkX3Rva2VuIn0.mB-shjb8MpYLN-PtnxErDvQ_FJ-3V6LFyZdOe1TPIs4"
+    let splatoonAccessToken: String = "eyJ0eXAiOiJKV1QiLCJraWQiOiJXOVVEdEYwZzB6dTdtNVZGbzVZOUpiYm9MMU0iLCJhbGciOiJSUzI1NiIsImprdSI6Imh0dHBzOi8vYXBpLWxwMS56bmMuc3J2Lm5pbnRlbmRvLm5ldC92MS9XZWJTZXJ2aWNlL0NlcnRpZmljYXRlL0xpc3QifQ.eyJsaW5rcyI6eyJuZXR3b3JrU2VydmljZUFjY291bnQiOnsiaWQiOiIzZjg5YzM3OTFjNDNlYTU3In19LCJhdWQiOiI1dm8yaTJrbXp4NnBzMWwxdmpzamduanM5OXltemN3MCIsImV4cCI6MTYxNzQwMDIyOSwidHlwIjoiaWRfdG9rZW4iLCJzdWIiOjQ3MzczNjA4MzEzODE1MDQsImlzcyI6ImFwaS1scDEuem5jLnNydi5uaW50ZW5kby5uZXQiLCJqdGkiOiJiYzQxNWM1NC0zYThhLTRmYjgtYmE5OC04ZDRmNDY1MTkwNjQiLCJtZW1iZXJzaGlwIjp7ImFjdGl2ZSI6dHJ1ZX0sImlhdCI6MTYxNzM5MzAyOX0.BrMrKBC6-uzeWeb0LNQ6jkafewrY9ozl5ydRhILpxHKH6bW_vJ-ASAYRIaWTxt8wwdktsvLpq5HQuh8-WE-fHe2UXEqy7aDe5Tfpv0inYKXM4fWti6c0uO9hZYeQIT6fOX9_UyEAJs4lEIcX1ys6YuecOqgvfcVFjvAvOfZh-edtrzwAl54s4qFdJy4daQEav5MSmKwhLeeg9in8JvdRVEgAPaKvnn5cgepTXI90SbK6Xv3gykpGvvK9sF4LGAibQsgd1grlpZo5tPIdnigEyOTdPqdNE5XeHI-kPTtNvtrJ0fbGv6XV70fka-eKoYRkGsylZ3dd6PK5T_2Q-jEKsA"
     
     func testOAuthURL() {
         print(NetworkManager.shared.oauthURL)
@@ -59,12 +60,25 @@ final class SplatNet2Tests: XCTestCase {
         }
     }
     
+    func testIksmSession() {
+        do {
+            let task = NetworkManager.shared.getIksmSession(accessToken: splatoonAccessToken)
+            let recorder = task.record()
+            let elements = try wait(for: recorder.elements, timeout: 10)
+            print((elements as! APIResponse.IksmSession).iksmSession)
+            
+        } catch {
+            XCTFail()
+        }
+    }
+    
     static var allTests = [
         ("OAUTH", testOAuthURL),
         ("SESSION TOKEN", testSessionToken),
         ("ACCESS TOKEN", testAccessToken),
         ("SPLATOON TOKEN", testSplatoonToken),
         ("SPLATOON ACCESS TOKEN", testSplatoonAccessToken),
+        ("IKSM SESSION", testIksmSession),
     ]
 }
 

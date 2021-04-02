@@ -15,6 +15,10 @@ public class APIResponse: Decodable {
 
     public struct AccessToken: Decodable {
         var accessToken: String
+        var expiresIn: Int
+        var idToken: String
+        var scope: [String]
+        var tokenType: String
     }
 
     public struct S2SHash: Decodable {
@@ -67,10 +71,19 @@ public class APIResponse: Decodable {
     }
 
     public struct SplatoonAccessToken: Decodable {
+        var correlationIdL: String
         var result: AccessToken
+        var status: Int
+
+        struct AccessToken: Decodable {
+            var accessToken: String
+            var expiresIn: Int
+        }
     }
 
     public struct IksmSession: Decodable {
+        var iksmSession: String
+        var nsaid: String
 
     }
 

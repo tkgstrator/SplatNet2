@@ -117,6 +117,14 @@ public final class NetworkManager {
         }
     }
 
+    // Error Response
+    // [400] Invalid GrantType
+    @discardableResult
+    public func getIksmSession(accessToken: String) -> Future<APIResponse.IksmSession, APIError> {
+        let request = APIRequest.IksmSession(accessToken: accessToken)
+        return generate(request: request)
+    }
+
     @discardableResult
     private func getParameterF(accessToken: String, version: String = "1.10.1", type: Bool) -> Future<APIResponse.FlapgAPI, APIError> {
         var task: [AnyCancellable] = []
@@ -154,6 +162,10 @@ public final class NetworkManager {
                         }))
                 }))
         }
+    }
+
+    private func generate<Request: APIRequest.IksmSession>(request: Request) -> Future<APIResponse.IksmSession, APIError> {
+        NetworkPublisher.generate(request)
     }
 
     private func remote<Request: RequestProtocol>(request: Request) -> Future<Request.ResponseType, APIError> {
