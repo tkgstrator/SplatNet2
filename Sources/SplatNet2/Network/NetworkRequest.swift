@@ -64,7 +64,7 @@ public class APIRequest {
             ]
             self.parameters = [
                 "naIdToken": accessToken,
-                "timestamp": String(timestamp),
+                "timestamp": String(timestamp)
             ]
         }
     }
@@ -84,7 +84,7 @@ public class APIRequest {
                 "x-guid": "037239ef-1914-43dc-815d-178aae7d8934",
                 "x-hash": hash,
                 "x-ver": "3",
-                "x-iid": type ? "app" : "nso",
+                "x-iid": type ? "app" : "nso"
             ]
         }
     }
@@ -117,7 +117,7 @@ public class APIRequest {
     }
 
     public class SplatoonAccessToken: RequestProtocol {
-        var method: HTTPMethod = .get
+        var method: HTTPMethod = .post
         var baseURL = URL(string: "https://api-lp1.znc.srv.nintendo.net/")!
         var path: String = "v2/Game/GetWebServiceToken"
         var parameters: Parameters?
@@ -132,12 +132,10 @@ public class APIRequest {
             self.parameters = [
                 "parameter": [
                     "f": result.result.f,
-                    "naIdToken": result.result.p1,
+                    "id": 5741031244955648,
+                    "registrationToken": result.result.p1,
                     "timestamp": result.result.p2,
-                    "requestId": result.result.p3,
-                    "naCountry": "JP",
-                    "naBirthday": "1990-01-01",
-                    "language": "ja-JP"
+                    "requestId": result.result.p3
                 ]
             ]
         }

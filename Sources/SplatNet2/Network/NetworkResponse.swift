@@ -42,7 +42,7 @@ public class APIResponse: Decodable {
             var user: WebAPIServerUser
             var firebaseCredential: FirebaseCredential
         }
-        
+
         struct WebAPIServerUser: Decodable {
             var name: String
             var imageUri: String
@@ -59,7 +59,7 @@ public class APIResponse: Decodable {
             var expiresIn: Int
             var accessToken: String
         }
-        
+
         struct WebAPIServerCredential: Decodable {
             var expiresIn: Int
             var accessToken: String
