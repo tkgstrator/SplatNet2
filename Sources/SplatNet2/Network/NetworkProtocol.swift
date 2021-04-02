@@ -18,7 +18,7 @@ extension APIProtocol {
     }
 
     var headers: [String: String]? {
-        nil
+        ["User-Agent": "Salmonia/@tkgling"]
     }
 
     var allowConstrainedNetworkAccess: Bool {
@@ -28,11 +28,11 @@ extension APIProtocol {
 
 protocol RequestProtocol: APIProtocol, URLRequestConvertible {
     var parameters: Parameters? { get }
-    var encoding: JSONEncoding { get }
+    var encoding: ParameterEncoding { get }
 }
 
 extension RequestProtocol {
-    var encoding: JSONEncoding {
+    var encoding: ParameterEncoding {
         JSONEncoding.default
     }
 

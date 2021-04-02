@@ -1,6 +1,29 @@
 import Foundation
 
-public class SplatNet2: Decodable {
+public class APIResponse: Decodable {
+    public struct SessionToken: Decodable {
+        var sessionToken: String
+    }
+
+    public struct AccessToken: Decodable {
+        var accessToken: String
+    }
+
+    public struct S2SHash: Decodable {
+        var hash: String
+    }
+
+    public struct FlagpAPI: Decodable {
+        var result: FlapgParameters
+
+        struct FlapgParameters: Decodable {
+            var f: String
+            var p1: String
+            var p2: String
+            var p3: String
+        }
+    }
+
     public struct ResultCoop: Decodable {
         var jobId: Int
         var stageId: Int

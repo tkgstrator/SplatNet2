@@ -9,7 +9,7 @@ public final class NetworkManager {
     private let state = String.randomString
     private let verifier = String.randomString
 
-    private var codeVerifier: String
+    private var codeVerifier = String.randomString
 
     private init() {}
 
@@ -17,8 +17,8 @@ public final class NetworkManager {
 
     }
 
-    var oauthURL: String {
-        let parameters: Parameters = [
+    var oauthURL: URL {
+        let parameters: [String: String] = [
             "state": state,
             "redirect_uri": "npf71b963c1b7b6d119://auth",
             "client_id": "71b963c1b7b6d119",
@@ -28,6 +28,8 @@ public final class NetworkManager {
             "session_token_code_challenge_method": "S256",
             "theme": "login_form"
         ]
+
+        return URL(string: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")!
     }
 
     @discardableResult
