@@ -44,9 +44,9 @@ extension RequestProtocol {
         request.allowsConstrainedNetworkAccess = allowConstrainedNetworkAccess
 
         if let params = parameters {
+            print(parameters)
             request = try encoding.encode(request, with: params)
         }
-
         return request
     }
 }

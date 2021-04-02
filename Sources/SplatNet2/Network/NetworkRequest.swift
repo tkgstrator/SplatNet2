@@ -50,7 +50,7 @@ public class APIRequest {
     }
 
     public class S2SHash: RequestProtocol {
-        var method: HTTPMethod = .get
+        var method: HTTPMethod = .post
         var baseURL = URL(string: "https://elifessler.com/s2s/api/")!
         var path: String = "gen2"
         var encoding: ParameterEncoding = URLEncoding.default
@@ -59,17 +59,20 @@ public class APIRequest {
         typealias ResponseType = APIResponse.S2SHash
 
         init(accessToken: String, timestamp: Int) {
+            self.headers = [
+                "User-Agent": "Salmonia/@tkgling"
+            ]
             self.parameters = [
                 "naIdToken": accessToken,
-                "timestamp": String(timestamp)
+                "timestamp": String(timestamp),
             ]
         }
     }
 
     public class FlapgToken: RequestProtocol {
         var method: HTTPMethod = .get
-        var baseURL = URL(string: "https://flapg.com/ika2/api/")!
-        var path: String = "login"
+        var baseURL = URL(string: "https://flapg.com")!
+        var path: String = "/ika2/api/login"
         var parameters: Parameters?
         var headers: [String: String]?
         typealias ResponseType = APIResponse.FlapgAPI
@@ -81,14 +84,13 @@ public class APIRequest {
                 "x-guid": "037239ef-1914-43dc-815d-178aae7d8934",
                 "x-hash": hash,
                 "x-ver": "3",
-                "x-iid": type ? "nso" : "app",
-                "User-Agent": "Salmonia/@tkgling"
+                "x-iid": type ? "app" : "nso",
             ]
         }
     }
 
     public class SplatoonToken: RequestProtocol {
-        var method: HTTPMethod = .get
+        var method: HTTPMethod = .post
         var baseURL = URL(string: "https://api-lp1.znc.srv.nintendo.net/")!
         var path: String = "v1/Account/Login"
         var parameters: Parameters?

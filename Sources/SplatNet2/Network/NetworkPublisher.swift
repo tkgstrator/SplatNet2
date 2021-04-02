@@ -32,10 +32,10 @@ struct NetworkPublisher {
                                 promise(.failure(APIError.decode))
                             }
                         case .failure(let error):
+                            print(error)
                             do {
                                 if let data = response.data {
                                     let data = try decoder.decode(APIResponse.ErrorData.self, from: data)
-                                    print(data)
                                     promise(.failure(APIError.failure))
                                 }
                             } catch {
@@ -60,4 +60,6 @@ public enum APIError: Error {
     case unknown
     case badrequests
     case fatal
+    case grant          // Invalid GrantType for AccessToken
+    case s2shash        // 
 }

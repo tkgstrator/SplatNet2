@@ -3,7 +3,10 @@ import Foundation
 public class APIResponse: Decodable {
     public struct ErrorData: Decodable {
         var error: String
-        var errorDescription: String
+        // var errorDescription: String
+        // var status: Int
+        // var errorMessage: String
+        // var correlationId: String
     }
 
     public struct SessionToken: Decodable {
@@ -30,16 +33,36 @@ public class APIResponse: Decodable {
     }
 
     public struct SplatoonToken: Decodable {
-        var result: WebAPIServerCredential
-        var user: WebAPIServerUser
+        var result: SplatoonTokenResult
+        var status: Int
+        var correlationId: String
 
-        struct WebAPIServerCredential: Decodable {
-            var accessToken: String
+        struct SplatoonTokenResult: Decodable {
+            var webApiServerCredential: WebAPIServerCredential
+            var user: WebAPIServerUser
+            var firebaseCredential: FirebaseCredential
         }
-
+        
         struct WebAPIServerUser: Decodable {
             var name: String
             var imageUri: String
+            var id: Int
+            var supportId: String
+            var membership: Membership
+        }
+
+        struct Membership: Decodable {
+            var active: Bool
+        }
+
+        struct FirebaseCredential: Decodable {
+            var expiresIn: Int
+            var accessToken: String
+        }
+        
+        struct WebAPIServerCredential: Decodable {
+            var expiresIn: Int
+            var accessToken: String
         }
     }
 
