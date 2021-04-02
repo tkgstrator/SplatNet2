@@ -11,12 +11,12 @@
         }
       },
       {
-        "package": "SwiftyJSON",
-        "repositoryURL": "https://github.com/SwiftyJSON/SwiftyJSON.git",
+        "package": "CombineExpectations",
+        "repositoryURL": "https://github.com/groue/CombineExpectations.git",
         "state": {
           "branch": null,
-          "revision": "2b6054efa051565954e1d2b9da831680026cd768",
-          "version": "5.0.0"
+          "revision": "5c36f3199960776fc055196a93ca04bfc00e1857",
+          "version": "0.7.0"
         }
       }
     ]
