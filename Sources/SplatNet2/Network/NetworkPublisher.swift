@@ -10,32 +10,41 @@ struct NetworkPublisher {
         return decoder
     }()
 
-    static func publish<T: RequestProtocol, V: Decodable>(_ request: T) -> Future<V, APIError> where T.ResponseType == V {
+    static func publish<T: RequestProtocol, V: Decodable>(_ request: T) -> Future<V, APIError> {
         Future { promise in
-            let alamofire = AF.request(request)
-                .validate(statusCode: 200...200)
-                .validate(contentType: ["application/json"])
-                .cURLDescription { request in
-                    print(request)
-                }
-                .responseJSON { response in
-                    switch response.result {
-                    case .success:
-                        do {
-                            if let data = response.data {
-                                promise(.success(try decoder.decode(V.self, from: data)))
-                            }
-                            promise(.failure(APIError.response))
-                        } catch {
-                            print(error)
-                            promise(.failure(APIError.decode))
-                        }
-                    case .failure(let error):
-                        print(error)
-                        promise(.failure(APIError.failure))
+            DispatchQueue(label: "Network Publisher").async {
+                let alamofire = AF.request(request)
+                    .validate(statusCode: 200...200)
+                    .validate(contentType: ["application/json"])
+                    .cURLDescription { request in
+                        print(request)
                     }
-                }
-            alamofire.resume()
+                    .responseJSON { response in
+                        switch response.result {
+                        case .success:
+                            do {
+                                if let data = response.data {
+                                    promise(.success(try decoder.decode(V.self, from: data)))
+                                }
+                                promise(.failure(APIError.response))
+                            } catch {
+                                print(error)
+                                promise(.failure(APIError.decode))
+                            }
+                        case .failure(let error):
+                            do {
+                                if let data = response.data {
+                                    let data = try decoder.decode(APIResponse.ErrorData.self, from: data)
+                                    print(data)
+                                    promise(.failure(APIError.failure))
+                                }
+                            } catch {
+                                promise(.failure(APIError.fatal))
+                            }
+                        }
+                    }
+                alamofire.resume()
+            }
         }
     }
 }
@@ -50,4 +59,5 @@ public enum APIError: Error {
     case upgrade
     case unknown
     case badrequests
+    case fatal
 }

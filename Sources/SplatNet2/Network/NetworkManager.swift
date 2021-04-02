@@ -6,11 +6,17 @@ import CryptoKit
 public final class NetworkManager {
     let sessionToken: String? = nil
     let iksmSession: String? = nil
+
+    #if DEBUG
+    private let state = "v1MguHzdCzhY7W7DMciwfFGPbzV0qdukFOnPX6czsT7m2END726qGJRrScHUT5AmZ2oS7RArsVj2z4eDH4BqThJpvQv7rgLIrHSOzp4NtwS3kFG3kIOqSE4vHCDUYE0X"
+    private let verifier = "VVSJwmWlQonJu047zDA2jgUtyuK3taxUV8tmUyQnpxLk4Q1ZBAUNvb6d1QPbyOKVbhKtr2IowR92oNP0eXCJvEWQkjeAB0WK7Klca2IjEyJvMVns2pn12UaJPquX9DKg"
+    #else
     private let state = String.randomString
     private let verifier = String.randomString
+    #endif
 
     private var codeVerifier = String.randomString
-
+    public static let shared = NetworkManager()
     private init() {}
 
     public func configure() {
@@ -18,6 +24,7 @@ public final class NetworkManager {
     }
 
     var oauthURL: URL {
+        print(verifier, verifier.codeChallenge, state)
         let parameters: [String: String] = [
             "state": state,
             "redirect_uri": "npf71b963c1b7b6d119://auth",
@@ -32,8 +39,42 @@ public final class NetworkManager {
         return URL(string: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")!
     }
 
+//    @discardableResult
+//    public func getSessionToken(sessionTokenCode: String, completion: @escaping (String?, APIError?) -> Void) {
+//        let request = APIRequest.SessionToken(code: sessionTokenCode, verifier: verifier)
+//        let _ = NetworkPublisher.publish(request)
+//            .receive(on: DispatchQueue.main)
+//            .sink(receiveCompletion: { completion in
+//                switch completion {
+//                case .finished:
+//                    break
+//                case .failure(let error):
+//                    break
+////                    completion(nil, error)
+//                }
+//            }, receiveValue: { (response: APIResponse.SessionToken) in
+//                completion(response.sessionToken, nil)
+//            })
+//    }
+
+    // Error Response
+    // [400] Invalid Request
     @discardableResult
-    public func getSessionToken(sessionTokenCode: String, completion: @escaping (String?, APIError?) -> Void) {
+    public func getSessionToken(sessionTokenCode: String) -> Future<APIResponse.SessionToken, APIError> {
+        let request = APIRequest.SessionToken(code: sessionTokenCode, verifier: verifier)
+        return remote(request: request)
+    }
+
+    // Error Response
+    // [400] Invalid Request
+    @discardableResult
+    public func getAccessToken(sessionToken: String) -> Future<APIResponse.AccessToken, APIError> {
+        let request = APIRequest.AccessToken(sessionToken: sessionToken)
+        return remote(request: request)
+    }
+
+    private func remote<Request: RequestProtocol>(request: Request) -> Future<Request.ResponseType, APIError> {
+        NetworkPublisher.publish(request)
     }
 }
 

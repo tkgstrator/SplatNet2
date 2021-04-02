@@ -1,6 +1,11 @@
 import Foundation
 
 public class APIResponse: Decodable {
+    public struct ErrorData: Decodable {
+        var error: String
+        var errorDescription: String
+    }
+
     public struct SessionToken: Decodable {
         var sessionToken: String
     }
@@ -13,7 +18,7 @@ public class APIResponse: Decodable {
         var hash: String
     }
 
-    public struct FlagpAPI: Decodable {
+    public struct FlapgAPI: Decodable {
         var result: FlapgParameters
 
         struct FlapgParameters: Decodable {
@@ -22,6 +27,28 @@ public class APIResponse: Decodable {
             var p2: String
             var p3: String
         }
+    }
+
+    public struct SplatoonToken: Decodable {
+        var result: WebAPIServerCredential
+        var user: WebAPIServerUser
+
+        struct WebAPIServerCredential: Decodable {
+            var accessToken: String
+        }
+
+        struct WebAPIServerUser: Decodable {
+            var name: String
+            var imageUri: String
+        }
+    }
+
+    public struct SplatoonAccessToken: Decodable {
+        var result: AccessToken
+    }
+
+    public struct IksmSession: Decodable {
+
     }
 
     public struct ResultCoop: Decodable {

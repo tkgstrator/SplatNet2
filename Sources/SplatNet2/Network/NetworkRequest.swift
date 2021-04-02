@@ -21,7 +21,7 @@ public class APIRequest {
         var path: String = "/connect/1.0.0/api/session_token"
         var parameters: Parameters?
         var headers: [String: String]?
-        typealias ResponseType = APIResponse.ResultCoop
+        typealias ResponseType = APIResponse.SessionToken
 
         init(code: String, verifier: String) {
             self.parameters = [
@@ -38,7 +38,7 @@ public class APIRequest {
         var path: String = "/connect/1.0.0/api/token"
         var parameters: Parameters?
         var headers: [String: String]?
-        typealias ResponseType = APIResponse.ResultCoop
+        typealias ResponseType = APIResponse.AccessToken
 
         init(sessionToken: String) {
             self.parameters = [
@@ -56,7 +56,7 @@ public class APIRequest {
         var encoding: ParameterEncoding = URLEncoding.default
         var parameters: Parameters?
         var headers: [String: String]?
-        typealias ResponseType = APIResponse.ResultCoop
+        typealias ResponseType = APIResponse.S2SHash
 
         init(accessToken: String, timestamp: Int) {
             self.parameters = [
@@ -72,7 +72,7 @@ public class APIRequest {
         var path: String = "login"
         var parameters: Parameters?
         var headers: [String: String]?
-        typealias ResponseType = APIResponse.ResultCoop
+        typealias ResponseType = APIResponse.FlapgAPI
 
         init(accessToken: String, timestamp: Int, hash: String, type: Bool) {
             self.headers = [
@@ -93,7 +93,7 @@ public class APIRequest {
         var path: String = "v1/Account/Login"
         var parameters: Parameters?
         var headers: [String: String]?
-        typealias ResponseType = APIResponse.ResultCoop
+        typealias ResponseType = APIResponse.SplatoonToken
 
         init(from result: APIResponse.FlapgAPI, version: String) {
             self.headers = [
@@ -102,10 +102,10 @@ public class APIRequest {
             ]
             self.parameters = [
                 "parameter": [
-                    "f": result["f"].stringValue,
-                    "naIdToken": result["p1"].stringValue,
-                    "timestamp": result["p2"].stringValue,
-                    "requestId": result["p3"].stringValue,
+                    "f": result.result.f,
+                    "naIdToken": result.result.p1,
+                    "timestamp": result.result.p2,
+                    "requestId": result.result.p3,
                     "naCountry": "JP",
                     "naBirthday": "1990-01-01",
                     "language": "ja-JP"
@@ -120,7 +120,7 @@ public class APIRequest {
         var path: String = "v2/Game/GetWebServiceToken"
         var parameters: Parameters?
         var headers: [String: String]?
-        typealias ResponseType = APIResponse.ResultCoop
+        typealias ResponseType = APIResponse.SplatoonAccessToken
 
         init(from result: APIResponse.FlapgAPI, splatoonToken: String, version: String) {
             self.headers = [
@@ -129,16 +129,15 @@ public class APIRequest {
             ]
             self.parameters = [
                 "parameter": [
-                    "f": result["f"].stringValue,
-                    "naIdToken": result["p1"].stringValue,
-                    "timestamp": result["p2"].stringValue,
-                    "requestId": result["p3"].stringValue,
+                    "f": result.result.f,
+                    "naIdToken": result.result.p1,
+                    "timestamp": result.result.p2,
+                    "requestId": result.result.p3,
                     "naCountry": "JP",
                     "naBirthday": "1990-01-01",
                     "language": "ja-JP"
                 ]
             ]
-
         }
     }
 
@@ -147,7 +146,7 @@ public class APIRequest {
         var path: String
         var parameters: Parameters?
         var headers: [String: String]?
-        typealias ResponseType = APIResponse.ResultCoop
+        typealias ResponseType = APIResponse.IksmSession
 
         init(jobId: Int, accessToken: String) {
             self.path = "coop_results/\(jobId)"
