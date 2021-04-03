@@ -26,6 +26,10 @@ extension APIProtocol {
     }
 }
 
+protocol SplatNet2Protocol: Decodable {
+    associatedtype EncodedType: Decodable
+}
+
 protocol RequestProtocol: APIProtocol, URLRequestConvertible {
     var parameters: Parameters? { get }
     var encoding: ParameterEncoding { get }

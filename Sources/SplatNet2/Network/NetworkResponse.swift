@@ -84,7 +84,27 @@ public class APIResponse: Decodable {
     public struct IksmSession: Decodable {
         var iksmSession: String
         var nsaid: String
+    }
 
+    public struct UserInfo: Decodable {
+        var iksmSession: String
+        var nsaid: String
+        var membership: Bool
+        var imageUri: String
+        var expiresIn: String
+
+        init(iksmSession: String, nsaid: String, membership: Bool, imageUri: String, expiresIn: Int) {
+            self.iksmSession = iksmSession
+            self.nsaid = nsaid
+            self.membership = membership
+            self.imageUri = imageUri
+            let formatter: ISO8601DateFormatter = {
+                let formatter = ISO8601DateFormatter()
+                formatter.timeZone = TimeZone.current
+                return formatter
+            }()
+            self.expiresIn = formatter.string(from: Date(timeIntervalSince1970: Date().timeIntervalSince1970 + TimeInterval(expiresIn)))
+        }
     }
 
     public struct ResultCoop: Decodable {
@@ -130,6 +150,24 @@ public class APIResponse: Decodable {
         public struct Stage: Decodable {
             var image: String
             var name: String
+//            var stageId: Int {
+//                get {
+//                    switch image {
+//                    case "/images/coop_stage/65c68c6f0641cc5654434b78a6f10b0ad32ccdee.png":
+//                        return 5000
+//                    case "/images/coop_stage/e07d73b7d9f0c64e552b34a2e6c29b8564c63388.png":
+//                        return 5001
+//                    case "/images/coop_stage/6d68f5baa75f3a94e5e9bfb89b82e7377e3ecd2c.png":
+//                        return 5002
+//                    case "/images/coop_stage/e9f7c7b35e6d46778cd3cbc0d89bd7e1bc3be493.png":
+//                        return 5003
+//                    case "/images/coop_stage/50064ec6e97aac91e70df5fc2cfecf61ad8615fd.png":
+//                        return 5004
+//                    default:
+//                        return 5000
+//                    }
+//                }
+//            }
         }
 
         public struct WaveResult: Decodable {

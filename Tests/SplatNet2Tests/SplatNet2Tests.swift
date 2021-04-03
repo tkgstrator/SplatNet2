@@ -13,13 +13,68 @@ final class SplatNet2Tests: XCTestCase {
     let iksmSession: String = "258cd5b2106ce013d1686c1806b09b411a1cf397"
     
     func testOAuthURL() {
-        print(NetworkManager.shared.oauthURL)
+        print(SplatNet2.shared.oauthURL)
     }
     
-    func testSessionToken() {
+//    func testSessionToken() {
+//        do {
+//            guard let sessionTokenCode = redirectURL.queryValue(forKey: "session_token_code") else { throw APIError.response }
+//            let task = SplatNet2.shared.getSessionToken(sessionTokenCode: sessionTokenCode)
+//            let recorder = task.record()
+//            let elements = try wait(for: recorder.elements, timeout: 10)
+//            print(elements)
+//        } catch {
+//            XCTFail()
+//        }
+//    }
+//
+//    func testAccessToken() {
+//        do {
+//            let task = SplatNet2.shared.getAccessToken(sessionToken: sessionToken)
+//            let recorder = task.record()
+//            let elements = try wait(for: recorder.elements, timeout: 10)
+//            print(elements)
+//        } catch {
+//            XCTFail()
+//        }
+//    }
+//
+//    func testSplatoonToken() {
+//        do {
+//            let task = SplatNet2.shared.getSplatoonToken(accessToken: accessToken)
+//            let recorder = task.record()
+//            let elements = try wait(for: recorder.elements, timeout: 10)
+//            print(elements)
+//        } catch {
+//            XCTFail()
+//        }
+//    }
+//
+//    func testSplatoonAccessToken() {
+//        do {
+//            let task = SplatNet2.shared.getSplatoonAccessToken(splatoonToken: splatoonToken)
+//            let recorder = task.record()
+//            let elements = try wait(for: recorder.elements, timeout: 10)
+//            print(elements)
+//        } catch {
+//            XCTFail()
+//        }
+//    }
+//
+//    func testIksmSession1() {
+//        do {
+//            let task = SplatNet2.shared.getIksmSession(accessToken: splatoonAccessToken)
+//            let recorder = task.record()
+//            let elements = try wait(for: recorder.elements, timeout: 10)
+//            print(elements)
+//        } catch {
+//            XCTFail()
+//        }
+//    }
+    
+    func testIksmSession2() {
         do {
-            guard let sessionTokenCode = redirectURL.queryValue(forKey: "session_token_code") else { throw APIError.response }
-            let task = NetworkManager.shared.getSessionToken(sessionTokenCode: sessionTokenCode)
+            let task = SplatNet2.shared.getCookie(sessionToken: sessionToken, version: "1.10.1")
             let recorder = task.record()
             let elements = try wait(for: recorder.elements, timeout: 10)
             print(elements)
@@ -28,57 +83,25 @@ final class SplatNet2Tests: XCTestCase {
         }
     }
     
-    func testAccessToken() {
+    func testGetResultCoop1() {
         do {
-            let task = NetworkManager.shared.getAccessToken(sessionToken: sessionToken)
+            let task = SplatNet2.shared.getResultCoop(jobId: 3549, iksmSession: iksmSession)
             let recorder = task.record()
-            let elements = try wait(for: recorder.elements, timeout: 10)
+            let elements = try wait(for: recorder.elements, timeout: 5)
             print(elements)
         } catch {
             XCTFail()
         }
     }
-    
-    func testSplatoonToken() {
+
+    func testGetResultCoop2() {
         do {
-            let task = NetworkManager.shared.getSplatoonToken(accessToken: accessToken)
+            let task = SplatNet2.shared.getResultCoop2(jobId: 3549, iksmSession: iksmSession)
             let recorder = task.record()
-            let elements = try wait(for: recorder.elements, timeout: 10)
+            let elements = try wait(for: recorder.elements, timeout: 5)
             print(elements)
         } catch {
-            XCTFail()
-        }
-    }
-    
-    func testSplatoonAccessToken() {
-        do {
-            let task = NetworkManager.shared.getSplatoonAccessToken(splatoonToken: splatoonToken)
-            let recorder = task.record()
-            let elements = try wait(for: recorder.elements, timeout: 10)
-            print(elements)
-        } catch {
-            XCTFail()
-        }
-    }
-    
-    func testIksmSession() {
-        do {
-            let task = NetworkManager.shared.getIksmSession(accessToken: splatoonAccessToken)
-            let recorder = task.record()
-            let elements = try wait(for: recorder.elements, timeout: 10)
-            print(elements)
-        } catch {
-            XCTFail()
-        }
-    }
-    
-    func testGetResultCoop() {
-        do {
-            let task = NetworkManager.shared.getResultCoop(jobId: 3549, iksmSession: iksmSession)
-            let recorder = task.record()
-            let elements = try wait(for: recorder.elements, timeout: 10)
-            print(elements)
-        } catch {
+            print(error)
             XCTFail()
         }
     }
@@ -86,12 +109,14 @@ final class SplatNet2Tests: XCTestCase {
     
     static var allTests = [
         ("OAUTH", testOAuthURL),
-        ("SESSION TOKEN", testSessionToken),
-        ("ACCESS TOKEN", testAccessToken),
-        ("SPLATOON TOKEN", testSplatoonToken),
-        ("SPLATOON ACCESS TOKEN", testSplatoonAccessToken),
-        ("IKSM SESSION", testIksmSession),
-        ("COOP RESULT", testGetResultCoop),
+//        ("SESSION TOKEN", testSessionToken),
+//        ("ACCESS TOKEN", testAccessToken),
+//        ("SPLATOON TOKEN", testSplatoonToken),
+//        ("SPLATOON ACCESS TOKEN", testSplatoonAccessToken),
+//        ("IKSM SESSION", testIksmSession1),
+        ("IKSM SESSION", testIksmSession2),
+        ("COOP RESULT", testGetResultCoop1),
+        ("COOP RESULT", testGetResultCoop2),
     ]
 }
 

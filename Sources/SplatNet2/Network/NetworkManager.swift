@@ -3,7 +3,7 @@ import Alamofire
 import Combine
 import CryptoKit
 
-public final class NetworkManager {
+public final class SplatNet2 {
     let sessionToken: String? = nil
     let iksmSession: String? = nil
 
@@ -16,12 +16,10 @@ public final class NetworkManager {
     #endif
 
     private var codeVerifier = String.randomString
-    public static let shared = NetworkManager()
+    public static let shared = SplatNet2()
+
     private init() {}
-
-    public func configure() {
-
-    }
+    public func configure() {}
 
     var oauthURL: URL {
         print(verifier, verifier.codeChallenge, state)
@@ -39,34 +37,30 @@ public final class NetworkManager {
         return URL(string: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")!
     }
 
-    //    @discardableresult
-    //    public func getsessiontoken(sessiontokencode: string, completion: @escaping (string?, apierror?) -> void) {
-    //        let request = apirequest.sessiontoken(code: sessiontokencode, verifier: verifier)
-    //        let _ = networkpublisher.publish(request)
-    //            .receive(on: DispatchQueue.main)
-    //            .sink(receiveCompletion: { completion in
-    //                switch completion {
-    //                case .finished:
-    //                    break
-    //                case .failure(let error):
-    //                    break
-    ////                    completion(nil, error)
-    //                }
-    //            }, receiveValue: { (response: APIResponse.SessionToken) in
-    //                completion(response.sessionToken, nil)
-    //            })
-    //    }
-
     @discardableResult
     public func getResultCoop(jobId: Int, iksmSession: String) -> Future<APIResponse.ResultCoop, APIError> {
         let request = APIRequest.ResultCoop(jobId: jobId, iksmSession: iksmSession)
         return remote(request: request)
     }
 
+    var task: AnyCancellable?
+    @discardableResult
+    public func getResultCoop2(jobId: Int, iksmSession: String) -> Future<SplatNet2.Coop.Result, APIError> {
+        let request = APIRequest.ResultCoop(jobId: jobId, iksmSession: iksmSession)
+        return Future { [self] promise in
+            task = remote(request: request)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { _ in
+                }, receiveValue: { response in
+                    promise(.success(SplatNet2.Coop.Result(from: response)))
+                })
+        }
+    }
+
     // Error Response
     // [400] Invalid Request
     @discardableResult
-    public func getSessionToken(sessionTokenCode: String) -> Future<APIResponse.SessionToken, APIError> {
+    func getSessionToken(sessionTokenCode: String) -> Future<APIResponse.SessionToken, APIError> {
         let request = APIRequest.SessionToken(code: sessionTokenCode, verifier: verifier)
         return remote(request: request)
     }
@@ -74,7 +68,7 @@ public final class NetworkManager {
     // Error Response
     // [400] Invalid GrantType
     @discardableResult
-    public func getAccessToken(sessionToken: String) -> Future<APIResponse.AccessToken, APIError> {
+    func getAccessToken(sessionToken: String) -> Future<APIResponse.AccessToken, APIError> {
         let request = APIRequest.AccessToken(sessionToken: sessionToken)
         return remote(request: request)
     }
@@ -82,7 +76,7 @@ public final class NetworkManager {
     // Error Response
     // [400] Invalid GrantType
     @discardableResult
-    public func getSplatoonToken(accessToken: String, version: String = "1.10.1") -> Future<APIResponse.SplatoonToken, APIError> {
+    func getSplatoonToken(accessToken: String, version: String = "1.10.1") -> Future<APIResponse.SplatoonToken, APIError> {
         var task: [AnyCancellable] = []
         return Future { [self] promise in
             task.append(getParameterF(accessToken: accessToken, type: false)
@@ -91,7 +85,7 @@ public final class NetworkManager {
                 }, receiveValue: { response in
                     // Flapg API
                     let request = APIRequest.SplatoonToken(from: response, version: version)
-                    task.append(NetworkPublisher.publish(request)
+                    task.append(remote(request: request)
                         .receive(on: DispatchQueue.main)
                         .sink(receiveCompletion: { _ in
                         }, receiveValue: { response in
@@ -104,7 +98,7 @@ public final class NetworkManager {
     // Error Response
     // [400] Invalid GrantType
     @discardableResult
-    public func getSplatoonAccessToken(splatoonToken: String, version: String = "1.10.1") -> Future<APIResponse.SplatoonAccessToken, APIError> {
+    func getSplatoonAccessToken(splatoonToken: String, version: String = "1.10.1") -> Future<APIResponse.SplatoonAccessToken, APIError> {
         var task: [AnyCancellable] = []
         return Future { [self] promise in
             task.append(getParameterF(accessToken: splatoonToken, type: true)
@@ -113,7 +107,7 @@ public final class NetworkManager {
                 }, receiveValue: { response in
                     // Flapg API
                     let request = APIRequest.SplatoonAccessToken(from: response, splatoonToken: splatoonToken, version: version)
-                    task.append(NetworkPublisher.publish(request)
+                    task.append(remote(request: request)
                         .receive(on: DispatchQueue.main)
                         .sink(receiveCompletion: { _ in
                         }, receiveValue: { response in
@@ -126,19 +120,19 @@ public final class NetworkManager {
     // Error Response
     // [400] Invalid GrantType
     @discardableResult
-    public func getIksmSession(accessToken: String) -> Future<APIResponse.IksmSession, APIError> {
+    func getIksmSession(accessToken: String) -> Future<APIResponse.IksmSession, APIError> {
         let request = APIRequest.IksmSession(accessToken: accessToken)
         return generate(request: request)
     }
 
     @discardableResult
-    private func getParameterF(accessToken: String, version: String = "1.10.1", type: Bool) -> Future<APIResponse.FlapgAPI, APIError> {
+    func getParameterF(accessToken: String, version: String = "1.10.1", type: Bool) -> Future<APIResponse.FlapgAPI, APIError> {
         var task: [AnyCancellable] = []
         let timestamp = Int(Date().timeIntervalSince1970)
         let request = APIRequest.S2SHash(accessToken: accessToken, timestamp: timestamp)
 
-        return Future { promise in
-            task.append(NetworkPublisher.publish(request)
+        return Future { [self] promise in
+            task.append(remote(request: request)
                 .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { completion in
                     // S2SHash
@@ -153,7 +147,7 @@ public final class NetworkManager {
                     // Flapg
                     print(response.hash)
                     let request = APIRequest.FlapgToken(accessToken: accessToken, timestamp: timestamp, hash: response.hash, type: type)
-                    task.append(NetworkPublisher.publish(request)
+                    task.append(remote(request: request)
                         .receive(on: DispatchQueue.main)
                         .sink(receiveCompletion: { completion in
                             switch completion {
@@ -168,14 +162,6 @@ public final class NetworkManager {
                         }))
                 }))
         }
-    }
-
-    private func generate<Request: APIRequest.IksmSession>(request: Request) -> Future<APIResponse.IksmSession, APIError> {
-        NetworkPublisher.generate(request)
-    }
-
-    private func remote<Request: RequestProtocol>(request: Request) -> Future<Request.ResponseType, APIError> {
-        NetworkPublisher.publish(request)
     }
 }
 

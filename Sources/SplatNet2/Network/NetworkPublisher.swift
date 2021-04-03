@@ -54,14 +54,14 @@ struct NetworkPublisher {
                             do {
                                 if let data = response.data {
                                     promise(.success(try decoder.decode(V.self, from: data)))
+                                } else {
+                                    promise(.failure(APIError.response))
                                 }
-                                promise(.failure(APIError.response))
                             } catch {
                                 print(error)
                                 promise(.failure(APIError.decode))
                             }
                         case .failure(let error):
-                            print(error)
                             do {
                                 if let data = response.data {
                                     let data = try decoder.decode(APIResponse.ErrorData.self, from: data)
