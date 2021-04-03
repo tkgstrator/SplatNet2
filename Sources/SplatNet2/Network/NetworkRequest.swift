@@ -9,9 +9,9 @@ public class APIRequest {
         var headers: [String: String]?
         typealias ResponseType = APIResponse.ResultCoop
 
-        init(jobId: Int, accessToken: String) {
+        init(jobId: Int, iksmSession: String) {
             self.path = "coop_results/\(jobId)"
-            self.headers = ["cookie": "iksm_session=\(accessToken)"]
+            self.headers = ["cookie": "iksm_session=\(iksmSession)"]
         }
     }
 
@@ -156,5 +156,4 @@ public class APIRequest {
             ]
         }
     }
-
 }

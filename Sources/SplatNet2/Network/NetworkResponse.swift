@@ -71,7 +71,7 @@ public class APIResponse: Decodable {
     }
 
     public struct SplatoonAccessToken: Decodable {
-        var correlationIdL: String
+        var correlationId: String
         var result: AccessToken
         var status: Int
 
@@ -89,24 +89,23 @@ public class APIResponse: Decodable {
 
     public struct ResultCoop: Decodable {
         var jobId: Int
-        var stageId: Int
         var jobScore: Int
         var jobRate: Int
         var jobResult: JobResult
         var schedule: Schedule
         var kumaPoint: Int
-        var grade: Int
+        var grade: Grade
         var gradePoint: Int
         var gradePointDelta: Int
-        var startTime: String
-        var playTime: String
-        var endTime: String
+        var startTime: Int
+        var playTime: Int
+        var endTime: Int
         var waveDetails: [WaveResult]
         var dangerRate: Double
-        var bossCounts: [Int]
-        var bossKillCounts: [Int]
+        var bossCounts: [String: BossSalmonid]
+        // var bossKillCounts: [String: BossSalmonid]
         var otherResults: [PlayerResult]
-        var myResults: PlayerResult
+        var myResult: PlayerResult
 
         public struct JobResult: Decodable {
             var failureReason: String?
@@ -115,31 +114,87 @@ public class APIResponse: Decodable {
         }
 
         public struct Schedule: Decodable {
-            var stageId: Int
-            var startTime: String
-            var endTime: String
+            var stage: Stage
+            var startTime: Int
+            var endTime: Int
+            var weapons: [WeaponList]
+        }
+
+        public struct Grade: Decodable {
+            var id: String
+            var longName: String
+            var name: String
+            var shortName: String
+        }
+
+        public struct Stage: Decodable {
+            var image: String
+            var name: String
         }
 
         public struct WaveResult: Decodable {
-            var eventType: String
-            var waterLevel: String
+            var eventType: KeyName
+            var waterLevel: KeyName
             var goldenIkuraNum: Int
             var goldenIkuraPopNum: Int
             var quotaNum: Int
             var ikuraNum: Int
         }
 
+        struct KeyName: Decodable {
+            var key: String
+            var name: String
+        }
+
+        struct BossSalmonid: Decodable {
+            var boss: KeyName
+            var count: Int
+        }
+
         public struct PlayerResult: Decodable {
-            var bossKillCounts: [Int]
+            var bossKillCounts: [String: BossSalmonid]
             var deadCount: Int
             var helpCount: Int
             var ikuraNum: Int
             var goldenIkuraNum: Int
-            var specialId: Int
+            var special: Special
             var specialCounts: [Int]
-            var weaponLists: [Int]
+            var weaponList: [WeaponList]
+            var playerType: PlayerType
             var name: String
             var pid: String
         }
+
+        struct Special: IdName, Decodable {
+            var id: String
+            var name: String
+        }
+
+        struct WeaponList: Decodable {
+            var id: String
+            var weapon: Weapon
+        }
+
+        struct Weapon: IdName, Decodable {
+            var id: String
+            var name: String
+            var image: String
+            var thumbnail: String
+        }
+
+        struct PlayerType: Decodable {
+            var species: String
+            var style: String
+        }
     }
+}
+
+protocol IdName: Decodable {
+    var id: String { get }
+    var name: String { get }
+}
+
+protocol KeyName: Decodable {
+    var key: String { get }
+    var name: String { get }
 }

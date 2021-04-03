@@ -57,6 +57,12 @@ public final class NetworkManager {
     //            })
     //    }
 
+    @discardableResult
+    public func getResultCoop(jobId: Int, iksmSession: String) -> Future<APIResponse.ResultCoop, APIError> {
+        let request = APIRequest.ResultCoop(jobId: jobId, iksmSession: iksmSession)
+        return remote(request: request)
+    }
+
     // Error Response
     // [400] Invalid Request
     @discardableResult
