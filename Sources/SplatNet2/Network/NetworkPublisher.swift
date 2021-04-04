@@ -10,10 +10,12 @@ struct NetworkPublisher {
         return decoder
     }()
 
+    static let queue = DispatchQueue(label: "Network Publisher")
+
     // IksmSession取得のため
     static func generate<T: APIRequest.IksmSession>(_ request: T) -> Future<APIResponse.IksmSession, APIError> {
         Future { promise in
-            DispatchQueue(label: "Network Publisher").async {
+            self.queue.async {
                 let alamofire = AF.request(request)
                     .validate(statusCode: 200...200)
                     .cURLDescription { request in
@@ -41,7 +43,7 @@ struct NetworkPublisher {
     // JSON取得のためのPublish
     static func publish<T: RequestProtocol, V: Decodable>(_ request: T) -> Future<V, APIError> {
         Future { promise in
-            DispatchQueue(label: "Network Publisher").async {
+            self.queue.async {
                 let alamofire = AF.request(request)
                     .validate(statusCode: 200...200)
                     .validate(contentType: ["application/json"])
@@ -58,7 +60,6 @@ struct NetworkPublisher {
                                     promise(.failure(APIError.response))
                                 }
                             } catch {
-                                print(error)
                                 promise(.failure(APIError.decode))
                             }
                         case .failure(let error):
@@ -103,12 +104,13 @@ public enum APIError: Error {
     case json           // Invalid JSON Format
     case response       // Invalid Format
     case decode         // JSONDecoder could not decode
-    case requests
-    case unavailable
-    case upgrade
+    case requests       //
+    case unavailable    // Server is unavailable
+    case upgrade        // X-Product Version needs to upgrade
     case unknown
-    case badrequests
-    case fatal
+    case badrequests    // Bad request
+    case fatal          // fatal error
     case grant          // Invalid GrantType for AccessToken
-    case s2shash        //
+    case s2shash        // Too many request
+    case expired        // Expired IksmSession
 }

@@ -7,7 +7,7 @@ extension SplatNet2 {
     public class Coop {
         public struct Result: Decodable {
             var jobId: Int
-//            var stageId: Int
+            var stageId: Int
             var jobScore: Int
             var jobRate: Int
             var jobResult: ResultJob
@@ -25,7 +25,7 @@ extension SplatNet2 {
 
             init(from response: APIResponse.ResultCoop) {
                 self.jobId = response.jobId
-//                self.stageId = response.schedule.stage.stageId
+                self.stageId = response.schedule.stage.stageId
                 self.jobScore = response.jobScore
                 self.jobRate = response.jobRate
                 self.jobResult = ResultJob(from: response.jobResult)
@@ -82,7 +82,7 @@ extension SplatNet2 {
             var startTime: String
             var endTime: String
             var weaponList: [Int]
-//            var stageId: Int
+            var stageId: Int
 
             init(from response: APIResponse.ResultCoop.Schedule) {
                 let formatter: ISO8601DateFormatter = {
@@ -94,7 +94,7 @@ extension SplatNet2 {
                 self.startTime = formatter.string(from: Date(timeIntervalSince1970: TimeInterval(response.startTime)))
                 self.endTime = formatter.string(from: Date(timeIntervalSince1970: TimeInterval(response.endTime)))
                 self.weaponList = response.weapons.map { Int($0.id)! }
-//                self.stageId = response.stage.stageId
+                self.stageId = response.stage.stageId
             }
         }
 

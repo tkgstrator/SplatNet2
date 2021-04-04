@@ -4,8 +4,6 @@ import Combine
 import CryptoKit
 
 public final class SplatNet2 {
-    let sessionToken: String? = nil
-    let iksmSession: String? = nil
 
     #if DEBUG
     private let state = "v1MguHzdCzhY7W7DMciwfFGPbzV0qdukFOnPX6czsT7m2END726qGJRrScHUT5AmZ2oS7RArsVj2z4eDH4BqThJpvQv7rgLIrHSOzp4NtwS3kFG3kIOqSE4vHCDUYE0X"
@@ -16,10 +14,23 @@ public final class SplatNet2 {
     #endif
 
     private var codeVerifier = String.randomString
-    public static let shared = SplatNet2()
+    var iksmSession: String
+    var sessionToken: String
+    var version: String
+    var task: [AnyCancellable] = []
 
-    private init() {}
-    public func configure() {}
+    public convenience init(iksmSession: String = "", sessionToken: String = "", version: String = "1.10.1") {
+        self.init()
+        self.iksmSession = iksmSession
+        self.sessionToken = sessionToken
+        self.version = version
+    }
+
+    public init() {
+        self.iksmSession = ""
+        self.sessionToken = ""
+        self.version = "1.10.1"
+    }
 
     var oauthURL: URL {
         print(verifier, verifier.codeChallenge, state)
@@ -37,26 +48,6 @@ public final class SplatNet2 {
         return URL(string: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")!
     }
 
-    @discardableResult
-    public func getResultCoop(jobId: Int, iksmSession: String) -> Future<APIResponse.ResultCoop, APIError> {
-        let request = APIRequest.ResultCoop(jobId: jobId, iksmSession: iksmSession)
-        return remote(request: request)
-    }
-
-    var task: AnyCancellable?
-    @discardableResult
-    public func getResultCoop2(jobId: Int, iksmSession: String) -> Future<SplatNet2.Coop.Result, APIError> {
-        let request = APIRequest.ResultCoop(jobId: jobId, iksmSession: iksmSession)
-        return Future { [self] promise in
-            task = remote(request: request)
-                .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { _ in
-                }, receiveValue: { response in
-                    promise(.success(SplatNet2.Coop.Result(from: response)))
-                })
-        }
-    }
-
     // Error Response
     // [400] Invalid Request
     @discardableResult
@@ -68,7 +59,7 @@ public final class SplatNet2 {
     // Error Response
     // [400] Invalid GrantType
     @discardableResult
-    func getAccessToken(sessionToken: String) -> Future<APIResponse.AccessToken, APIError> {
+    func getAccessToken() -> Future<APIResponse.AccessToken, APIError> {
         let request = APIRequest.AccessToken(sessionToken: sessionToken)
         return remote(request: request)
     }
@@ -77,8 +68,7 @@ public final class SplatNet2 {
     // [400] Invalid GrantType
     @discardableResult
     func getSplatoonToken(accessToken: String, version: String = "1.10.1") -> Future<APIResponse.SplatoonToken, APIError> {
-        var task: [AnyCancellable] = []
-        return Future { [self] promise in
+        Future { [self] promise in
             task.append(getParameterF(accessToken: accessToken, type: false)
                 .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { _ in
@@ -99,8 +89,7 @@ public final class SplatNet2 {
     // [400] Invalid GrantType
     @discardableResult
     func getSplatoonAccessToken(splatoonToken: String, version: String = "1.10.1") -> Future<APIResponse.SplatoonAccessToken, APIError> {
-        var task: [AnyCancellable] = []
-        return Future { [self] promise in
+        Future { [self] promise in
             task.append(getParameterF(accessToken: splatoonToken, type: true)
                 .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { _ in
@@ -127,7 +116,6 @@ public final class SplatNet2 {
 
     @discardableResult
     func getParameterF(accessToken: String, version: String = "1.10.1", type: Bool) -> Future<APIResponse.FlapgAPI, APIError> {
-        var task: [AnyCancellable] = []
         let timestamp = Int(Date().timeIntervalSince1970)
         let request = APIRequest.S2SHash(accessToken: accessToken, timestamp: timestamp)
 

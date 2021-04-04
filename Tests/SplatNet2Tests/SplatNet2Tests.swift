@@ -13,7 +13,8 @@ final class SplatNet2Tests: XCTestCase {
     let iksmSession: String = "258cd5b2106ce013d1686c1806b09b411a1cf397"
     
     func testOAuthURL() {
-        print(SplatNet2.shared.oauthURL)
+        let splatnet2 = SplatNet2()
+        print(splatnet2.oauthURL)
     }
     
 //    func testSessionToken() {
@@ -74,7 +75,8 @@ final class SplatNet2Tests: XCTestCase {
     
     func testIksmSession2() {
         do {
-            let task = SplatNet2.shared.getCookie(sessionToken: sessionToken, version: "1.10.1")
+            let splatnet2 = SplatNet2()
+            let task = splatnet2.getCookie(sessionToken: sessionToken, version: "1.10.1")
             let recorder = task.record()
             let elements = try wait(for: recorder.elements, timeout: 10)
             print(elements)
@@ -83,30 +85,19 @@ final class SplatNet2Tests: XCTestCase {
         }
     }
     
-    func testGetResultCoop1() {
+    func testGetResultCoop() {
         do {
-            let task = SplatNet2.shared.getResultCoop(jobId: 3549, iksmSession: iksmSession)
+            let iksmSession: String = "258cd5b2106ce013d1686c1806b09b411a1cf398"
+            let splatnet2 = SplatNet2(iksmSession: iksmSession, sessionToken: sessionToken, version: "1.10.1")
+            let task = splatnet2.getResultCoop(jobId: 3549)
             let recorder = task.record()
-            let elements = try wait(for: recorder.elements, timeout: 5)
+            let elements = try wait(for: recorder.elements, timeout: 15)
             print(elements)
         } catch {
             XCTFail()
         }
     }
 
-    func testGetResultCoop2() {
-        do {
-            let task = SplatNet2.shared.getResultCoop2(jobId: 3549, iksmSession: iksmSession)
-            let recorder = task.record()
-            let elements = try wait(for: recorder.elements, timeout: 5)
-            print(elements)
-        } catch {
-            print(error)
-            XCTFail()
-        }
-    }
-    
-    
     static var allTests = [
         ("OAUTH", testOAuthURL),
 //        ("SESSION TOKEN", testSessionToken),
@@ -115,8 +106,7 @@ final class SplatNet2Tests: XCTestCase {
 //        ("SPLATOON ACCESS TOKEN", testSplatoonAccessToken),
 //        ("IKSM SESSION", testIksmSession1),
         ("IKSM SESSION", testIksmSession2),
-        ("COOP RESULT", testGetResultCoop1),
-        ("COOP RESULT", testGetResultCoop2),
+        ("COOP RESULT", testGetResultCoop),
     ]
 }
 
