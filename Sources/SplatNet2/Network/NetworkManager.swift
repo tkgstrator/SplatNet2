@@ -32,7 +32,12 @@ public final class SplatNet2 {
         self.version = "1.10.1"
     }
 
-    var oauthURL: URL {
+    public func configure(iksmSession: String, sessionToken: String) {
+        self.iksmSession = iksmSession
+        self.sessionToken = sessionToken
+    }
+
+    public var oauthURL: URL {
         print(verifier, verifier.codeChallenge, state)
         let parameters: [String: String] = [
             "state": state,
@@ -67,7 +72,7 @@ public final class SplatNet2 {
     // Error Response
     // [400] Invalid GrantType
     @discardableResult
-    func getSplatoonToken(accessToken: String, version: String = "1.10.1") -> Future<APIResponse.SplatoonToken, APIError> {
+    func getSplatoonToken(accessToken: String) -> Future<APIResponse.SplatoonToken, APIError> {
         Future { [self] promise in
             task.append(getParameterF(accessToken: accessToken, type: false)
                 .receive(on: DispatchQueue.main)
@@ -88,7 +93,7 @@ public final class SplatNet2 {
     // Error Response
     // [400] Invalid GrantType
     @discardableResult
-    func getSplatoonAccessToken(splatoonToken: String, version: String = "1.10.1") -> Future<APIResponse.SplatoonAccessToken, APIError> {
+    func getSplatoonAccessToken(splatoonToken: String) -> Future<APIResponse.SplatoonAccessToken, APIError> {
         Future { [self] promise in
             task.append(getParameterF(accessToken: splatoonToken, type: true)
                 .receive(on: DispatchQueue.main)
@@ -115,7 +120,7 @@ public final class SplatNet2 {
     }
 
     @discardableResult
-    func getParameterF(accessToken: String, version: String = "1.10.1", type: Bool) -> Future<APIResponse.FlapgAPI, APIError> {
+    func getParameterF(accessToken: String, type: Bool) -> Future<APIResponse.FlapgAPI, APIError> {
         let timestamp = Int(Date().timeIntervalSince1970)
         let request = APIRequest.S2SHash(accessToken: accessToken, timestamp: timestamp)
 

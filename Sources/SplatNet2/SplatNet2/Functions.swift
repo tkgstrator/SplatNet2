@@ -66,7 +66,7 @@ extension SplatNet2 {
                                     let membership = response.result.user.membership.active
                                     let expiresIn = response.result.webApiServerCredential.expiresIn
                                     task.append(
-                                        getSplatoonAccessToken(splatoonToken: accessToken, version: version)
+                                        getSplatoonAccessToken(splatoonToken: accessToken)
                                             .receive(on: DispatchQueue.main)
                                             .sink(receiveCompletion: { completion in
                                                 switch completion {
