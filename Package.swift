@@ -16,7 +16,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.4.1"),
+        .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.4.3"),
         .package(url: "https://github.com/groue/CombineExpectations.git", from: "0.7.0")
     ],
     targets: [
@@ -24,9 +24,9 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "SplatNet2",
-            dependencies: ["Alamofire", "CombineExpectations"]),
+            dependencies: ["Alamofire"]),
         .testTarget(
             name: "SplatNet2Tests",
-            dependencies: ["SplatNet2"]),
+            dependencies: ["SplatNet2", "CombineExpectations"]),
     ]
 )
