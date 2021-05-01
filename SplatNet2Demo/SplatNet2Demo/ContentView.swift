@@ -18,20 +18,20 @@ struct ContentView: View {
         Text("Hello, world!")
             .padding()
             .onAppear {
-                SplatNet2.shared.configure(sessionToken: sessionToken)
+//                SplatNet2.shared.configure(sessionToken: sessionToken)
 //                SplatNet2.shared.configure(iksmSession: iksmSession)
-//                SplatNet2.shared.getResultCoop(jobId: 3549)
-//                    .sink(receiveCompletion: { completion in
-//                        switch completion {
-//                        case .finished:
-//                            print("FINISHED")
-//                        case .failure(let error):
-//                            print(error)
-//                        }
-//                    }, receiveValue: { response in
-//                        print(response)
-//                    })
-//                    .store(in: &task)
+                SplatNet2.shared.getResultCoop(jobId: 3549)
+                    .sink(receiveCompletion: { completion in
+                        switch completion {
+                        case .finished:
+                            break
+                        case .failure(let error):
+                            print(error)
+                        }
+                    }, receiveValue: { response in
+                        print(response)
+                    })
+                    .store(in: &task)
 //                SplatNet2.shared.getCookie(sessionToken: sessionToken)
 //                    .sink(receiveCompletion: { completion in
 //                        switch completion {

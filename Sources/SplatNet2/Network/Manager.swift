@@ -63,7 +63,6 @@ final public class SplatNet2 {
 
     public func configure(iksmSession: String) {
         self.iksmSession = iksmSession
-        print(self.iksmSession, self.sessionToken)
     }
 
     public func configure(sessionToken: String) {

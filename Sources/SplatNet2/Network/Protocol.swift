@@ -7,7 +7,7 @@ protocol RequestType: URLRequestConvertible {
     var method: HTTPMethod { get }
     var parameters: Parameters? { get }
     var path: String { get }
-    var headers: [String: String]? { get }
+    var headers: [String: String]? { get set }
     var baseURL: URL { get }
     var encoding: ParameterEncoding { get }
 }
@@ -15,7 +15,16 @@ protocol RequestType: URLRequestConvertible {
 extension RequestType {
     
     var headers: [String: String]? {
-        ["User-Agent": "Salmonia/@tkgling"]
+        if let iksmSession = keychain.getValue(forKey: .iksmSession) {
+            return [
+                "Cookie": "iksm_session=\(iksmSession)",
+                "User-Agent": "Salmonia/@tkgling"
+            ]
+        } else {
+            return [
+                "User-Agent": "Salmonia/@tkgling"
+            ]
+        }
     }
 
     var encoding: ParameterEncoding {
