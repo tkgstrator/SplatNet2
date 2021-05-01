@@ -89,15 +89,17 @@ public class Response: Decodable {
     public struct UserInfo: Decodable {
         var iksmSession: String
         var nsaid: String
+        var nickname: String
         var membership: Bool
         var imageUri: String
         var expiresIn: String
 
-        init(iksmSession: String, nsaid: String, membership: Bool, imageUri: String, expiresIn: Int) {
+        init(iksmSession: String, nsaid: String, nickname: String, membership: Bool, imageUri: String, expiresIn: Int) {
             self.iksmSession = iksmSession
             self.nsaid = nsaid
             self.membership = membership
             self.imageUri = imageUri
+            self.nickname = nickname
             let formatter: ISO8601DateFormatter = {
                 let formatter = ISO8601DateFormatter()
                 formatter.timeZone = TimeZone.current

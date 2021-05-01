@@ -2,6 +2,7 @@ import XCTest
 import Combine
 import CombineExpectations
 import Foundation
+import KeychainAccess
 @testable import SplatNet2
 
 final class SplatNet2Tests: XCTestCase {
@@ -31,7 +32,7 @@ final class SplatNet2Tests: XCTestCase {
 //
     func testAccessToken() {
         do {
-            let task = SplatNet2.shared.getAccessToken(sessionToken: sessionToken)
+            let task = SplatNet2.shared.getAccessToken()
             let recorder = task.record()
             let elements = try wait(for: recorder.elements, timeout: 10)
             print(elements)
@@ -75,8 +76,8 @@ final class SplatNet2Tests: XCTestCase {
     
     func testIksmSession2() {
         do {
-            let splatnet2 = SplatNet2()
-            let task = splatnet2.getCookie(sessionToken: sessionToken, version: "1.10.1")
+            let splatnet2 = SplatNet2(sessionToken: sessionToken)
+            let task = splatnet2.getCookie()
             let recorder = task.record()
             let elements = try wait(for: recorder.elements, timeout: 10)
             print(elements)
@@ -87,8 +88,7 @@ final class SplatNet2Tests: XCTestCase {
     
     func testGetResultCoop() {
         do {
-            let iksmSession: String = "258cd5b2106ce013d1686c1806b09b411a1cf398"
-            let splatnet2 = SplatNet2(iksmSession: iksmSession, sessionToken: sessionToken, version: "1.10.1")
+            let splatnet2 = SplatNet2(sessionToken: sessionToken)
             let task = splatnet2.getResultCoop(jobId: 3549)
             let recorder = task.record()
             let elements = try wait(for: recorder.elements, timeout: 15)

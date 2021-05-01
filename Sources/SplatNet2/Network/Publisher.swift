@@ -48,7 +48,7 @@ struct Publisher {
                     .validate(statusCode: 200...200)
                     .validate(contentType: ["application/json"])
                     .cURLDescription { request in
-                        print(request)
+//                        print(request)
                     }
                     .responseJSON { response in
                         switch response.result {
@@ -63,12 +63,27 @@ struct Publisher {
                                 promise(.failure(APIError.decode))
                             }
                         case .failure(let error):
-                            do {
-                                if let data = response.data {
-                                    let data = try decoder.decode(Response.ErrorData.self, from: data)
-                                    promise(.failure(APIError.failure))
+                            if let statusCode = response.response?.statusCode {
+                                print("STATUS CODE", statusCode)
+                                switch statusCode {
+                                case 403:
+                                    // セッション有効切れ
+                                    promise(.failure(APIError.expired))
+                                case 429:
+                                    // S2S APIのリクエスト過多
+                                    promise(.failure(APIError.requests))
+                                default:
+                                    break
                                 }
-                            } catch {
+                                do {
+                                    if let data = response.data {
+                                        let data = try decoder.decode(Response.ErrorData.self, from: data)
+                                        promise(.failure(APIError.failure))
+                                    }
+                                } catch {
+                                    promise(.failure(APIError.decode))
+                                }
+                            } else {
                                 promise(.failure(APIError.fatal))
                             }
                         }
@@ -113,4 +128,5 @@ public enum APIError: Error {
     case grant          // Invalid GrantType for AccessToken
     case s2shash        // Too many request
     case expired        // Expired IksmSession
+    case empty          // Empty iksmSession, sessionToken
 }

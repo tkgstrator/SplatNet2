@@ -34,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1090C671263DA84F000DD54C /* SplatNet2Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SplatNet2Demo.entitlements; sourceTree = "<group>"; };
 		10F010B1263D7ADF002C40DA /* SplatNet2Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplatNet2Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplatNet2DemoApp.swift; sourceTree = "<group>"; };
 		10F010B6263D7ADF002C40DA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -100,6 +101,7 @@
 		10F010B3263D7ADF002C40DA /* SplatNet2Demo */ = {
 			isa = PBXGroup;
 			children = (
+				1090C671263DA84F000DD54C /* SplatNet2Demo.entitlements */,
 				10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */,
 				10F010B6263D7ADF002C40DA /* ContentView.swift */,
 				10F010B8263D7AE3002C40DA /* Assets.xcassets */,
@@ -432,6 +434,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SplatNet2Demo/SplatNet2Demo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"SplatNet2Demo/Preview Content\"";
 				DEVELOPMENT_TEAM = D9HU6JZF2Q;
@@ -454,6 +457,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SplatNet2Demo/SplatNet2Demo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"SplatNet2Demo/Preview Content\"";
 				DEVELOPMENT_TEAM = D9HU6JZF2Q;

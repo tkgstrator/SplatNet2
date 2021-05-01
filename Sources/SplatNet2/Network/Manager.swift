@@ -14,32 +14,70 @@ final public class SplatNet2 {
     #endif
     
     private var codeVerifier = String.randomString
-    var iksmSession: String
-    var sessionToken: String
-    var version: String
+    var iksmSession: String? {
+        get {
+            keychain.getValue(forKey: .iksmSession)
+        }
+        set {
+            if let newValue = newValue {
+                keychain.setValue(value: newValue, forKey: .iksmSession)
+            }
+        }
+    }
+    var sessionToken: String? {
+        get {
+            return keychain.getValue(forKey: .sessionToken)
+        }
+        set {
+            if let newValue = newValue {
+                keychain.setValue(value: newValue, forKey: .sessionToken)
+            }
+        }
+    }
+    var playerId: String? {
+        get {
+            keychain.getValue(forKey: .playerId)
+        }
+        set {
+            if let newValue = newValue {
+                keychain.setValue(value: newValue, forKey: .playerId)
+            }
+        }
+    }
+    var version: String {
+        keychain.getValue(forKey: .version) ?? "1.10.1"
+    }
     public static let shared: SplatNet2 = SplatNet2()
-    var task = Set<AnyCancellable>()
+    internal var task = Set<AnyCancellable>()
     
-    public convenience init(iksmSession: String = "", sessionToken: String = "", version: String = "1.10.1") {
-        self.init()
-        self.iksmSession = iksmSession
-        self.sessionToken = sessionToken
-        self.version = version
+    public init() {}
+    
+    public init(iksmSession: String) {
+        keychain.setValue(value: iksmSession, forKey: .iksmSession)
     }
     
-    public init() {
-        self.iksmSession = ""
-        self.sessionToken = ""
-        self.version = "1.10.1"
-    }
-    
-    public func configure(iksmSession: String, sessionToken: String) {
-        self.iksmSession = iksmSession
+    // テスト用
+    init(sessionToken: String) {
         self.sessionToken = sessionToken
     }
-    
+
+    public func configure(iksmSession: String) {
+        self.iksmSession = iksmSession
+        print(self.iksmSession, self.sessionToken)
+    }
+
+    public func configure(sessionToken: String) {
+        self.sessionToken = sessionToken
+        getCookie()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+            }, receiveValue: { response in
+                print(response)
+            })
+            .store(in: &task)
+    }
+
     public var oauthURL: URL {
-        print(verifier, verifier.codeChallenge, state)
         let parameters: [String: String] = [
             "state": state,
             "redirect_uri": "npf71b963c1b7b6d119://auth",
@@ -50,7 +88,6 @@ final public class SplatNet2 {
             "session_token_code_challenge_method": "S256",
             "theme": "login_form"
         ]
-        
         return URL(string: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")!
     }
     
@@ -65,8 +102,8 @@ final public class SplatNet2 {
     // Error Response
     // [400] Invalid GrantType
     @discardableResult
-    func getAccessToken(sessionToken: String) -> Future<Response.AccessToken, APIError> {
-        let request = AccessToken(sessionToken: sessionToken)
+    func getAccessToken() -> Future<Response.AccessToken, APIError> {
+        let request = AccessToken()
         return remote(request: request)
     }
     

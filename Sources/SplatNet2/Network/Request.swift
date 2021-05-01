@@ -9,8 +9,9 @@ public class ResultCoop: RequestType {
     var headers: [String: String]?
     typealias ResponseType = Response.ResultCoop
     
-    init(jobId: Int, iksmSession: String) {
+    init(jobId: Int) {
         self.path = "coop_results/\(jobId)"
+        guard let iksmSession = SplatNet2.shared.iksmSession else { return }
         self.headers = ["cookie": "iksm_session=\(iksmSession)"]
     }
 }
@@ -39,7 +40,8 @@ public class AccessToken: RequestType {
     var headers: [String: String]?
     typealias ResponseType = Response.AccessToken
     
-    init(sessionToken: String) {
+    init() {
+        guard let sessionToken = SplatNet2.shared.sessionToken else { return }
         self.parameters = [
             "client_id": "71b963c1b7b6d119",
             "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer-session-token",

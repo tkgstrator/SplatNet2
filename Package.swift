@@ -17,16 +17,17 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.4.3"),
-        .package(url: "https://github.com/groue/CombineExpectations.git", from: "0.7.0")
+        .package(url: "https://github.com/groue/CombineExpectations.git", from: "0.7.0"),
+        .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", from: "4.2.2")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "SplatNet2",
-            dependencies: ["Alamofire"]),
+            dependencies: ["Alamofire", "KeychainAccess"]),
         .testTarget(
             name: "SplatNet2Tests",
-            dependencies: ["SplatNet2", "CombineExpectations"]),
+            dependencies: ["SplatNet2", "CombineExpectations", "KeychainAccess"]),
     ]
 )
