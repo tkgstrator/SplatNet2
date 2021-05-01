@@ -30,6 +30,21 @@ public class SummaryCoop: RequestType {
     }
 }
 
+public class NicknameIcons: RequestType {
+    var baseURL: URL = URL(string: "https://app.splatoon2.nintendo.net/api/")!
+    var method: HTTPMethod = .get
+    var path: String = "nickname_and_icon"
+    var parameters: Parameters?
+    var headers: [String: String]?
+    typealias ResponseType = Response.NicknameIcons
+    
+    init(playerId: [String]) {
+        self.path = "nickname_and_icon?\(playerId.queryString)"
+        guard let iksmSession = SplatNet2.shared.iksmSession else { return }
+        self.headers = ["cookie": "iksm_session=\(iksmSession)"]
+    }
+}
+
 public class SessionToken: RequestType {
     var method: HTTPMethod = .post
     var baseURL = URL(string: "https://accounts.nintendo.com/")!
@@ -43,7 +58,8 @@ public class SessionToken: RequestType {
             "client_id": "71b963c1b7b6d119",
             "session_token_code": code,
             "session_token_code_verifier": verifier
-        ]    }
+        ]
+    }
 }
 
 public class AccessToken: RequestType {
@@ -82,8 +98,6 @@ public class S2SHash: RequestType {
             "timestamp": String(timestamp)
         ]
     }
-    
-    
 }
 
 public class FlapgToken: RequestType {
@@ -171,5 +185,11 @@ public class IksmSession: RequestType {
             "Cookie": "iksm_session=",
             "X-GameWebToken": accessToken
         ]
+    }
+}
+
+private extension Array where Element == String {
+    var queryString: String {
+        return self.map{ "id=\($0)" }.joined(separator: "&")
     }
 }

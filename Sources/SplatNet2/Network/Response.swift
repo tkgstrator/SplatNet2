@@ -265,8 +265,15 @@ public class Response: Codable {
         }
         
     }
-    public struct ResultId: Codable {
+    
+    public struct NicknameIcons: Codable {
+        public var nicknameAndIcons: [NicknameIcon]
         
+        public struct NicknameIcon: Codable {
+            public var nickname: String
+            public var nsaId: String
+            public var thumbnailUrl: String
+        }
     }
 }
 

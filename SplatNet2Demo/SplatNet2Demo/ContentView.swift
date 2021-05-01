@@ -28,11 +28,29 @@ struct ContentView: View {
                     }
                 }
             Button(action: { getSummaryCoop() }, label: { Text("GET SUMMARY")})
+            Button(action: { getNicknameAndIcons() }, label: { Text("GET PLAYER DATA")})
         }
     }
     
-    func getSummaryCoop() {
+    private func getSummaryCoop() {
         SplatNet2.shared.getSummaryCoop()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error)
+                }
+            }, receiveValue: { response in
+                    print(response)
+            })
+            .store(in: &task)
+    }
+    
+    private func getNicknameAndIcons() {
+        let playerId: [String] = ["3f89c3791c43ea57", "fc324b472a0dbb78"]
+        SplatNet2.shared.getNicknameAndIcons(playerId: playerId)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {

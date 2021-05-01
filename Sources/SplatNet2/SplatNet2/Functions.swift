@@ -38,6 +38,12 @@ extension SplatNet2 {
     }
 
     @discardableResult
+    public func getNicknameAndIcons(playerId: [String]) -> Future<Response.NicknameIcons, APIError> {
+        let request = NicknameIcons(playerId: playerId)
+        return remote(request: request)
+    }
+
+    @discardableResult
     public func getCookie(sessionToken: String) -> Future<Response.UserInfo, APIError> {
         self.sessionToken = sessionToken
         return getCookie()
