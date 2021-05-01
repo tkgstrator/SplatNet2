@@ -33,34 +33,22 @@ Generating iksm_session, we must need `session_token_code` and `session_token_co
 
 ```swift
 import SplatNet2
-import SwiftyJSON
+import Combine
 
-do {
-    var response: JSON = JSON()
-    let session_token_code = "YOUR SESSION TOKEN CODE"
-    let session_token_code_verifier = "YOUR SESSION TOKEN CODE VERIFIER"
-    response = try SplatNet2.getSessionToken(session_token_code, session_token_code_verifier)
-    let session_token = response["session_token"].stringValue
-    response = try SplatNet2.genIksmSession(session_token)
-} catch (error) {
-    // Error handling
-}
-```
+var task = Set<AnyCancellable>()
 
-### regenerate iksm_session
-
-Session token does not have the expiration, so it takes less time to regenarate iksm_session  by session_token.
-
-```swift
-import SplatNet2
-import SwiftyJSON
-
-do {
-    let session_token = "YOUR SESSION TOKEN"
-    response = try SplatNet2.genIksmSession(session_token)
-} catch (error) {
-    // Error handling
-}
+SplatNet2.shared.getResultCoop(jobId: 1)
+    .sink(receiveCompletion: { completion in
+        switch completion {
+        case .finished:
+            break
+        case .failure(let error):
+            promise(.failure(error))
+        }
+    }, receiveValue: { response in
+       // Response
+    })
+    .store(in: &task)
 ```
 
 ### nickname and icons
@@ -69,31 +57,21 @@ Nintendo provides the API to get nickname and icons by nsaid(this is named as *n
 
 ```swift
 import SplatNet2
-import SwiftyJSON
+import Combine
 
-do {
-    let iksm_session = "YOUR IKSM SESSION"
-    let nsaids: [String] = "NSAID's ARRAY"
-    response = try SplatNet2.getPlayerNickname(nsaids, iksm_session)
-} catch (error) {
-    // Error handling
-}
+var task = Set<AnyCancellable>()
+
+SplatNet2.shared.getNicknameAndIcons(jobId: 1)
+    .sink(receiveCompletion: { completion in
+        switch completion {
+        case .finished:
+            break
+        case .failure(let error):
+            promise(.failure(error))
+        }
+    }, receiveValue: { response in
+       // Response
+    })
+    .store(in: &task)
 ```
-
-## Error handling
-
-SplatNet2 might return Error with below format in case Nintendo change API method.
-
-```swift
-enum APIError: Error {
-    case Response(String, String)
-}
-```
-
-* 9400 Invalid request in getting Splatoon Access Token
-* 9002 Invalid/Expired Iksm Session (*Need to regenerate*)
-* 9403 Invalid token in getting Splatoon Token
-* 9406 OAuth session was Unauthorized (Nintendo API change *X-ProductVersion?*)
-* 9427 Upgrade Required (*Nintendo Switch Online app update*)
-* 9999 Unkonwn Error
 
