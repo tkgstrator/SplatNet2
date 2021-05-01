@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import Alamofire
 
-struct NetworkPublisher {
+struct Publisher {
 
     static let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
@@ -13,13 +13,13 @@ struct NetworkPublisher {
     static let queue = DispatchQueue(label: "Network Publisher")
 
     // IksmSession取得のため
-    static func generate<T: APIRequest.IksmSession>(_ request: T) -> Future<APIResponse.IksmSession, APIError> {
+    static func generate<T: IksmSession>(_ request: T) -> Future<Response.IksmSession, APIError> {
         Future { promise in
             self.queue.async {
                 let alamofire = AF.request(request)
                     .validate(statusCode: 200...200)
                     .cURLDescription { request in
-                        print(request)
+                        print("Request", request)
                     }
                     .responseString { response in
                         switch response.result {
@@ -27,7 +27,7 @@ struct NetworkPublisher {
                             do {
                                 guard let nsaid = value.capture(pattern: "data-nsa-id=([/0-f/]{16})", group: 1) else { throw APIError.failure }
                                 guard let iksmSession = HTTPCookie.cookies(withResponseHeaderFields: (response.response?.allHeaderFields as [String: String]), for: (response.response?.url!)!).first?.value else { throw APIError.failure }
-                                promise(.success(APIResponse.IksmSession(iksmSession: iksmSession, nsaid: nsaid)))
+                                promise(.success(Response.IksmSession(iksmSession: iksmSession, nsaid: nsaid)))
                             } catch {
                                 promise(.failure(APIError.response))
                             }
@@ -41,7 +41,7 @@ struct NetworkPublisher {
     }
 
     // JSON取得のためのPublish
-    static func publish<T: RequestProtocol, V: Decodable>(_ request: T) -> Future<V, APIError> {
+    static func publish<T: RequestType, V: Decodable>(_ request: T) -> Future<V, APIError> {
         Future { promise in
             self.queue.async {
                 let alamofire = AF.request(request)
@@ -65,7 +65,7 @@ struct NetworkPublisher {
                         case .failure(let error):
                             do {
                                 if let data = response.data {
-                                    let data = try decoder.decode(APIResponse.ErrorData.self, from: data)
+                                    let data = try decoder.decode(Response.ErrorData.self, from: data)
                                     promise(.failure(APIError.failure))
                                 }
                             } catch {

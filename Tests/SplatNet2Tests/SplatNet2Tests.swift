@@ -29,16 +29,16 @@ final class SplatNet2Tests: XCTestCase {
 //        }
 //    }
 //
-//    func testAccessToken() {
-//        do {
-//            let task = SplatNet2.shared.getAccessToken(sessionToken: sessionToken)
-//            let recorder = task.record()
-//            let elements = try wait(for: recorder.elements, timeout: 10)
-//            print(elements)
-//        } catch {
-//            XCTFail()
-//        }
-//    }
+    func testAccessToken() {
+        do {
+            let task = SplatNet2.shared.getAccessToken(sessionToken: sessionToken)
+            let recorder = task.record()
+            let elements = try wait(for: recorder.elements, timeout: 10)
+            print(elements)
+        } catch {
+            XCTFail()
+        }
+    }
 //
 //    func testSplatoonToken() {
 //        do {

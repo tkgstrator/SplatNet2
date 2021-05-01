@@ -3,7 +3,7 @@ import Alamofire
 import Combine
 import CryptoKit
 
-public final class SplatNet2 {
+final public class SplatNet2 {
     
     #if DEBUG
     private let state = "v1MguHzdCzhY7W7DMciwfFGPbzV0qdukFOnPX6czsT7m2END726qGJRrScHUT5AmZ2oS7RArsVj2z4eDH4BqThJpvQv7rgLIrHSOzp4NtwS3kFG3kIOqSE4vHCDUYE0X"
@@ -17,6 +17,7 @@ public final class SplatNet2 {
     var iksmSession: String
     var sessionToken: String
     var version: String
+    public static let shared: SplatNet2 = SplatNet2()
     var task = Set<AnyCancellable>()
     
     public convenience init(iksmSession: String = "", sessionToken: String = "", version: String = "1.10.1") {
@@ -56,30 +57,30 @@ public final class SplatNet2 {
     // Error Response
     // [400] Invalid Request
     @discardableResult
-    func getSessionToken(sessionTokenCode: String) -> Future<APIResponse.SessionToken, APIError> {
-        let request = APIRequest.SessionToken(code: sessionTokenCode, verifier: verifier)
+    func getSessionToken(sessionTokenCode: String) -> Future<Response.SessionToken, APIError> {
+        let request = SessionToken(code: sessionTokenCode, verifier: verifier)
         return remote(request: request)
     }
     
     // Error Response
     // [400] Invalid GrantType
     @discardableResult
-    func getAccessToken() -> Future<APIResponse.AccessToken, APIError> {
-        let request = APIRequest.AccessToken(sessionToken: sessionToken)
+    func getAccessToken(sessionToken: String) -> Future<Response.AccessToken, APIError> {
+        let request = AccessToken(sessionToken: sessionToken)
         return remote(request: request)
     }
     
     // Error Response
     // [400] Invalid GrantType
     @discardableResult
-    func getSplatoonToken(accessToken: String) -> Future<APIResponse.SplatoonToken, APIError> {
+    func getSplatoonToken(accessToken: String) -> Future<Response.SplatoonToken, APIError> {
         Future { [self] promise in
             getParameterF(accessToken: accessToken, type: false)
                 .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { _ in
                 }, receiveValue: { response in
                     // Flapg API
-                    let request = APIRequest.SplatoonToken(from: response, version: version)
+                    let request = SplatoonToken(from: response, version: version)
                     remote(request: request)
                         .receive(on: DispatchQueue.main)
                         .sink(receiveCompletion: { _ in
@@ -95,14 +96,14 @@ public final class SplatNet2 {
     // Error Response
     // [400] Invalid GrantType
     @discardableResult
-    func getSplatoonAccessToken(splatoonToken: String) -> Future<APIResponse.SplatoonAccessToken, APIError> {
+    func getSplatoonAccessToken(splatoonToken: String) -> Future<Response.SplatoonAccessToken, APIError> {
         Future { [self] promise in
             getParameterF(accessToken: splatoonToken, type: true)
                 .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { _ in
                 }, receiveValue: { response in
                     // Flapg API
-                    let request = APIRequest.SplatoonAccessToken(from: response, splatoonToken: splatoonToken, version: version)
+                    let request = SplatoonAccessToken(from: response, splatoonToken: splatoonToken, version: version)
                     remote(request: request)
                         .receive(on: DispatchQueue.main)
                         .sink(receiveCompletion: { _ in
@@ -118,15 +119,15 @@ public final class SplatNet2 {
     // Error Response
     // [400] Invalid GrantType
     @discardableResult
-    func getIksmSession(accessToken: String) -> Future<APIResponse.IksmSession, APIError> {
-        let request = APIRequest.IksmSession(accessToken: accessToken)
+    func getIksmSession(accessToken: String) -> Future<Response.IksmSession, APIError> {
+        let request = IksmSession(accessToken: accessToken)
         return generate(request: request)
     }
     
     @discardableResult
-    func getParameterF(accessToken: String, type: Bool) -> Future<APIResponse.FlapgAPI, APIError> {
+    func getParameterF(accessToken: String, type: Bool) -> Future<Response.FlapgAPI, APIError> {
         let timestamp = Int(Date().timeIntervalSince1970)
-        let request = APIRequest.S2SHash(accessToken: accessToken, timestamp: timestamp)
+        let request = S2SHash(accessToken: accessToken, timestamp: timestamp)
         
         return Future { [self] promise in
             remote(request: request)
@@ -140,10 +141,10 @@ public final class SplatNet2 {
                         print(error)
                         promise(.failure(APIError.s2shash))
                     }
-                }, receiveValue: { (response: APIResponse.S2SHash) in
+                }, receiveValue: { (response: Response.S2SHash) in
                     // Flapg
                     print(response.hash)
-                    let request = APIRequest.FlapgToken(accessToken: accessToken, timestamp: timestamp, hash: response.hash, type: type)
+                    let request = FlapgToken(accessToken: accessToken, timestamp: timestamp, hash: response.hash, type: type)
                     remote(request: request)
                         .receive(on: DispatchQueue.main)
                         .sink(receiveCompletion: { completion in
@@ -154,7 +155,7 @@ public final class SplatNet2 {
                                 print(error)
                                 promise(.failure(APIError.upgrade))
                             }
-                        }, receiveValue: { (response: APIResponse.FlapgAPI) in
+                        }, receiveValue: { (response: Response.FlapgAPI) in
                             promise(.success(response))
                         })
                         .store(in: &task)

@@ -13,8 +13,8 @@ extension SplatNet2 {
     // Error Response
     // [400] Expired
     @discardableResult
-    public func getResultCoop(jobId: Int) -> Future<APIResponse.ResultCoop, APIError> {
-        let request = APIRequest.ResultCoop(jobId: jobId, iksmSession: iksmSession)
+    public func getResultCoop(jobId: Int) -> Future<Response.ResultCoop, APIError> {
+        let request = ResultCoop(jobId: jobId, iksmSession: iksmSession)
         return Future { [self] promise in
             remote(request: request)
                 .sink(receiveCompletion: { completion in
@@ -32,8 +32,8 @@ extension SplatNet2 {
     }
     
     @discardableResult
-    public func getCookie(sessionToken: String, version: String = "1.10.1") -> Future<APIResponse.UserInfo, APIError> {
-        let request = APIRequest.AccessToken(sessionToken: sessionToken)
+    public func getCookie(sessionToken: String, version: String = "1.10.1") -> Future<Response.UserInfo, APIError> {
+        let request = AccessToken(sessionToken: sessionToken)
         return Future { [self] promise in
             remote(request: request)
                 .receive(on: DispatchQueue.main)
@@ -45,7 +45,7 @@ extension SplatNet2 {
                         print(error)
                         promise(.failure(error))
                     }
-                }, receiveValue: { (response: APIResponse.AccessToken) in
+                }, receiveValue: { (response: Response.AccessToken) in
                     getSplatoonToken(accessToken: response.accessToken)
                         .receive(on: DispatchQueue.main)
                         .sink(receiveCompletion: { completion in
@@ -87,7 +87,7 @@ extension SplatNet2 {
                                         }, receiveValue: { response in
                                             let iksmSession = response.iksmSession
                                             let nsaid = response.nsaid
-                                            let userInfo = APIResponse.UserInfo(iksmSession: iksmSession, nsaid: nsaid, membership: membership, imageUri: imageUri, expiresIn: expiresIn)
+                                            let userInfo = Response.UserInfo(iksmSession: iksmSession, nsaid: nsaid, membership: membership, imageUri: imageUri, expiresIn: expiresIn)
                                             promise(.success(userInfo))
                                         })
                                         .store(in: &task)

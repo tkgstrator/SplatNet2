@@ -1,6 +1,6 @@
 import Foundation
 
-public class APIResponse: Decodable {
+public class Response: Decodable {
     public struct ErrorData: Decodable {
         var error: String
         // var errorDescription: String

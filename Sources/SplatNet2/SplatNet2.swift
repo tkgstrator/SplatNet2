@@ -2,7 +2,7 @@ import Foundation
 import Alamofire
 import Combine
 
-extension SplatNet2 {
+public extension SplatNet2 {
     // 変換用のクラス
     public class Coop {
         public struct Result: Decodable {
@@ -23,7 +23,7 @@ extension SplatNet2 {
             var results: [ResultPlayer]
             var waveDetails: [ResultWave]
 
-            init(from response: APIResponse.ResultCoop) {
+            init(from response: Response.ResultCoop) {
                 self.jobId = response.jobId
                 self.stageId = response.schedule.stage.stageId
                 self.jobScore = response.jobScore
@@ -37,7 +37,7 @@ extension SplatNet2 {
                 self.gradePointDelta = response.gradePointDelta
                 self.time = ResultTime(from: response)
                 self.bossCounts = response.bossCounts.map { $0.value.count }
-                var results: [APIResponse.ResultCoop.PlayerResult] = [response.myResult]
+                var results: [Response.ResultCoop.PlayerResult] = [response.myResult]
                 results.append(contentsOf: response.otherResults)
                 self.results = results.map { ResultPlayer(from: $0) }
                 self.waveDetails = response.waveDetails.map { ResultWave(from: $0) }
@@ -54,7 +54,7 @@ extension SplatNet2 {
             var startTime: String
             var endTime: String
 
-            init(from response: APIResponse.ResultCoop) {
+            init(from response: Response.ResultCoop) {
                 let formatter: ISO8601DateFormatter = {
                     let formatter = ISO8601DateFormatter()
                     formatter.timeZone = TimeZone.current
@@ -71,7 +71,7 @@ extension SplatNet2 {
             var failureWave: Int?
             var isClear: Bool
 
-            init(from response: APIResponse.ResultCoop.JobResult) {
+            init(from response: Response.ResultCoop.JobResult) {
                 self.failureWave = response.failureWave
                 self.failureWave = response.failureWave
                 self.isClear = response.isClear
@@ -84,7 +84,7 @@ extension SplatNet2 {
             var weaponList: [Int]
             var stageId: Int
 
-            init(from response: APIResponse.ResultCoop.Schedule) {
+            init(from response: Response.ResultCoop.Schedule) {
                 let formatter: ISO8601DateFormatter = {
                     let formatter = ISO8601DateFormatter()
                     formatter.timeZone = TimeZone.current
@@ -111,7 +111,7 @@ extension SplatNet2 {
             var specialCounts: [Int]
             var weaponList: [Int]
 
-            init(from response: APIResponse.ResultCoop.PlayerResult) {
+            init(from response: Response.ResultCoop.PlayerResult) {
                 self.bossKillCounts = response.bossKillCounts.map { $0.value.count }
                 self.helpCount = response.helpCount
                 self.deadCount = response.deadCount
@@ -130,7 +130,7 @@ extension SplatNet2 {
             var species: String
             var style: String
 
-            init(from response: APIResponse.ResultCoop.PlayerType) {
+            init(from response: Response.ResultCoop.PlayerType) {
                 self.species = response.species
                 self.style = response.style
             }
@@ -144,7 +144,7 @@ extension SplatNet2 {
             var goldenIkuraPopNum: Int
             var quotaNum: Int
 
-            init(from response: APIResponse.ResultCoop.WaveResult) {
+            init(from response: Response.ResultCoop.WaveResult) {
                 self.eventType = EventType(rawValue: response.eventType.key)!.eventType
                 self.waterLevel = WaterLevel(rawValue: response.waterLevel.key)!.waterLevel
                 self.ikuraNum = response.ikuraNum
