@@ -16,6 +16,20 @@ public class ResultCoop: RequestType {
     }
 }
 
+public class SummaryCoop: RequestType {
+    var baseURL: URL = URL(string: "https://app.splatoon2.nintendo.net/api/")!
+    var method: HTTPMethod = .get
+    var path: String = "coop_results"
+    var parameters: Parameters?
+    var headers: [String: String]?
+    typealias ResponseType = Response.SummaryCoop
+    
+    init() {
+        guard let iksmSession = SplatNet2.shared.iksmSession else { return }
+        self.headers = ["cookie": "iksm_session=\(iksmSession)"]
+    }
+}
+
 public class SessionToken: RequestType {
     var method: HTTPMethod = .post
     var baseURL = URL(string: "https://accounts.nintendo.com/")!

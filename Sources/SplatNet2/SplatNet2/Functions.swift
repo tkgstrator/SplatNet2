@@ -24,17 +24,48 @@ extension SplatNet2 {
                     case .finished:
                         break
                     }
-                }, receiveValue: { respone in
-                    promise(.success(respone))
+                }, receiveValue: { response in
+                    promise(.success(response))
                 })
                 .store(in: &task)
         }
     }
-    
+
+    @discardableResult
+    public func getSummaryCoop() -> Future<Response.SummaryCoop, APIError> {
+        let request = SummaryCoop()
+        return remote(request: request)
+    }
+
     @discardableResult
     public func getCookie(sessionToken: String) -> Future<Response.UserInfo, APIError> {
         self.sessionToken = sessionToken
         return getCookie()
+    }
+    
+    @discardableResult
+    public func getCookie(sessionTokenCode: String) -> Future<Response.UserInfo, APIError> {
+        return Future { [self] promise in
+            getSessionToken(sessionTokenCode: sessionTokenCode)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        promise(.failure(error))
+                    }
+                }, receiveValue: { response in
+                    let sessionToken = response.sessionToken
+                    getCookie(sessionToken: sessionToken)
+                        .receive(on: DispatchQueue.main)
+                        .sink(receiveCompletion: { completion in }, receiveValue: { response in
+                            promise(.success(response))
+                        })
+                        .store(in: &task)
+                })
+                .store(in: &task)
+        }
     }
 
     @discardableResult
@@ -52,7 +83,7 @@ extension SplatNet2 {
                         promise(.failure(error))
                     }
                 }, receiveValue: { (response: Response.AccessToken) in
-                    print("ACCESS TOKEN", response)
+//                    print("ACCESS TOKEN", response)
                     getSplatoonToken(accessToken: response.accessToken)
                         .receive(on: DispatchQueue.main)
                         .sink(receiveCompletion: { completion in
@@ -64,7 +95,7 @@ extension SplatNet2 {
                                 promise(.failure(error))
                             }
                         }, receiveValue: { response in
-                            print("SPLATOON TOKEN", response)
+//                            print("SPLATOON TOKEN", response)
                             let accessToken = response.result.webApiServerCredential.accessToken
                             let nickname = response.result.user.name
                             let imageUri = response.result.user.imageUri
@@ -80,7 +111,7 @@ extension SplatNet2 {
                                         promise(.failure(error))
                                     }
                                 }, receiveValue: { response in
-                                    print("SPLATOON ACCESS TOKEN", response)
+//                                    print("SPLATOON ACCESS TOKEN", response)
                                     let accessToken = response.result.accessToken
                                     getIksmSession(accessToken: accessToken)
                                         .receive(on: DispatchQueue.main)
@@ -92,7 +123,7 @@ extension SplatNet2 {
                                                 promise(.failure(error))
                                             }
                                         }, receiveValue: { response in
-                                            print("IKSM SESSION", response)
+//                                            print("IKSM SESSION", response)
                                             self.iksmSession = response.iksmSession
                                             self.playerId = response.nsaid
                                             let userInfo = Response.UserInfo(iksmSession: self.iksmSession!, nsaid: self.playerId!, nickname: nickname, membership: membership, imageUri: imageUri, expiresIn: expiresIn)

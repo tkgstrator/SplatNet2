@@ -1,7 +1,7 @@
 import Foundation
 
-public class Response: Decodable {
-    public struct ErrorData: Decodable {
+public class Response: Codable {
+    public struct ErrorData: Codable {
         var error: String
         // var errorDescription: String
         // var status: Int
@@ -9,11 +9,11 @@ public class Response: Decodable {
         // var correlationId: String
     }
 
-    public struct SessionToken: Decodable {
-        var sessionToken: String
+    public struct SessionToken: Codable {
+        public var sessionToken: String
     }
 
-    public struct AccessToken: Decodable {
+    public struct AccessToken: Codable {
         var accessToken: String
         var expiresIn: Int
         var idToken: String
@@ -21,14 +21,14 @@ public class Response: Decodable {
         var tokenType: String
     }
 
-    public struct S2SHash: Decodable {
+    public struct S2SHash: Codable {
         var hash: String
     }
 
-    public struct FlapgAPI: Decodable {
+    public struct FlapgAPI: Codable {
         var result: FlapgParameters
 
-        struct FlapgParameters: Decodable {
+        struct FlapgParameters: Codable {
             var f: String
             var p1: String
             var p2: String
@@ -36,18 +36,18 @@ public class Response: Decodable {
         }
     }
 
-    public struct SplatoonToken: Decodable {
+    public struct SplatoonToken: Codable {
         var result: SplatoonTokenResult
         var status: Int
         var correlationId: String
 
-        struct SplatoonTokenResult: Decodable {
+        struct SplatoonTokenResult: Codable {
             var webApiServerCredential: WebAPIServerCredential
             var user: WebAPIServerUser
             var firebaseCredential: FirebaseCredential
         }
 
-        struct WebAPIServerUser: Decodable {
+        struct WebAPIServerUser: Codable {
             var name: String
             var imageUri: String
             var id: Int
@@ -55,38 +55,38 @@ public class Response: Decodable {
             var membership: Membership
         }
 
-        struct Membership: Decodable {
+        struct Membership: Codable {
             var active: Bool
         }
 
-        struct FirebaseCredential: Decodable {
+        struct FirebaseCredential: Codable {
             var expiresIn: Int
             var accessToken: String
         }
 
-        struct WebAPIServerCredential: Decodable {
+        struct WebAPIServerCredential: Codable {
             var expiresIn: Int
             var accessToken: String
         }
     }
 
-    public struct SplatoonAccessToken: Decodable {
+    public struct SplatoonAccessToken: Codable {
         var correlationId: String
         var result: AccessToken
         var status: Int
 
-        struct AccessToken: Decodable {
+        struct AccessToken: Codable {
             var accessToken: String
             var expiresIn: Int
         }
     }
 
-    public struct IksmSession: Decodable {
+    public struct IksmSession: Codable {
         var iksmSession: String
         var nsaid: String
     }
 
-    public struct UserInfo: Decodable {
+    public struct UserInfo: Codable {
         var iksmSession: String
         var nsaid: String
         var nickname: String
@@ -109,7 +109,7 @@ public class Response: Decodable {
         }
     }
 
-    public struct ResultCoop: Decodable {
+    public struct ResultCoop: Codable {
         var jobId: Int
         var jobScore: Int
         var jobRate: Int
@@ -129,27 +129,27 @@ public class Response: Decodable {
         var otherResults: [PlayerResult]
         var myResult: PlayerResult
 
-        public struct JobResult: Decodable {
+        public struct JobResult: Codable {
             var failureReason: String?
             var failureWave: Int?
             var isClear: Bool
         }
 
-        public struct Schedule: Decodable {
+        public struct Schedule: Codable {
             var stage: Stage
             var startTime: Int
             var endTime: Int
             var weapons: [WeaponList]
         }
 
-        public struct Grade: Decodable {
+        public struct Grade: Codable {
             var id: String
             var longName: String
             var name: String
             var shortName: String
         }
 
-        public struct Stage: Decodable {
+        public struct Stage: Codable {
             var image: String
             var name: String
             var stageId: Int {
@@ -172,7 +172,7 @@ public class Response: Decodable {
             }
         }
 
-        public struct WaveResult: Decodable {
+        public struct WaveResult: Codable {
             var eventType: KeyName
             var waterLevel: KeyName
             var goldenIkuraNum: Int
@@ -181,17 +181,17 @@ public class Response: Decodable {
             var ikuraNum: Int
         }
 
-        struct KeyName: Decodable {
+        struct KeyName: Codable {
             var key: String
             var name: String
         }
 
-        struct BossSalmonid: Decodable {
+        struct BossSalmonid: Codable {
             var boss: KeyName
             var count: Int
         }
 
-        public struct PlayerResult: Decodable {
+        public struct PlayerResult: Codable {
             var bossKillCounts: [String: BossSalmonid]
             var deadCount: Int
             var helpCount: Int
@@ -205,36 +205,77 @@ public class Response: Decodable {
             var pid: String
         }
 
-        struct Special: IdName, Decodable {
+        struct Special: IdName, Codable {
             var id: String
             var name: String
         }
 
-        struct WeaponList: Decodable {
+        struct WeaponList: Codable {
             var id: String
             var weapon: Weapon
         }
 
-        struct Weapon: IdName, Decodable {
+        struct Weapon: IdName, Codable {
             var id: String
             var name: String
             var image: String
             var thumbnail: String
         }
 
-        struct PlayerType: Decodable {
+        struct PlayerType: Codable {
             var species: String
             var style: String
         }
     }
+    
+    public struct SummaryCoop : Codable {
+//        var results: [ResultCoop]
+//        var rewardGear
+        var summary: Summary
+        
+        public struct Summary: Codable {
+            var card: SummaryCard
+            var stats: [SummaryStat]
+            
+            public struct SummaryCard: Codable {
+                var goldenIkuraTotal: Int
+                var helpTotal: Int
+                var ikuraTotal: Int
+                var jobNum: Int
+                var kumaPoint: Int
+                var kumaPointTotal: Int
+            }
+            
+            public struct SummaryStat: Codable {
+                var clearNum: Int
+                var deadTotal: Int
+                var endTime: Int
+                var failureCounts: [Int]
+//                var grade
+                var gradePoint: Int
+                var helpTotal: Int
+                var jobNum: Int
+                var kumaPointTotal: Int
+                var myGoldenIkuraTotal: Int
+                var myIkuraTotal: Int
+                var startTime: Int
+                var teamGoldenIkuraTotal: Int
+                var teamIkuraTotal: Int
+            }
+        }
+        
+    }
+    public struct ResultId: Codable {
+        
+    }
 }
 
-protocol IdName: Decodable {
+protocol IdName: Codable {
     var id: String { get }
     var name: String { get }
 }
 
-protocol KeyName: Decodable {
+protocol KeyName: Codable {
     var key: String { get }
     var name: String { get }
 }

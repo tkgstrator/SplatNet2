@@ -93,7 +93,7 @@ final public class SplatNet2 {
     // Error Response
     // [400] Invalid Request
     @discardableResult
-    func getSessionToken(sessionTokenCode: String) -> Future<Response.SessionToken, APIError> {
+    public func getSessionToken(sessionTokenCode: String) -> Future<Response.SessionToken, APIError> {
         let request = SessionToken(code: sessionTokenCode, verifier: verifier)
         return remote(request: request)
     }

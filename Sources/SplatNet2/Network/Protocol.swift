@@ -3,7 +3,7 @@ import Alamofire
 
 protocol RequestType: URLRequestConvertible {
     
-    associatedtype ResponseType: Decodable
+    associatedtype ResponseType: Codable
     var method: HTTPMethod { get }
     var parameters: Parameters? { get }
     var path: String { get }

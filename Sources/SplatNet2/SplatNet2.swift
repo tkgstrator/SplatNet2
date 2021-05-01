@@ -5,7 +5,7 @@ import Combine
 public extension SplatNet2 {
     // 変換用のクラス
     public class Coop {
-        public struct Result: Decodable {
+        public struct Result: Codable {
             var jobId: Int
             var stageId: Int
             var jobScore: Int
@@ -49,7 +49,7 @@ public extension SplatNet2 {
             }
         }
 
-        struct ResultTime: Decodable {
+        struct ResultTime: Codable {
             var playTime: String
             var startTime: String
             var endTime: String
@@ -66,7 +66,7 @@ public extension SplatNet2 {
                 self.playTime = formatter.string(from: Date(timeIntervalSince1970: TimeInterval(response.playTime)))
             }
         }
-        struct ResultJob: Decodable {
+        struct ResultJob: Codable {
             var failureReason: Bool?
             var failureWave: Int?
             var isClear: Bool
@@ -78,7 +78,7 @@ public extension SplatNet2 {
             }
         }
 
-        struct Schedule: Decodable {
+        struct Schedule: Codable {
             var startTime: String
             var endTime: String
             var weaponList: [Int]
@@ -98,7 +98,7 @@ public extension SplatNet2 {
             }
         }
 
-        struct ResultPlayer: Decodable {
+        struct ResultPlayer: Codable {
             var bossKillCounts: [Int]
             var helpCount: Int
             var deadCount: Int
@@ -126,7 +126,7 @@ public extension SplatNet2 {
             }
         }
 
-        struct PlayerType: Decodable {
+        struct PlayerType: Codable {
             var species: String
             var style: String
 
@@ -136,7 +136,7 @@ public extension SplatNet2 {
             }
         }
 
-        struct ResultWave: Decodable {
+        struct ResultWave: Codable {
             var eventType: Int
             var waterLevel: Int
             var ikuraNum: Int

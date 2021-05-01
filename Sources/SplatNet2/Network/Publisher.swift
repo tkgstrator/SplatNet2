@@ -41,14 +41,14 @@ struct Publisher {
     }
 
     // JSON取得のためのPublish
-    static func publish<T: RequestType, V: Decodable>(_ request: T) -> Future<V, APIError> {
+    static func publish<T: RequestType, V: Codable>(_ request: T) -> Future<V, APIError> {
         Future { promise in
             self.queue.async {
                 let alamofire = AF.request(request)
                     .validate(statusCode: 200...200)
                     .validate(contentType: ["application/json"])
                     .cURLDescription { request in
-//                        print(request)
+                        print(request)
                     }
                     .responseJSON { response in
                         switch response.result {

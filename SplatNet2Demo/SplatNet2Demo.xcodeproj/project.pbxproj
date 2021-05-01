@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1090C67A263DC7BB000DD54C /* BetterSafariView in Frameworks */ = {isa = PBXBuildFile; productRef = 1090C679263DC7BB000DD54C /* BetterSafariView */; };
 		10F010B5263D7ADF002C40DA /* SplatNet2DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */; };
 		10F010B7263D7ADF002C40DA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010B6263D7ADF002C40DA /* ContentView.swift */; };
 		10F010B9263D7AE3002C40DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 10F010B8263D7AE3002C40DA /* Assets.xcassets */; };
@@ -56,6 +57,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				10F010E8263D7C2B002C40DA /* SplatNet2 in Frameworks */,
+				1090C67A263DC7BB000DD54C /* BetterSafariView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -162,6 +164,7 @@
 			name = SplatNet2Demo;
 			packageProductDependencies = (
 				10F010E7263D7C2B002C40DA /* SplatNet2 */,
+				1090C679263DC7BB000DD54C /* BetterSafariView */,
 			);
 			productName = SplatNet2Demo;
 			productReference = 10F010B1263D7ADF002C40DA /* SplatNet2Demo.app */;
@@ -234,6 +237,9 @@
 				Base,
 			);
 			mainGroup = 10F010A8263D7ADF002C40DA;
+			packageReferences = (
+				1090C678263DC7BB000DD54C /* XCRemoteSwiftPackageReference "BetterSafariView" */,
+			);
 			productRefGroup = 10F010B2263D7ADF002C40DA /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -600,7 +606,23 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		1090C678263DC7BB000DD54C /* XCRemoteSwiftPackageReference "BetterSafariView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stleamist/BetterSafariView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.3.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		1090C679263DC7BB000DD54C /* BetterSafariView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1090C678263DC7BB000DD54C /* XCRemoteSwiftPackageReference "BetterSafariView" */;
+			productName = BetterSafariView;
+		};
 		10F010E7263D7C2B002C40DA /* SplatNet2 */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SplatNet2;

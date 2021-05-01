@@ -8,48 +8,63 @@
 import SwiftUI
 import SplatNet2
 import Combine
+import BetterSafariView
 
 struct ContentView: View {
     @State var task = Set<AnyCancellable>()
-    
-    let iksmSession: String = "4adb16c6a4bbbdd59e74602546e8ba235bde90fb"
-    let sessionToken: String = "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MTczODAxMTIsImp0aSI6IjQ4Njk4NjAwMjIiLCJpc3MiOiJodHRwczovL2FjY291bnRzLm5pbnRlbmRvLmNvbSIsImF1ZCI6IjcxYjk2M2MxYjdiNmQxMTkiLCJleHAiOjE2ODA0NTIxMTIsInR5cCI6InNlc3Npb25fdG9rZW4iLCJzdDpzY3AiOlswLDgsOSwxNywyM10sInN1YiI6IjVhZThmN2E3OGIwY2NhNGQifQ.KD0a5NaQnVB6Ct3cV1DiCx_ULBmXbxIGZf8EIK6_JT4"
+    @State var isPresented: Bool = false
     var body: some View {
-        Text("Hello, world!")
-            .padding()
-            .onAppear {
-//                SplatNet2.shared.configure(sessionToken: sessionToken)
-//                SplatNet2.shared.configure(iksmSession: iksmSession)
-                SplatNet2.shared.getResultCoop(jobId: 3549)
-                    .sink(receiveCompletion: { completion in
-                        switch completion {
-                        case .finished:
-                            break
-                        case .failure(let error):
-                            print(error)
-                        }
-                    }, receiveValue: { response in
-                        print(response)
-                    })
-                    .store(in: &task)
-//                SplatNet2.shared.getCookie(sessionToken: sessionToken)
-//                    .sink(receiveCompletion: { completion in
-//                        switch completion {
-//                        case .finished:
-//                            print("FINISHED")
-//                        case .failure(let error):
-//                            print(error)
-//                        }
-//                    }, receiveValue: { response in
-//                        print(response)
-//                    })
-//                    .store(in: &task)
-            }
+        Form {
+            Button(action: { isPresented.toggle() }, label: { Text("SIGN IN")})
+                .webAuthenticationSession(isPresented: $isPresented) {
+                    WebAuthenticationSession(url: SplatNet2.shared.oauthURL, callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, _ in
+                        guard let code: String = callbackURL?.absoluteString.capture(pattern: "de=(.*)&", group: 1) else { return }
+                        SplatNet2.shared.getCookie(sessionTokenCode: code)
+                            .receive(on: DispatchQueue.main)
+                            .sink(receiveCompletion: { completion in }, receiveValue: { response in
+                                    print(response)
+                            })
+                            .store(in: &task)
+                    }
+                }
+            Button(action: { getSummaryCoop() }, label: { Text("GET SUMMARY")})
+        }
+    }
+    
+    func getSummaryCoop() {
+        SplatNet2.shared.getSummaryCoop()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error)
+                }
+            }, receiveValue: { response in
+                    print(response)
+            })
+            .store(in: &task)
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+extension String {
+    func capture(pattern: String, group: Int) -> String? {
+        let result = capture(pattern: pattern, group: [group])
+        return result.isEmpty ? nil : result[0]
+    }
+
+    private func capture(pattern: String, group: [Int]) -> [String] {
+        guard let regex = try? NSRegularExpression(pattern: pattern) else { return [] }
+        guard let matched = regex.firstMatch(in: self, range: NSRange(location: 0, length: self.count)) else { return [] }
+        return group.map { group -> String in
+            return (self as NSString).substring(with: matched.range(at: group))
+        }
     }
 }
