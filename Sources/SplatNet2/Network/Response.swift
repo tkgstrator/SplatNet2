@@ -87,15 +87,17 @@ public class Response: Codable {
     }
 
     public struct UserInfo: Codable {
-        var iksmSession: String
-        var nsaid: String
-        var nickname: String
-        var membership: Bool
-        var imageUri: String
-        var expiresIn: String
+        public var iksmSession: String
+        public var nsaid: String
+        public var nickname: String
+        public var membership: Bool
+        public var imageUri: String
+        public var expiresIn: String
+        public var sessionToken: String
 
-        init(iksmSession: String, nsaid: String, nickname: String, membership: Bool, imageUri: String, expiresIn: Int) {
+        init(iksmSession: String, sessionToken: String, nsaid: String, nickname: String, membership: Bool, imageUri: String, expiresIn: Int) {
             self.iksmSession = iksmSession
+            self.sessionToken = sessionToken
             self.nsaid = nsaid
             self.membership = membership
             self.imageUri = imageUri

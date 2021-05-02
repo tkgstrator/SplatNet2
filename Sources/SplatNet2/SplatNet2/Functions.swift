@@ -132,7 +132,7 @@ extension SplatNet2 {
 //                                            print("IKSM SESSION", response)
                                             self.iksmSession = response.iksmSession
                                             self.playerId = response.nsaid
-                                            let userInfo = Response.UserInfo(iksmSession: self.iksmSession!, nsaid: self.playerId!, nickname: nickname, membership: membership, imageUri: imageUri, expiresIn: expiresIn)
+                                            let userInfo = Response.UserInfo(iksmSession: self.iksmSession!, sessionToken: self.sessionToken!, nsaid: self.playerId!, nickname: nickname, membership: membership, imageUri: imageUri, expiresIn: expiresIn)
                                             promise(.success(userInfo))
                                         })
                                         .store(in: &task)
