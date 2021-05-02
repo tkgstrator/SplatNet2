@@ -11,7 +11,8 @@ struct Publisher {
     }()
 
     static let queue = DispatchQueue(label: "Network Publisher")
-
+    static let semaphore = DispatchSemaphore(value: 0)
+    
     // IksmSession取得のため
     static func generate<T: IksmSession>(_ request: T) -> Future<Response.IksmSession, APIError> {
         Future { promise in
@@ -48,9 +49,12 @@ struct Publisher {
                     .validate(statusCode: 200...200)
                     .validate(contentType: ["application/json"])
                     .cURLDescription { request in
+                        #if DEBUG
                         print(request)
+                        #endif
                     }
                     .responseJSON { response in
+                        semaphore.signal()
                         switch response.result {
                         case .success:
                             do {
@@ -60,6 +64,7 @@ struct Publisher {
                                     promise(.failure(APIError.response))
                                 }
                             } catch {
+                                print(error)
                                 promise(.failure(APIError.decode))
                             }
                         case .failure(let error):
@@ -89,6 +94,7 @@ struct Publisher {
                         }
                     }
                 alamofire.resume()
+                semaphore.wait()
             }
         }
     }

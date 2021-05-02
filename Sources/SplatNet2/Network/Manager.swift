@@ -14,7 +14,7 @@ final public class SplatNet2 {
     #endif
     
     private var codeVerifier = String.randomString
-    var iksmSession: String? {
+    public var iksmSession: String? {
         get {
             keychain.getValue(forKey: .iksmSession)
         }
@@ -24,7 +24,7 @@ final public class SplatNet2 {
             }
         }
     }
-    var sessionToken: String? {
+    public var sessionToken: String? {
         get {
             return keychain.getValue(forKey: .sessionToken)
         }
@@ -34,7 +34,7 @@ final public class SplatNet2 {
             }
         }
     }
-    var playerId: String? {
+    public var playerId: String? {
         get {
             keychain.getValue(forKey: .playerId)
         }

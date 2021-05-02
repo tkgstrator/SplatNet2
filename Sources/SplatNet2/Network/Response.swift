@@ -214,7 +214,8 @@ public class Response: Codable {
 
         struct WeaponList: Codable {
             var id: String
-            var weapon: Weapon
+            var weapon: Weapon?
+            var coopSpecialWeapon: CoopWeapon?
         }
 
         struct Weapon: IdName, Codable {
@@ -222,6 +223,11 @@ public class Response: Codable {
             var name: String
             var image: String
             var thumbnail: String
+        }
+        
+        struct CoopWeapon: Codable {
+            var image: String
+            var name: String
         }
 
         struct PlayerType: Codable {
@@ -233,36 +239,36 @@ public class Response: Codable {
     public struct SummaryCoop : Codable {
 //        var results: [ResultCoop]
 //        var rewardGear
-        var summary: Summary
+        public var summary: Summary
         
         public struct Summary: Codable {
-            var card: SummaryCard
-            var stats: [SummaryStat]
+            public var card: SummaryCard
+            public var stats: [SummaryStat]
             
             public struct SummaryCard: Codable {
-                var goldenIkuraTotal: Int
-                var helpTotal: Int
-                var ikuraTotal: Int
-                var jobNum: Int
-                var kumaPoint: Int
-                var kumaPointTotal: Int
+                public var goldenIkuraTotal: Int
+                public var helpTotal: Int
+                public var ikuraTotal: Int
+                public var jobNum: Int
+                public var kumaPoint: Int
+                public var kumaPointTotal: Int
             }
             
             public struct SummaryStat: Codable {
-                var clearNum: Int
-                var deadTotal: Int
-                var endTime: Int
-                var failureCounts: [Int]
-//                var grade
-                var gradePoint: Int
-                var helpTotal: Int
-                var jobNum: Int
-                var kumaPointTotal: Int
-                var myGoldenIkuraTotal: Int
-                var myIkuraTotal: Int
-                var startTime: Int
-                var teamGoldenIkuraTotal: Int
-                var teamIkuraTotal: Int
+                public var clearNum: Int
+                public var deadTotal: Int
+                public var endTime: Int
+                public var failureCounts: [Int]
+//              public   var grade
+                public var gradePoint: Int
+                public var helpTotal: Int
+                public var jobNum: Int
+                public var kumaPointTotal: Int
+                public var myGoldenIkuraTotal: Int
+                public var myIkuraTotal: Int
+                public var startTime: Int
+                public var teamGoldenIkuraTotal: Int
+                public var teamIkuraTotal: Int
             }
         }
         

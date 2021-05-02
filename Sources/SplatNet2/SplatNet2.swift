@@ -114,7 +114,7 @@ public extension SplatNet2 {
                 self.playerType = PlayerType(from: response.playerType)
                 self.specialId = Int(response.special.id)!
                 self.specialCounts = response.specialCounts
-                self.weaponList = response.weaponList.map { Int($0.weapon.id)! }
+                self.weaponList = response.weaponList.map { Int($0.id)! }
             }
         }
 

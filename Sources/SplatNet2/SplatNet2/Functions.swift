@@ -13,7 +13,7 @@ extension SplatNet2 {
     // Error Response
     // [400] Expired
     @discardableResult
-    public func getResultCoop(jobId: Int) -> Future<Response.ResultCoop, APIError> {
+    public func getResultCoop(jobId: Int) -> Future<SplatNet2.Coop.Result, APIError> {
         let request = ResultCoop(jobId: jobId)
         return Future { [self] promise in
             remote(request: request)
@@ -25,7 +25,7 @@ extension SplatNet2 {
                         break
                     }
                 }, receiveValue: { response in
-                    promise(.success(response))
+                    promise(.success(Coop.Result(from: response)))
                 })
                 .store(in: &task)
         }
