@@ -1,6 +1,14 @@
 import Foundation
 
 public class Response: Codable {
+    public struct ScheduleCoop: Codable {
+        public var startTime: Int
+        public var stageId: Int
+        public var rareWeapon: Int
+        public var endTime: Int
+        public var weaponList: [Int]
+    }
+    
     public struct ErrorData: Codable {
         var error: String
         // var errorDescription: String

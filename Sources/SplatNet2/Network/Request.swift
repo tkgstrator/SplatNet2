@@ -1,6 +1,19 @@
 import Foundation
 import Alamofire
 
+public class ScheduleCoop: RequestType {
+    var baseURL: URL = URL(string: "https://salmonia2-api.netlify.app/")!
+    var method: HTTPMethod = .get
+    var path: String
+    var parameters: Parameters?
+    var headers: [String: String]?
+    typealias ResponseType = [Response.ScheduleCoop]
+    
+    init() {
+        self.path = "coop.json"
+    }
+}
+
 public class ResultCoop: RequestType {
     var baseURL: URL = URL(string: "https://app.splatoon2.nintendo.net/api/")!
     var method: HTTPMethod = .get
