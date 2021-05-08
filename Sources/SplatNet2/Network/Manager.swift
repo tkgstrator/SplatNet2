@@ -13,6 +13,12 @@ final public class SplatNet2 {
     private let verifier = String.randomString
     #endif
     
+    private var encoder: JSONEncoder {
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        return encoder
+    }
+    
     private var codeVerifier = String.randomString
     public var iksmSession: String? {
         get {
@@ -94,8 +100,27 @@ final public class SplatNet2 {
     // [400] Invalid Request
     @discardableResult
     public func getShiftSchedule() -> Future<[Response.ScheduleCoop], APIError> {
-        let request = ScheduleCoop()
-        return remote(request: request)
+        return Future { promise in
+            if let json = Bundle.module.url(forResource: "coop", withExtension: "json") {
+                if let data = try? Data(contentsOf: json) {
+                    let decoder: JSONDecoder = {
+                        let decoder = JSONDecoder()
+                        decoder.keyDecodingStrategy = .convertFromSnakeCase
+                        return decoder
+                    }()
+                    
+                    if let shift = try? decoder.decode([Response.ScheduleCoop].self, from: data) {
+                        promise(.success(shift))
+                    } else {
+                        promise(.failure(APIError.decode))
+                    }
+                } else {
+                    promise(.failure(APIError.decode))
+                }
+            } else {
+                promise(.failure(APIError.failure))
+            }
+        }
     }
 
     // Error Response
@@ -206,6 +231,11 @@ final public class SplatNet2 {
                 })
                 .store(in: &task)
         }
+    }
+    
+    @discardableResult
+    public func convertResultWithJSONFormat(results: [Coop.Result]) -> [String] {
+        return results.map{ String(data: try! encoder.encode($0), encoding: .utf8)! }
     }
 }
 

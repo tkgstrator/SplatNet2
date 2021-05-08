@@ -143,6 +143,13 @@ public class Response: Codable {
             var failureReason: String?
             var failureWave: Int?
             var isClear: Bool
+            
+            public func encode(to encoder: Encoder) throws {
+                var container = encoder.container(keyedBy: CodingKeys.self)
+                try container.encode(failureReason, forKey: .failureReason)
+                try container.encode(failureWave, forKey: .failureWave)
+                try container.encode(isClear, forKey: .isClear)
+            }
         }
 
         public struct Schedule: Codable {

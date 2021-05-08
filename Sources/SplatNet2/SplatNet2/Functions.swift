@@ -32,6 +32,25 @@ extension SplatNet2 {
     }
 
     @discardableResult
+    public func getResultCoopWithJSON(jobId: Int) -> Future<(json: Response.ResultCoop, data: SplatNet2.Coop.Result), APIError> {
+        let request = ResultCoop(jobId: jobId)
+        return Future { [self] promise in
+            remote(request: request)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .failure(let error):
+                        promise(.failure(error))
+                    case .finished:
+                        break
+                    }
+                }, receiveValue: { response in
+                    promise(.success((json: response, data: Coop.Result(from: response))))
+                })
+                .store(in: &task)
+        }
+    }
+
+    @discardableResult
     public func getSummaryCoop() -> Future<Response.SummaryCoop, APIError> {
         let request = SummaryCoop()
         return remote(request: request)

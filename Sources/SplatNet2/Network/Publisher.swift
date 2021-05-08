@@ -3,7 +3,8 @@ import Combine
 import Alamofire
 
 struct Publisher {
-
+    typealias APIError = SplatNet2.APIError
+    
     static let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -14,7 +15,7 @@ struct Publisher {
     static let semaphore = DispatchSemaphore(value: 0)
     
     // IksmSession取得のため
-    static func generate<T: IksmSession>(_ request: T) -> Future<Response.IksmSession, APIError> {
+    static func generate<T: IksmSession>(_ request: T) -> Future<Response.IksmSession, SplatNet2.APIError> {
         Future { promise in
             self.queue.async {
                 let alamofire = AF.request(request)
@@ -23,26 +24,28 @@ struct Publisher {
                         print("Request", request)
                     }
                     .responseString { response in
+                        semaphore.signal()
                         switch response.result {
                         case .success(let value):
                             do {
-                                guard let nsaid = value.capture(pattern: "data-nsa-id=([/0-f/]{16})", group: 1) else { throw APIError.failure }
+                                guard let nsaid = value.capture(pattern: "data-nsa-id=([/0-f/]{16})", group: 1) else { throw SplatNet2.APIError.failure }
                                 guard let iksmSession = HTTPCookie.cookies(withResponseHeaderFields: (response.response?.allHeaderFields as [String: String]), for: (response.response?.url!)!).first?.value else { throw APIError.failure }
                                 promise(.success(Response.IksmSession(iksmSession: iksmSession, nsaid: nsaid)))
                             } catch {
-                                promise(.failure(APIError.response))
+                                promise(.failure(SplatNet2.APIError.response))
                             }
                         case .failure(let error):
-                            promise(.failure(APIError.response))
+                            promise(.failure(SplatNet2.APIError.response))
                         }
                     }
                 alamofire.resume()
+                semaphore.wait()
             }
         }
     }
 
     // JSON取得のためのPublish
-    static func publish<T: RequestType, V: Codable>(_ request: T) -> Future<V, APIError> {
+    static func publish<T: RequestType, V: Codable>(_ request: T) -> Future<V, SplatNet2.APIError> {
         Future { promise in
             self.queue.async {
                 let alamofire = AF.request(request)
@@ -118,21 +121,4 @@ extension String {
             (self as NSString).substring(with: matched.range(at: group))
         }
     }
-}
-
-public enum APIError: Error {
-    case failure        // Unacceptable status code/response type
-    case json           // Invalid JSON Format
-    case response       // Invalid Format
-    case decode         // JSONDecoder could not decode
-    case requests       //
-    case unavailable    // Server is unavailable
-    case upgrade        // X-Product Version needs to upgrade
-    case unknown
-    case badrequests    // Bad request
-    case fatal          // fatal error
-    case grant          // Invalid GrantType for AccessToken
-    case s2shash        // Too many request
-    case expired        // Expired IksmSession
-    case empty          // Empty iksmSession, sessionToken
 }
