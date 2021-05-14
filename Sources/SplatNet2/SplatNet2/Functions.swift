@@ -25,6 +25,7 @@ extension SplatNet2 {
                         break
                     }
                 }, receiveValue: { response in
+//                    print("APPEAR", response.bossCounts.sorted(by: { Int($0.key)! < Int($1.key)!}).map{ $0.value.count })
                     promise(.success(Coop.Result(from: response)))
                 })
                 .store(in: &task)

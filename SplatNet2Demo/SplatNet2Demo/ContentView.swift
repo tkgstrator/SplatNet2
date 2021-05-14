@@ -28,8 +28,42 @@ struct ContentView: View {
                     }
                 }
             Button(action: { getSummaryCoop() }, label: { Text("GET SUMMARY")})
+            Button(action: { getLatestResult() }, label: { Text("GET LATEST RESULT")})
             Button(action: { getNicknameAndIcons() }, label: { Text("GET PLAYER DATA")})
         }
+    }
+    
+    private func getLatestResult() {
+        SplatNet2.shared.getSummaryCoop()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error)
+                }
+            }, receiveValue: { response in
+                let latestId = response.summary.card.jobNum
+                SplatNet2.shared.getResultCoop(jobId: latestId)
+                    .receive(on: DispatchQueue.main)
+                    .sink(receiveCompletion: { completion in
+                        switch completion {
+                        case .finished:
+                            break
+                        case .failure(let error):
+                            print(error)
+                        }
+                    }, receiveValue: { response in
+                        print("APPEAR", response.bossCounts)
+                        print("KILL", response.bossKillCounts)
+                        for player in response.results {
+                            print("PLAYER", player.bossKillCounts)
+                        }
+                    })
+                    .store(in: &task)
+            })
+            .store(in: &task)
     }
     
     private func getSummaryCoop() {

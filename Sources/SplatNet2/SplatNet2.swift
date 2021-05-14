@@ -38,7 +38,7 @@ public extension SplatNet2 {
                 self.gradePoint = response.gradePoint
                 self.gradePointDelta = response.gradePointDelta
                 self.time = ResultTime(from: response)
-                self.bossCounts = response.bossCounts.map { $0.value.count }
+                self.bossCounts = response.bossCounts.sorted(by: { Int($0.key)! < Int($1.key)!}).map { $0.value.count }
                 var results: [Response.ResultCoop.PlayerResult] = [response.myResult]
                 results.append(contentsOf: response.otherResults)
                 self.results = results.map { ResultPlayer(from: $0) }
@@ -104,7 +104,7 @@ public extension SplatNet2 {
             public var weaponList: [Int]
 
             init(from response: Response.ResultCoop.PlayerResult) {
-                self.bossKillCounts = response.bossKillCounts.map { $0.value.count }
+                self.bossKillCounts = response.bossKillCounts.sorted(by: { Int($0.key)! < Int($1.key)!}).map { $0.value.count }
                 self.helpCount = response.helpCount
                 self.deadCount = response.deadCount
                 self.ikuraNum = response.ikuraNum

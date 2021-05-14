@@ -135,7 +135,6 @@ public class Response: Codable {
         var waveDetails: [WaveResult]
         var dangerRate: Double
         var bossCounts: [String: BossSalmonid]
-        // var bossKillCounts: [String: BossSalmonid]
         var otherResults: [PlayerResult]
         var myResult: PlayerResult
 
