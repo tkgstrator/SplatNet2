@@ -25,7 +25,7 @@ public extension SplatNet2 {
             public var goldenEggs: Int
             public var powerEggs: Int
 
-            init(from response: Response.ResultCoop) {
+            internal init(from response: Response.ResultCoop) {
                 self.jobId = response.jobId
                 self.stageId = response.schedule.stage.stageId
                 self.jobScore = response.jobScore
@@ -58,7 +58,7 @@ public extension SplatNet2 {
             public var startTime: Int
             public var endTime: Int
 
-            init(from response: Response.ResultCoop) {
+            internal init(from response: Response.ResultCoop) {
                 self.startTime = response.startTime
                 self.endTime = response.endTime
                 self.playTime = response.playTime
@@ -69,7 +69,7 @@ public extension SplatNet2 {
             public var failureWave: Int?
             public var isClear: Bool
 
-            init(from response: Response.ResultCoop.JobResult) {
+            internal init(from response: Response.ResultCoop.JobResult) {
                 self.failureWave = response.failureWave
                 self.failureReason = response.failureReason
                 self.isClear = response.isClear
@@ -82,7 +82,7 @@ public extension SplatNet2 {
             public var weaponList: [Int]
             public var stageId: Int
 
-            init(from response: Response.ResultCoop.Schedule) {
+            internal init(from response: Response.ResultCoop.Schedule) {
                 self.startTime = response.startTime
                 self.endTime = response.endTime
                 self.weaponList = response.weapons.map { Int($0.id)! }
@@ -103,7 +103,7 @@ public extension SplatNet2 {
             public var specialCounts: [Int]
             public var weaponList: [Int]
 
-            init(from response: Response.ResultCoop.PlayerResult) {
+            internal init(from response: Response.ResultCoop.PlayerResult) {
                 self.bossKillCounts = response.bossKillCounts.sorted(by: { Int($0.key)! < Int($1.key)!}).map { $0.value.count }
                 self.helpCount = response.helpCount
                 self.deadCount = response.deadCount
@@ -122,7 +122,7 @@ public extension SplatNet2 {
             public var species: String
             public var style: String
 
-            init(from response: Response.ResultCoop.PlayerType) {
+            internal init(from response: Response.ResultCoop.PlayerType) {
                 self.species = response.species
                 self.style = response.style
             }
@@ -136,7 +136,7 @@ public extension SplatNet2 {
             public var goldenIkuraPopNum: Int
             public var quotaNum: Int
 
-            init(from response: Response.ResultCoop.WaveResult) {
+            internal init(from response: Response.ResultCoop.WaveResult) {
                 self.eventType = EventType(rawValue: response.eventType.key)!.eventType
                 self.waterLevel = WaterLevel(rawValue: response.waterLevel.key)!.waterLevel
                 self.ikuraNum = response.ikuraNum
@@ -146,7 +146,7 @@ public extension SplatNet2 {
             }
         }
 
-        enum EventType: String, CaseIterable {
+        internal enum EventType: String, CaseIterable {
             case noevent = "water-levels"
             case rush = "rush"
             case goldie = "goldie-seeking"
@@ -156,7 +156,7 @@ public extension SplatNet2 {
             case cohock = "cohock-charge"
         }
 
-        enum WaterLevel: String, CaseIterable {
+        internal enum WaterLevel: String, CaseIterable {
             case low = "low"
             case normal = "normal"
             case high = "high"
