@@ -8,7 +8,7 @@
 import Foundation
 
 public extension SplatNet2 {
-    public enum APIError: Error {
+    enum APIError: Error {
         case failure        // Unacceptable status code/response type
         case json           // Invalid JSON Format
         case response       // Invalid Format

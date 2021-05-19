@@ -5,14 +5,14 @@ import Alamofire
 struct Publisher {
     typealias APIError = SplatNet2.APIError
     
-    static let decoder: JSONDecoder = {
+    static private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }()
 
-    static let queue = DispatchQueue(label: "Network Publisher")
-    static let semaphore = DispatchSemaphore(value: 0)
+    static private let queue = DispatchQueue(label: "Network Publisher")
+    static private let semaphore = DispatchSemaphore(value: 0)
     
     // IksmSession取得のため
     static func generate<T: IksmSession>(_ request: T) -> Future<Response.IksmSession, SplatNet2.APIError> {
@@ -21,7 +21,7 @@ struct Publisher {
                 let alamofire = AF.request(request)
                     .validate(statusCode: 200...200)
                     .cURLDescription { request in
-                        print("Request", request)
+//                        print("Request", request)
                     }
                     .responseString { response in
                         semaphore.signal()
@@ -29,12 +29,12 @@ struct Publisher {
                         case .success(let value):
                             do {
                                 guard let nsaid = value.capture(pattern: "data-nsa-id=([/0-f/]{16})", group: 1) else { throw SplatNet2.APIError.failure }
-                                guard let iksmSession = HTTPCookie.cookies(withResponseHeaderFields: (response.response?.allHeaderFields as [String: String]), for: (response.response?.url!)!).first?.value else { throw APIError.failure }
+                                guard let iksmSession = HTTPCookie.cookies(withResponseHeaderFields: (response.response?.allHeaderFields as! [String: String]), for: (response.response?.url!)!).first?.value else { throw APIError.failure }
                                 promise(.success(Response.IksmSession(iksmSession: iksmSession, nsaid: nsaid)))
                             } catch {
                                 promise(.failure(SplatNet2.APIError.response))
                             }
-                        case .failure(let error):
+                        case .failure:
                             promise(.failure(SplatNet2.APIError.response))
                         }
                     }
@@ -70,7 +70,7 @@ struct Publisher {
                                 print(error)
                                 promise(.failure(APIError.decode))
                             }
-                        case .failure(let error):
+                        case .failure:
                             if let statusCode = response.response?.statusCode {
                                 print("STATUS CODE", statusCode)
                                 switch statusCode {
@@ -83,13 +83,13 @@ struct Publisher {
                                 default:
                                     break
                                 }
-                                do {
-                                    if let data = response.data {
+                                if let data = response.data {
+                                    do {
                                         let data = try decoder.decode(Response.ErrorData.self, from: data)
                                         promise(.failure(APIError.failure))
+                                    } catch {
+                                        promise(.failure(APIError.decode))
                                     }
-                                } catch {
-                                    promise(.failure(APIError.decode))
                                 }
                             } else {
                                 promise(.failure(APIError.fatal))

@@ -20,6 +20,7 @@ final public class SplatNet2 {
     }
     
     private var codeVerifier = String.randomString
+    
     public var iksmSession: String? {
         get {
             keychain.getValue(forKey: .iksmSession)
@@ -30,6 +31,7 @@ final public class SplatNet2 {
             }
         }
     }
+    
     public var sessionToken: String? {
         get {
             return keychain.getValue(forKey: .sessionToken)
@@ -40,6 +42,7 @@ final public class SplatNet2 {
             }
         }
     }
+    
     public var playerId: String? {
         get {
             keychain.getValue(forKey: .playerId)
@@ -50,9 +53,16 @@ final public class SplatNet2 {
             }
         }
     }
+    
     var version: String {
-        keychain.getValue(forKey: .version) ?? "1.10.1"
+        get {
+            keychain.getValue(forKey: .version) ?? "1.11.0"
+        }
+        set {
+            keychain.setValue(value: newValue, forKey: .version)
+        }
     }
+    
     public static let shared: SplatNet2 = SplatNet2()
     internal var task = Set<AnyCancellable>()
     
@@ -80,6 +90,10 @@ final public class SplatNet2 {
                 print(response)
             })
             .store(in: &task)
+    }
+    
+    public func configure(version: String) {
+        self.version = version
     }
 
     public var oauthURL: URL {
