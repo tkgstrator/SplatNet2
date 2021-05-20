@@ -58,16 +58,21 @@ struct Publisher {
                     }
                     .responseJSON { response in
                         semaphore.signal()
+                        #if DEBUG
+                        promise(.failure(APIError.badrequests))
+                        #endif
                         switch response.result {
                         case .success:
                             do {
                                 if let data = response.data {
+                                    // JSON受信成功デコード成功
                                     promise(.success(try decoder.decode(V.self, from: data)))
                                 } else {
+                                    //
                                     promise(.failure(APIError.response))
                                 }
                             } catch {
-                                print(error)
+                                // デコード失敗
                                 promise(.failure(APIError.decode))
                             }
                         case .failure:

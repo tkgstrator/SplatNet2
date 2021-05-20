@@ -54,7 +54,7 @@ final public class SplatNet2 {
         }
     }
     
-    var version: String {
+    public var version: String {
         get {
             keychain.getValue(forKey: .version) ?? "1.11.0"
         }

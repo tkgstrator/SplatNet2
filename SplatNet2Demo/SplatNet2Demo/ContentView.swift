@@ -74,7 +74,7 @@ struct ContentView: View {
                 case .finished:
                     break
                 case .failure(let error):
-                    print(error)
+                    print(error.errorDescription)
                 }
             }, receiveValue: { response in
                     print(response)

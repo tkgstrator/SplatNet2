@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "SplatNet2",
+    defaultLocalization: "en",
     platforms:  [
         .iOS(.v13), .macOS(.v10_15)
     ],

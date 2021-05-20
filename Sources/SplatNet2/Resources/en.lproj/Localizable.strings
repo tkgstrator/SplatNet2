@@ -1,0 +1,15 @@
+"ERROR_FAILURE"="Could not decode the error response.";
+"ERROR_JSON"="Received data is not JSON.";
+"ERROR_RESPONSE"="No valid data in the response";
+"ERROR_DECODE"="Received data is not decodable.";
+"ERROR_REQUESTS"="Too many requests.";
+"ERROR_UNAVAILABLE"="Server is temporary unavailable.";
+"ERROR_UPGRADE"="Nintendo required to upgrade API version";
+"ERROR_UNKNOWN"="Unknown error.";
+"ERROR_BADREQUESTS"="Request form is wrong.";
+"ERROR_FATAL"="Fatal error.";
+"ERROR_GRANT"="No grant for access.";
+"ERROR_S2SHASH"="Received hash is not match.";
+"ERROR_EXPIRED"="Session token is expired.";
+"ERROR_EMPTY"="No data in the response.";
+"ERROR_NONEWRESULTS"="No new results.";
