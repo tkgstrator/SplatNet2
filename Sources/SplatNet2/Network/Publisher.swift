@@ -58,9 +58,6 @@ struct Publisher {
                     }
                     .responseJSON { response in
                         semaphore.signal()
-                        #if DEBUG
-                        promise(.failure(APIError.badrequests))
-                        #endif
                         switch response.result {
                         case .success:
                             do {
