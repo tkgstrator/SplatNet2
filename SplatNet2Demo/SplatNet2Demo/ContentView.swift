@@ -15,7 +15,10 @@ struct ContentView: View {
     @State var isPresented: Bool = false
     var body: some View {
         Form {
-            Button(action: { isPresented.toggle() }, label: { Text("SIGN IN")})
+            Button(action: {
+                SplatNet2.shared.version = "1.10.1"
+                isPresented.toggle()
+            }, label: { Text("SIGN IN")})
                 .webAuthenticationSession(isPresented: $isPresented) {
                     WebAuthenticationSession(url: SplatNet2.shared.oauthURL, callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, _ in
                         guard let code: String = callbackURL?.absoluteString.capture(pattern: "de=(.*)&", group: 1) else { return }

@@ -81,15 +81,23 @@ final public class SplatNet2 {
         self.iksmSession = iksmSession
     }
 
-    public func configure(sessionToken: String) {
+    public func configure(sessionToken: String) -> Future<Void, APIError> {
         self.sessionToken = sessionToken
-        getCookie()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-            }, receiveValue: { response in
-                print(response)
-            })
-            .store(in: &task)
+        return Future { [self] promise in
+            getCookie()
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        promise(.failure(error))
+                    }
+                }, receiveValue: { response in
+                    print(response)
+                })
+                .store(in: &task)
+        }
     }
     
     public func configure(version: String) {
@@ -168,7 +176,13 @@ final public class SplatNet2 {
                     let request = SplatoonToken(from: response, version: version)
                     remote(request: request)
                         .receive(on: DispatchQueue.main)
-                        .sink(receiveCompletion: { _ in
+                        .sink(receiveCompletion: { completion in
+                            switch completion {
+                            case .finished:
+                                break
+                            case .failure(let error):
+                                promise(.failure(error))
+                            }
                         }, receiveValue: { response in
                             promise(.success(response))
                         })
@@ -193,11 +207,16 @@ final public class SplatNet2 {
                         promise(.failure(error))
                     }
                 }, receiveValue: { response in
-                    // Flapg API
                     let request = SplatoonAccessToken(from: response, splatoonToken: splatoonToken, version: version)
                     remote(request: request)
                         .receive(on: DispatchQueue.main)
-                        .sink(receiveCompletion: { _ in
+                        .sink(receiveCompletion: { completion in
+                            switch completion {
+                            case .finished:
+                                break
+                            case .failure(let error):
+                                promise(.failure(error))
+                            }
                         }, receiveValue: { response in
                             promise(.success(response))
                         })
@@ -224,7 +243,6 @@ final public class SplatNet2 {
             remote(request: request)
                 .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { completion in
-                    // S2SHash
                     switch completion {
                     case .finished:
                         break
@@ -232,8 +250,6 @@ final public class SplatNet2 {
                         promise(.failure(error))
                     }
                 }, receiveValue: { (response: Response.S2SHash) in
-                    // Flapg
-                    print(response.hash)
                     let request = FlapgToken(accessToken: accessToken, timestamp: timestamp, hash: response.hash, type: type)
                     remote(request: request)
                         .receive(on: DispatchQueue.main)

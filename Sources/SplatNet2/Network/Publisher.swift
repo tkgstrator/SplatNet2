@@ -21,7 +21,9 @@ struct Publisher {
                 let alamofire = AF.request(request)
                     .validate(statusCode: 200...200)
                     .cURLDescription { request in
-//                        print("Request", request)
+                        #if DEBUG
+                        print("Request", request)
+                        #endif
                     }
                     .responseString { response in
                         semaphore.signal()
@@ -60,17 +62,32 @@ struct Publisher {
                         semaphore.signal()
                         switch response.result {
                         case .success:
-                            do {
-                                if let data = response.data {
-                                    // JSON受信成功デコード成功
+                            if let data = response.data {
+                                do {
                                     promise(.success(try decoder.decode(V.self, from: data)))
-                                } else {
-                                    // Data型に変換できない不正なレスポンス
-                                    promise(.failure(APIError.response))
+                                } catch {
+                                    do {
+                                        let response = try decoder.decode(Response.ErrorData.self, from: data)
+                                        if let status = response.status {
+                                            switch status {
+                                            case 9400:
+                                                promise(.failure(.badrequests))
+                                            case 9403:
+                                                promise(.failure(.forbidden))
+                                            case 9406:
+                                                promise(.failure(.unauthorized))
+                                            case 9427:
+                                                promise(.failure(.upgrade))
+                                            default:
+                                                promise(.failure(.unknown))
+                                            }
+                                        }
+                                    } catch {
+                                        promise(.failure(APIError.decode))
+                                    }
                                 }
-                            } catch {
-                                // デコード失敗
-                                promise(.failure(APIError.decode))
+                            } else {
+                                promise(.failure(APIError.response))
                             }
                         case .failure:
                             if let statusCode = response.response?.statusCode {

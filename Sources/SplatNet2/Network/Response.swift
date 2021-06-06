@@ -10,13 +10,13 @@ public class Response: Codable {
     }
     
     public struct ErrorData: Codable {
-        var error: String
-        // var errorDescription: String
-        // var status: Int
-        // var errorMessage: String
-        // var correlationId: String
+        var error: String?
+        var errorDescription: String?
+        var status: Int?
+        var errorMessage: String?
+        var correlationId: String?
     }
-
+    
     public struct SessionToken: Codable {
         public var sessionToken: String
     }
