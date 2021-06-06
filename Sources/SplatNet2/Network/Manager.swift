@@ -110,8 +110,7 @@ final public class SplatNet2 {
         return URL(string: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")!
     }
     
-    // Error Response
-    // [400] Invalid Request
+    // ローカルファイルを参照しているだけなのでエラーが発生するはずがない
     @discardableResult
     public func getShiftSchedule() -> Future<[Response.ScheduleCoop], APIError> {
         return Future { promise in
@@ -126,27 +125,24 @@ final public class SplatNet2 {
                     if let shift = try? decoder.decode([Response.ScheduleCoop].self, from: data) {
                         promise(.success(shift))
                     } else {
-                        promise(.failure(APIError.decode))
+                        promise(.failure(.unknown))
                     }
                 } else {
-                    promise(.failure(APIError.decode))
+                    promise(.failure(.unknown))
                 }
             } else {
-                promise(.failure(APIError.failure))
+                promise(.failure(.unknown))
             }
         }
     }
 
-    // Error Response
-    // [400] Invalid Request
+    //
     @discardableResult
     public func getSessionToken(sessionTokenCode: String) -> Future<Response.SessionToken, APIError> {
         let request = SessionToken(code: sessionTokenCode, verifier: verifier)
         return remote(request: request)
     }
     
-    // Error Response
-    // [400] Invalid GrantType
     @discardableResult
     func getAccessToken() -> Future<Response.AccessToken, APIError> {
         let request = AccessToken()
@@ -160,7 +156,13 @@ final public class SplatNet2 {
         Future { [self] promise in
             getParameterF(accessToken: accessToken, type: false)
                 .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { _ in
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        promise(.failure(error))
+                    }
                 }, receiveValue: { response in
                     // Flapg API
                     let request = SplatoonToken(from: response, version: version)
@@ -183,7 +185,13 @@ final public class SplatNet2 {
         Future { [self] promise in
             getParameterF(accessToken: splatoonToken, type: true)
                 .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { _ in
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        promise(.failure(error))
+                    }
                 }, receiveValue: { response in
                     // Flapg API
                     let request = SplatoonAccessToken(from: response, splatoonToken: splatoonToken, version: version)
@@ -221,8 +229,7 @@ final public class SplatNet2 {
                     case .finished:
                         break
                     case .failure(let error):
-                        print(error)
-                        promise(.failure(APIError.s2shash))
+                        promise(.failure(error))
                     }
                 }, receiveValue: { (response: Response.S2SHash) in
                     // Flapg
@@ -235,8 +242,7 @@ final public class SplatNet2 {
                             case .finished:
                                 break
                             case .failure(let error):
-                                print(error)
-                                promise(.failure(APIError.upgrade))
+                                promise(.failure(error))
                             }
                         }, receiveValue: { (response: Response.FlapgAPI) in
                             promise(.success(response))

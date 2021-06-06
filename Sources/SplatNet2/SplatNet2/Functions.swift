@@ -68,6 +68,7 @@ extension SplatNet2 {
         return getCookie()
     }
     
+    // MARK: セッショントークンコードからイカスミセッションを取得
     @discardableResult
     public func getCookie(sessionTokenCode: String) -> Future<Response.UserInfo, APIError> {
         return Future { [self] promise in
@@ -93,6 +94,7 @@ extension SplatNet2 {
         }
     }
 
+    // MARK: セッショントークンから再生成
     @discardableResult
     public func getCookie() -> Future<Response.UserInfo, APIError> {
         let request = AccessToken()

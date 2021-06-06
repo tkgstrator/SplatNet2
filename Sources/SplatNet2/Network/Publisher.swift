@@ -65,7 +65,7 @@ struct Publisher {
                                     // JSON受信成功デコード成功
                                     promise(.success(try decoder.decode(V.self, from: data)))
                                 } else {
-                                    //
+                                    // Data型に変換できない不正なレスポンス
                                     promise(.failure(APIError.response))
                                 }
                             } catch {
@@ -74,27 +74,30 @@ struct Publisher {
                             }
                         case .failure:
                             if let statusCode = response.response?.statusCode {
-                                print("STATUS CODE", statusCode)
                                 switch statusCode {
+                                case 400:
+                                    promise(.failure(.badrequests))
+                                case 401:
+                                    promise(.failure(.unauthorized))
                                 case 403:
-                                    // セッション有効切れ
-                                    promise(.failure(APIError.expired))
-                                case 429:
-                                    // S2S APIのリクエスト過多
-                                    promise(.failure(APIError.requests))
+                                    promise(.failure(.forbidden))
+                                case 404:
+                                    promise(.failure(.unavailable))
+                                case 405:
+                                    promise(.failure(.method))
+                                case 406:
+                                    promise(.failure(.acceptable))
+                                case 408:
+                                    promise(.failure(.timeout))
+                                case 426:
+                                    promise(.failure(.upgrade))
+                                case 429: // Too many requests
+                                    promise(.failure(.requests))
                                 default:
-                                    break
-                                }
-                                if let data = response.data {
-                                    do {
-                                        let data = try decoder.decode(Response.ErrorData.self, from: data)
-                                        promise(.failure(APIError.failure))
-                                    } catch {
-                                        promise(.failure(APIError.decode))
-                                    }
+                                    promise(.failure(APIError.failure))
                                 }
                             } else {
-                                promise(.failure(APIError.fatal))
+                                promise(.failure(APIError.unknown))
                             }
                         }
                     }

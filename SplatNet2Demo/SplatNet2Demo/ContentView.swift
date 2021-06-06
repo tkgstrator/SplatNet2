@@ -21,7 +21,14 @@ struct ContentView: View {
                         guard let code: String = callbackURL?.absoluteString.capture(pattern: "de=(.*)&", group: 1) else { return }
                         SplatNet2.shared.getCookie(sessionTokenCode: code)
                             .receive(on: DispatchQueue.main)
-                            .sink(receiveCompletion: { completion in }, receiveValue: { response in
+                            .sink(receiveCompletion: { completion in
+                                switch completion {
+                                case .finished:
+                                    print("FINISHED")
+                                case .failure(let error):
+                                    print(error.errorDescription)
+                                }
+                            }, receiveValue: { response in
                                     print(response)
                             })
                             .store(in: &task)
