@@ -1,6 +1,6 @@
 "ERROR_BADREQUESTS"="リクエストの形式が間違っています。";
 "ERROR_UNAUTHORIZED"="リクエスト。";
-"ERROR_FORBIDDEN"="セッションが有効期限または無効です。";
+"ERROR_FORBIDDEN"="セッションが有効期限切れまたは無効です。";
 "ERROR_UNAVAILABLE"="サーバが応答しませんでした。";
 "ERROR_METHOD"="このメソッドは許可されていません。";
 "ERROR_ACCEPTABLE"="このリクエストは受け付けていません。";

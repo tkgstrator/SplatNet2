@@ -17,7 +17,7 @@ extension SplatNet2 {
                 case .finished:
                     break
                 case .failure(let error):
-                    if error == .expired {
+                    if error == .forbidden {
                         getCookie(request: request, promise: promise)
                     } else {
                         promise(.failure(error))
@@ -42,7 +42,6 @@ extension SplatNet2 {
                 }
             }, receiveValue: { [self] response in
                 self.iksmSession = response.iksmSession
-                // セッショントークンを上書きするところ（ダサい）
                 var request = request
                 request.headers = ["cookie": "iksm_session=\(iksmSession!)"]
                 remote(request: request, promise: promise)
