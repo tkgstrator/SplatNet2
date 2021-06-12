@@ -38,6 +38,7 @@ extension SplatNet2 {
                 case .finished:
                     break
                 case .failure(let error):
+                    promise(.failure(error))
                     print(error)
                 }
             }, receiveValue: { [self] response in
