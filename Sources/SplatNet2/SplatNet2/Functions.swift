@@ -14,7 +14,7 @@ extension SplatNet2 {
     // [400] Expired
     @discardableResult
     public func getResultCoop(jobId: Int) -> Future<SplatNet2.Coop.Result, APIError> {
-        let request = ResultCoop(jobId: jobId)
+        let request = ResultCoop(iksmSession: iksmSession, jobId: jobId)
         return Future { [self] promise in
             remote(request: request)
                 .sink(receiveCompletion: { completion in
@@ -33,7 +33,7 @@ extension SplatNet2 {
 
     @discardableResult
     public func getResultCoopWithJSON(jobId: Int) -> Future<(json: Response.ResultCoop, data: SplatNet2.Coop.Result), APIError> {
-        let request = ResultCoop(jobId: jobId)
+        let request = ResultCoop(iksmSession: iksmSession, jobId: jobId)
         return Future { [self] promise in
             remote(request: request)
                 .sink(receiveCompletion: { completion in
@@ -52,13 +52,13 @@ extension SplatNet2 {
 
     @discardableResult
     public func getSummaryCoop() -> Future<Response.SummaryCoop, APIError> {
-        let request = SummaryCoop()
+        let request = SummaryCoop(iksmSession: iksmSession)
         return remote(request: request)
     }
 
     @discardableResult
     public func getNicknameAndIcons(playerId: [String]) -> Future<Response.NicknameIcons, APIError> {
-        let request = NicknameIcons(playerId: playerId)
+        let request = NicknameIcons(iksmSession: iksmSession, playerId: playerId)
         return remote(request: request)
     }
 

@@ -8,11 +8,6 @@
 import Foundation
 import KeychainAccess
 
-var keychain: Keychain {
-    let server = "tkgstrator.work"
-    return Keychain(server: server, protocolType: .https)
-}
-
 enum KeyType: String, CaseIterable {
     case playerId
     case iksmSession
@@ -21,15 +16,19 @@ enum KeyType: String, CaseIterable {
 }
 
 extension Keychain {
-    func setValue(value: String, forKey: KeyType) {
-        try? keychain.set(value, key: forKey.rawValue)
+    func setValue(value: String?, forKey: KeyType) {
+        print(value)
+        print(self.service)
+        if let value = value {
+            try? set(value, key: forKey.rawValue)
+        }
     }
     
     func getValue(forKey: KeyType) -> String? {
-        return try? keychain.get(forKey.rawValue)
+        return try? get(forKey.rawValue)
     }
 
     func remove(forKey: KeyType) {
-        try? keychain.remove(forKey.rawValue)
+        try? remove(forKey.rawValue)
     }
 }

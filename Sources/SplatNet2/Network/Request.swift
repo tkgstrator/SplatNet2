@@ -9,10 +9,11 @@ public class ResultCoop: RequestType {
     var headers: [String: String]?
     typealias ResponseType = Response.ResultCoop
     
-    init(jobId: Int) {
+    init(iksmSession: String?, jobId: Int) {
         self.path = "coop_results/\(jobId)"
-        guard let iksmSession = SplatNet2.shared.iksmSession else { return }
-        self.headers = ["cookie": "iksm_session=\(iksmSession)"]
+        if let iksmSession = iksmSession {
+            self.headers = ["cookie": "iksm_session=\(iksmSession)"]
+        }
     }
 }
 
@@ -24,9 +25,10 @@ public class SummaryCoop: RequestType {
     var headers: [String: String]?
     typealias ResponseType = Response.SummaryCoop
     
-    init() {
-        guard let iksmSession = SplatNet2.shared.iksmSession else { return }
-        self.headers = ["cookie": "iksm_session=\(iksmSession)"]
+    init(iksmSession: String?) {
+        if let iksmSession = iksmSession {
+            self.headers = ["cookie": "iksm_session=\(iksmSession)"]
+        }
     }
 }
 
@@ -38,10 +40,11 @@ public class NicknameIcons: RequestType {
     var headers: [String: String]?
     typealias ResponseType = Response.NicknameIcons
     
-    init(playerId: [String]) {
+    init(iksmSession: String?, playerId: [String]) {
         self.path = "nickname_and_icon?\(playerId.queryString)"
-        guard let iksmSession = SplatNet2.shared.iksmSession else { return }
-        self.headers = ["cookie": "iksm_session=\(iksmSession)"]
+        if let iksmSession = iksmSession {
+            self.headers = ["cookie": "iksm_session=\(iksmSession)"]
+        }
     }
 }
 

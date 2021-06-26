@@ -2,6 +2,7 @@ import Foundation
 import Alamofire
 import Combine
 import CryptoKit
+import KeychainAccess
 
 final public class SplatNet2 {
     // State, Verifier
@@ -20,15 +21,15 @@ final public class SplatNet2 {
         return encoder
     }
     
+    internal var keychain = Keychain()
+    
     // IksmSession
     public var iksmSession: String? {
         get {
             keychain.getValue(forKey: .iksmSession)
         }
         set {
-            if let newValue = newValue {
-                keychain.setValue(value: newValue, forKey: .iksmSession)
-            }
+            keychain.setValue(value: newValue, forKey: .iksmSession)
         }
     }
     
@@ -38,9 +39,7 @@ final public class SplatNet2 {
             return keychain.getValue(forKey: .sessionToken)
         }
         set {
-            if let newValue = newValue {
-                keychain.setValue(value: newValue, forKey: .sessionToken)
-            }
+            keychain.setValue(value: newValue, forKey: .sessionToken)
         }
     }
     
@@ -50,9 +49,7 @@ final public class SplatNet2 {
             keychain.getValue(forKey: .playerId)
         }
         set {
-            if let newValue = newValue {
-                keychain.setValue(value: newValue, forKey: .playerId)
-            }
+            keychain.setValue(value: newValue, forKey: .playerId)
         }
     }
     

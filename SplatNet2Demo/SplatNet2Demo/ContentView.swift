@@ -9,6 +9,7 @@ import SwiftUI
 import SplatNet2
 import Combine
 import BetterSafariView
+import KeychainAccess
 
 struct ContentView: View {
     @State var task = Set<AnyCancellable>()
@@ -41,7 +42,6 @@ struct ContentView: View {
                         }
                     }
                 Button(action: {
-                    SplatNet2.shared.iksmSession = ""
                     getSummaryCoop()
                 }, label: { Text("GET SUMMARY")})
                 Button(action: { getLatestResult() }, label: { Text("GET LATEST RESULT")})
@@ -50,11 +50,30 @@ struct ContentView: View {
             Section() {
                 Toggle(isOn: $environment, label: { Text("ENVIRONMENT") })
                 Button(action: { getKeychainServer() }, label: { Text("KEYCHAIN DATA") })
+                Button(action: { deleteKeychainData() }, label: { Text("DEKETE KEYCHAIN") })
             }
         }
     }
    
     private func getKeychainServer() {
+        let keychains = Keychain.allItems(.genericPassword)
+
+        for keychain in keychains {
+            let service = keychain["service"]
+            let key = keychain["key"] as! String
+            print("\(service): \(key) -> \(keychain["value"])")
+        }
+    }
+    
+    private func deleteKeychainData() {
+        let keychains = Keychain.allItems(.genericPassword)
+        
+        for keychain in keychains {
+            let service = keychain["service"]
+            let key = keychain["key"]
+            let keychain = Keychain(service: service as! String)
+            keychain[key as! String] = nil
+        }
     }
     
     private func getLatestResult() {

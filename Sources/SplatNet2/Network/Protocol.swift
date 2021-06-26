@@ -14,19 +14,6 @@ protocol RequestType: URLRequestConvertible {
 
 extension RequestType {
     
-    var headers: [String: String]? {
-        if let iksmSession = keychain.getValue(forKey: .iksmSession) {
-            return [
-                "Cookie": "iksm_session=\(iksmSession)",
-                "User-Agent": "Salmonia/@tkgling"
-            ]
-        } else {
-            return [
-                "User-Agent": "Salmonia/@tkgling"
-            ]
-        }
-    }
-
     var encoding: ParameterEncoding {
         JSONEncoding.default
     }
