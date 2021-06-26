@@ -17,8 +17,6 @@ enum KeyType: String, CaseIterable {
 
 extension Keychain {
     func setValue(value: String?, forKey: KeyType) {
-        print(value)
-        print(self.service)
         if let value = value {
             try? set(value, key: forKey.rawValue)
         }

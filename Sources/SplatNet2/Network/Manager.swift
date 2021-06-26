@@ -21,7 +21,15 @@ final public class SplatNet2 {
         return encoder
     }
     
-    internal var keychain = Keychain()
+    internal var keychain: Keychain {
+        if let service = service {
+            return Keychain(service: service)
+        } else {
+            return Keychain()
+        }
+    }
+    
+    internal var service: String?
     
     // IksmSession
     public var iksmSession: String? {
@@ -66,30 +74,34 @@ final public class SplatNet2 {
     public static let shared: SplatNet2 = SplatNet2()
     internal var task = Set<AnyCancellable>()
     
-    public init() {}
+    // 複数アカウント対応
+    public init(nsaid service: String? = nil) {
+        self.service = service
+    }
     
-    public init(iksmSession: String) {
-        keychain.setValue(value: iksmSession, forKey: .iksmSession)
+    public init(nsaid service: String? = nil, iksmSession: String) {
+        self.service = service
+        self.iksmSession = iksmSession
     }
-
-    public func configure(sessionToken: String) -> Future<Void, APIError> {
-        self.sessionToken = sessionToken
-        return Future { [self] promise in
-            getCookie()
-                .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        break
-                    case .failure(let error):
-                        promise(.failure(error))
-                    }
-                }, receiveValue: { response in
-                    print(response)
-                })
-                .store(in: &task)
-        }
-    }
+//
+//    public func configure(sessionToken: String) -> Future<Void, APIError> {
+//        self.sessionToken = sessionToken
+//        return Future { [self] promise in
+//            getCookie()
+//                .receive(on: DispatchQueue.main)
+//                .sink(receiveCompletion: { completion in
+//                    switch completion {
+//                    case .finished:
+//                        break
+//                    case .failure(let error):
+//                        promise(.failure(error))
+//                    }
+//                }, receiveValue: { response in
+//                    print(response)
+//                })
+//                .store(in: &task)
+//        }
+//    }
 
     public var oauthURL: URL {
         let parameters: [String: String] = [
@@ -140,7 +152,7 @@ final public class SplatNet2 {
     
     @discardableResult
     func getAccessToken() -> Future<Response.AccessToken, APIError> {
-        let request = AccessToken()
+        let request = AccessToken(sessionToken: sessionToken)
         return remote(request: request)
     }
     

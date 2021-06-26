@@ -63,9 +63,14 @@ extension SplatNet2 {
     }
 
     @discardableResult
-    public func getCookie(sessionToken: String) -> Future<Response.UserInfo, APIError> {
-        self.sessionToken = sessionToken
-        return getCookie()
+    public func getCookie() -> Future<Response.UserInfo, APIError> {
+        if let sessionToken = sessionToken {
+            return getCookie(sessionToken: sessionToken)
+        } else {
+            return Future { promise in
+                promise(.failure(.badrequests))
+            }
+        }
     }
     
     // MARK: セッショントークンコードからイカスミセッションを取得
@@ -96,8 +101,8 @@ extension SplatNet2 {
 
     // MARK: セッショントークンから再生成
     @discardableResult
-    public func getCookie() -> Future<Response.UserInfo, APIError> {
-        let request = AccessToken()
+    public func getCookie(sessionToken: String) -> Future<Response.UserInfo, APIError> {
+        let request = AccessToken(sessionToken: sessionToken)
         return Future { [self] promise in
             remote(request: request)
                 .receive(on: DispatchQueue.main)
@@ -151,7 +156,9 @@ extension SplatNet2 {
                                             }
                                         }, receiveValue: { response in
 //                                            print("IKSM SESSION", response)
+                                            self.service = response.nsaid
                                             self.iksmSession = response.iksmSession
+                                            self.sessionToken = sessionToken
                                             self.playerId = response.nsaid
                                             let userInfo = Response.UserInfo(iksmSession: self.iksmSession!, sessionToken: self.sessionToken!, nsaid: self.playerId!, nickname: nickname, membership: membership, imageUri: imageUri, expiresIn: expiresIn)
                                             promise(.success(userInfo))

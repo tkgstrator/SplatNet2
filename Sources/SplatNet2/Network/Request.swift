@@ -73,13 +73,14 @@ public class AccessToken: RequestType {
     var headers: [String: String]?
     typealias ResponseType = Response.AccessToken
     
-    init() {
-        guard let sessionToken = SplatNet2.shared.sessionToken else { return }
-        self.parameters = [
-            "client_id": "71b963c1b7b6d119",
-            "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer-session-token",
-            "session_token": sessionToken
-        ]
+    init(sessionToken: String?) {
+        if let sessionToken = sessionToken {
+            self.parameters = [
+                "client_id": "71b963c1b7b6d119",
+                "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer-session-token",
+                "session_token": sessionToken
+            ]
+        }
     }
 }
 
