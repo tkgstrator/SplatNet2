@@ -9,12 +9,14 @@ public class Response: Codable {
         public var weaponList: [Int]
     }
     
-    public struct ErrorData: Codable {
+    public struct ServerError: Codable, Error {
         var error: String?
         var errorDescription: String?
         var status: Int?
         var errorMessage: String?
         var correlationId: String?
+        var message: String?            // https://app.splatoon2.nintendo.net/api
+        var code: String?               // https://app.splatoon2.nintendo.net/api
     }
     
     public struct SessionToken: Codable {
@@ -307,4 +309,23 @@ protocol IdName: Codable {
 protocol KeyName: Codable {
     var key: String { get }
     var name: String { get }
+}
+
+extension Response.ServerError {
+    var localizedDescription: String? {
+        // 有効な値が入っているものを返す
+        if let errorDescription = errorDescription {
+            return errorDescription
+        }
+        if let errorMessage = errorMessage {
+            return errorMessage
+        }
+        if let error = error {
+            return error
+        }
+        if let code = code {
+            return code
+        }
+        return nil
+    }
 }

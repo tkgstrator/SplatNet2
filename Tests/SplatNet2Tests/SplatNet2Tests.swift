@@ -18,17 +18,17 @@ final class SplatNet2Tests: XCTestCase {
         print(splatnet2.oauthURL)
     }
     
-//    func testSessionToken() {
-//        do {
-//            guard let sessionTokenCode = redirectURL.queryValue(forKey: "session_token_code") else { throw APIError.response }
-//            let task = SplatNet2.shared.getSessionToken(sessionTokenCode: sessionTokenCode)
-//            let recorder = task.record()
-//            let elements = try wait(for: recorder.elements, timeout: 10)
-//            print(elements)
-//        } catch {
-//            XCTFail()
-//        }
-//    }
+    func testSessionToken() {
+        do {
+            guard let sessionTokenCode = redirectURL.queryValue(forKey: "session_token_code") else { fatalError() }
+            let task = SplatNet2.shared.getSessionToken(sessionTokenCode: sessionTokenCode)
+            let recorder = task.record()
+            let elements = try wait(for: recorder.elements, timeout: 10)
+            print(elements)
+        } catch {
+            XCTFail()
+        }
+    }
 //
     func testAccessToken() {
         do {
@@ -76,7 +76,8 @@ final class SplatNet2Tests: XCTestCase {
     
     func testIksmSession2() {
         do {
-            let splatnet2 = SplatNet2(sessionToken: sessionToken)
+            let splatnet2 = SplatNet2()
+            splatnet2.sessionToken = sessionToken
             let task = splatnet2.getCookie()
             let recorder = task.record()
             let elements = try wait(for: recorder.elements, timeout: 10)
@@ -88,7 +89,8 @@ final class SplatNet2Tests: XCTestCase {
     
     func testGetResultCoop() {
         do {
-            let splatnet2 = SplatNet2(sessionToken: sessionToken)
+            let splatnet2 = SplatNet2()
+            splatnet2.sessionToken = sessionToken
             let task = splatnet2.getResultCoop(jobId: 3549)
             let recorder = task.record()
             let elements = try wait(for: recorder.elements, timeout: 15)

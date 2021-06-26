@@ -1,3 +1,10 @@
+//
+//  NetworkMethod.swift
+//
+//
+//  Created by devonly on 2021/04/04.
+//
+
 import Foundation
 import Combine
 
@@ -16,12 +23,18 @@ extension SplatNet2 {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let error):
-                    if error == .forbidden {
+                case .failure(let error as Response.ServerError):
+                    print(error)
+                    if error.status == 400 {
                         getCookie(request: request, promise: promise)
-                    } else {
-                        promise(.failure(error))
                     }
+//                    if error == .forbidden {
+//                        getCookie(request: request, promise: promise)
+//                    } else {
+//                        promise(.failure(error))
+//                    }
+                case .failure(let error):
+                    print(error)
                 }
             },
             receiveValue: { response in

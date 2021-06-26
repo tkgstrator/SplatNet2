@@ -13,34 +13,48 @@ import BetterSafariView
 struct ContentView: View {
     @State var task = Set<AnyCancellable>()
     @State var isPresented: Bool = false
+    @State var environment: Bool = false
+    
     var body: some View {
         Form {
-            Button(action: {
-                SplatNet2.shared.version = "1.10.1"
-                isPresented.toggle()
-            }, label: { Text("SIGN IN")})
-                .webAuthenticationSession(isPresented: $isPresented) {
-                    WebAuthenticationSession(url: SplatNet2.shared.oauthURL, callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, _ in
-                        guard let code: String = callbackURL?.absoluteString.capture(pattern: "de=(.*)&", group: 1) else { return }
-                        SplatNet2.shared.getCookie(sessionTokenCode: code)
-                            .receive(on: DispatchQueue.main)
-                            .sink(receiveCompletion: { completion in
-                                switch completion {
-                                case .finished:
-                                    print("FINISHED")
-                                case .failure(let error):
-                                    print(error.errorDescription)
-                                }
-                            }, receiveValue: { response in
-                                    print(response)
-                            })
-                            .store(in: &task)
+            Section() {
+                Button(action: {
+                    SplatNet2.shared.version = "1.11.0"
+                    isPresented.toggle()
+                }, label: { Text("SIGN IN")})
+                    .webAuthenticationSession(isPresented: $isPresented) {
+                        WebAuthenticationSession(url: SplatNet2.shared.oauthURL, callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, _ in
+                            guard let code: String = callbackURL?.absoluteString.capture(pattern: "de=(.*)&", group: 1) else { return }
+                            SplatNet2.shared.getCookie(sessionTokenCode: code)
+                                .receive(on: DispatchQueue.main)
+                                .sink(receiveCompletion: { completion in
+                                    switch completion {
+                                    case .finished:
+                                        print("FINISHED")
+                                    case .failure(let error):
+                                        print(error.errorDescription)
+                                    }
+                                }, receiveValue: { response in
+                                        print(response)
+                                })
+                                .store(in: &task)
+                        }
                     }
-                }
-            Button(action: { getSummaryCoop() }, label: { Text("GET SUMMARY")})
-            Button(action: { getLatestResult() }, label: { Text("GET LATEST RESULT")})
-            Button(action: { getNicknameAndIcons() }, label: { Text("GET PLAYER DATA")})
+                Button(action: {
+                    SplatNet2.shared.iksmSession = ""
+                    getSummaryCoop()
+                }, label: { Text("GET SUMMARY")})
+                Button(action: { getLatestResult() }, label: { Text("GET LATEST RESULT")})
+                Button(action: { getNicknameAndIcons() }, label: { Text("GET PLAYER DATA")})
+            }
+            Section() {
+                Toggle(isOn: $environment, label: { Text("ENVIRONMENT") })
+                Button(action: { getKeychainServer() }, label: { Text("KEYCHAIN DATA") })
+            }
         }
+    }
+   
+    private func getKeychainServer() {
     }
     
     private func getLatestResult() {

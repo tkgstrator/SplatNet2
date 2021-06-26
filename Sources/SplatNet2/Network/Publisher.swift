@@ -10,7 +10,7 @@ struct Publisher {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }()
-
+    
     static private let queue = DispatchQueue(label: "Network Publisher")
     static private let semaphore = DispatchSemaphore(value: 0)
     
@@ -45,9 +45,9 @@ struct Publisher {
             }
         }
     }
-
+    
     // JSON取得のためのPublish
-    static func publish<T: RequestType, V: Codable>(_ request: T) -> Future<V, SplatNet2.APIError> {
+    static func publish<T: RequestType, V: Codable>(_ request: T) -> Future<V, Error> {
         Future { promise in
             self.queue.async {
                 let alamofire = AF.request(request)
@@ -66,55 +66,70 @@ struct Publisher {
                                 do {
                                     promise(.success(try decoder.decode(V.self, from: data)))
                                 } catch {
+                                    // 目的のレスポンス形式にデコードできなかった場合
                                     do {
-                                        let response = try decoder.decode(Response.ErrorData.self, from: data)
+                                        // エラーレスポンスを受け取っている可能性があるので調べる
+                                        let response = try decoder.decode(Response.ServerError.self, from: data)
+                                        print(response)
                                         if let status = response.status {
                                             switch status {
                                             case 9400:
-                                                promise(.failure(.badrequests))
+                                                promise(.failure(response))
                                             case 9403:
-                                                promise(.failure(.forbidden))
+                                                promise(.failure(response))
                                             case 9406:
-                                                promise(.failure(.unauthorized))
+                                                promise(.failure(response))
                                             case 9427:
-                                                promise(.failure(.upgrade))
+                                                promise(.failure(response))
                                             default:
-                                                promise(.failure(.unknown))
+                                                promise(.failure(response))
                                             }
                                         }
                                     } catch {
+                                        // エラーレスポンスもできなかった
                                         promise(.failure(APIError.decode))
                                     }
                                 }
                             } else {
+                                // レスポンスにBodyが含まれていなかった
                                 promise(.failure(APIError.response))
                             }
-                        case .failure:
-                            if let statusCode = response.response?.statusCode {
-                                switch statusCode {
-                                case 400:
-                                    promise(.failure(.badrequests))
-                                case 401:
-                                    promise(.failure(.unauthorized))
-                                case 403:
-                                    promise(.failure(.forbidden))
-                                case 404:
-                                    promise(.failure(.unavailable))
-                                case 405:
-                                    promise(.failure(.method))
-                                case 406:
-                                    promise(.failure(.acceptable))
-                                case 408:
-                                    promise(.failure(.timeout))
-                                case 426:
-                                    promise(.failure(.upgrade))
-                                case 429: // Too many requests
-                                    promise(.failure(.requests))
-                                default:
-                                    promise(.failure(APIError.failure))
+                        case .failure(let error):
+                            if let data = response.data {
+                                do {
+                                    if let statusCode = response.response?.statusCode {
+                                        let response = try decoder.decode(Response.ServerError.self, from: data)
+                                        print(response)
+                                        switch statusCode {
+                                        case 400:
+                                            promise(.failure(response))
+                                        case 401:
+                                            promise(.failure(response))
+                                        case 403:
+                                            promise(.failure(response))
+                                        case 404:
+                                            promise(.failure(response))
+                                        case 405:
+                                            promise(.failure(response))
+                                        case 406:
+                                            promise(.failure(response))
+                                        case 408:
+                                            promise(.failure(response))
+                                        case 426:
+                                            promise(.failure(response))
+                                        case 429: // Too many requests
+                                            promise(.failure(response))
+                                        default:
+                                            promise(.failure(response))
+                                        }
+                                    } else {
+                                        promise(.failure(APIError.decode))
+                                    }
+                                } catch {
+                                    promise(.failure(APIError.response))
                                 }
                             } else {
-                                promise(.failure(APIError.unknown))
+                                
                             }
                         }
                     }
@@ -126,12 +141,12 @@ struct Publisher {
 }
 
 extension String {
-
+    
     func capture(pattern: String, group: Int) -> String? {
         let result = capture(pattern: pattern, group: [group])
         return result.isEmpty ? nil : result[0]
     }
-
+    
     func capture(pattern: String, group: [Int]) -> [String] {
         guard let regex = try? NSRegularExpression(pattern: pattern) else {
             return []

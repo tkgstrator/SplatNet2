@@ -4,7 +4,7 @@ import Combine
 import CryptoKit
 
 final public class SplatNet2 {
-    
+    // State, Verifier
     #if DEBUG
     private let state = "v1MguHzdCzhY7W7DMciwfFGPbzV0qdukFOnPX6czsT7m2END726qGJRrScHUT5AmZ2oS7RArsVj2z4eDH4BqThJpvQv7rgLIrHSOzp4NtwS3kFG3kIOqSE4vHCDUYE0X"
     private let verifier = "VVSJwmWlQonJu047zDA2jgUtyuK3taxUV8tmUyQnpxLk4Q1ZBAUNvb6d1QPbyOKVbhKtr2IowR92oNP0eXCJvEWQkjeAB0WK7Klca2IjEyJvMVns2pn12UaJPquX9DKg"
@@ -13,14 +13,14 @@ final public class SplatNet2 {
     private let verifier = String.randomString
     #endif
     
+    // JSON Encoder
     private var encoder: JSONEncoder {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
         return encoder
     }
     
-    private var codeVerifier = String.randomString
-    
+    // IksmSession
     public var iksmSession: String? {
         get {
             keychain.getValue(forKey: .iksmSession)
@@ -32,6 +32,7 @@ final public class SplatNet2 {
         }
     }
     
+    // SessionToken
     public var sessionToken: String? {
         get {
             return keychain.getValue(forKey: .sessionToken)
@@ -43,6 +44,7 @@ final public class SplatNet2 {
         }
     }
     
+    // nsaid
     public var playerId: String? {
         get {
             keychain.getValue(forKey: .playerId)
@@ -54,6 +56,7 @@ final public class SplatNet2 {
         }
     }
     
+    // Version
     public var version: String {
         get {
             keychain.getValue(forKey: .version) ?? "1.11.0"
@@ -70,15 +73,6 @@ final public class SplatNet2 {
     
     public init(iksmSession: String) {
         keychain.setValue(value: iksmSession, forKey: .iksmSession)
-    }
-    
-    // テスト用
-    init(sessionToken: String) {
-        self.sessionToken = sessionToken
-    }
-
-    public func configure(iksmSession: String) {
-        self.iksmSession = iksmSession
     }
 
     public func configure(sessionToken: String) -> Future<Void, APIError> {
@@ -98,10 +92,6 @@ final public class SplatNet2 {
                 })
                 .store(in: &task)
         }
-    }
-    
-    public func configure(version: String) {
-        self.version = version
     }
 
     public var oauthURL: URL {
@@ -192,8 +182,7 @@ final public class SplatNet2 {
         }
     }
     
-    // Error Response
-    // [400] Invalid GrantType
+    // Splatoon Access Token
     @discardableResult
     func getSplatoonAccessToken(splatoonToken: String) -> Future<Response.SplatoonAccessToken, APIError> {
         Future { [self] promise in
@@ -226,14 +215,14 @@ final public class SplatNet2 {
         }
     }
     
-    // Error Response
-    // [400] Invalid GrantType
+    // Iksm Session
     @discardableResult
     func getIksmSession(accessToken: String) -> Future<Response.IksmSession, APIError> {
         let request = IksmSession(accessToken: accessToken)
         return generate(request: request)
     }
     
+    // Parameter F
     @discardableResult
     func getParameterF(accessToken: String, type: Bool) -> Future<Response.FlapgAPI, APIError> {
         let timestamp = Int(Date().timeIntervalSince1970)
@@ -269,10 +258,10 @@ final public class SplatNet2 {
         }
     }
     
-    @discardableResult
-    public func convertResultWithJSONFormat(results: [Coop.Result]) -> [String] {
-        return results.map{ String(data: try! encoder.encode($0), encoding: .utf8)! }
-    }
+//    @discardableResult
+//    public func convertResultWithJSONFormat(results: [Coop.Result]) -> [String] {
+//        return results.map{ String(data: try! encoder.encode($0), encoding: .utf8)! }
+//    }
 }
 
 extension String {
