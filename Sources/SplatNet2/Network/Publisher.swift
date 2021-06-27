@@ -4,27 +4,21 @@ import Alamofire
 
 extension SplatNet2 {
     
-    static private let decoder: JSONDecoder = {
+    private static var decoder: JSONDecoder {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
-    }()
-    
-    static private let queue = DispatchQueue(label: "Network Publisher")
-    static private let semaphore = DispatchSemaphore(value: 0)
-    
-    // IksmSession取得のため
+    }
+
     static func generate<T: IksmSession>(_ request: T) -> Future<Response.IksmSession, Error> {
-        Future { promise in
-            self.queue.async {
+        return Future { [self] promise in
+            DispatchQueue(label: "Network Publisher").async {
                 let alamofire = AF.request(request)
                     .validate(statusCode: 200...200)
                     .cURLDescription { request in
-                        #if DEBUG
-                        print("Request", request)
-                        #endif
                     }
                     .responseString { response in
+                        semaphore.signal()
                         switch response.result {
                         case .success(let value):
                             do {
@@ -39,14 +33,14 @@ extension SplatNet2 {
                         }
                     }
                 alamofire.resume()
+                semaphore.wait()
             }
         }
     }
     
-    // JSON取得のためのPublish
     static func publish<T: RequestType, V: Codable>(_ request: T) -> Future<V, Error> {
-        Future { promise in
-            self.queue.async {
+        return Future { [self] promise in
+            DispatchQueue(label: "Network Publisher").async {
                 let alamofire = AF.request(request)
                     .validate(statusCode: 200...200)
                     .validate(contentType: ["application/json"])
@@ -56,8 +50,11 @@ extension SplatNet2 {
                         #endif
                     }
                     .responseJSON { response in
+                        semaphore.signal()
                         switch response.result {
-                        case .success:
+                        case .success(let value):
+//                            print("RESPONSE", value)
+//                            promise(.failure(APIError.decode))
                             if let data = response.data {
                                 do {
                                     promise(.success(try decoder.decode(V.self, from: data)))
@@ -90,11 +87,13 @@ extension SplatNet2 {
                                     promise(.failure(APIError.response))
                                 }
                             } else {
-                                
+                                print(error)
+                                print(dump(response.data))
                             }
                         }
                     }
                 alamofire.resume()
+                semaphore.wait()
             }
         }
     }

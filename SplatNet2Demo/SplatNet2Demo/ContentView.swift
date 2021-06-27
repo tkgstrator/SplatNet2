@@ -11,6 +11,8 @@ import Combine
 import BetterSafariView
 import KeychainAccess
 
+let splatNet2 = SplatNet2()
+
 struct ContentView: View {
     @State var task = Set<AnyCancellable>()
     @State var isPresented: Bool = false
@@ -23,24 +25,24 @@ struct ContentView: View {
                 Button(action: {
                     isPresented.toggle()
                 }, label: { Text("SIGN IN")})
-                    .webAuthenticationSession(isPresented: $isPresented) {
-                        WebAuthenticationSession(url: SplatNet2.shared.oauthURL, callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, _ in
-                            guard let code: String = callbackURL?.absoluteString.capture(pattern: "de=(.*)&", group: 1) else { return }
-                            SplatNet2.shared.getCookie(sessionTokenCode: code)
-                                .receive(on: DispatchQueue.main)
-                                .sink(receiveCompletion: { completion in
-                                    switch completion {
-                                    case .finished:
-                                        print("FINISHED")
-                                    case .failure(let error):
-                                        print(error)
-                                    }
-                                }, receiveValue: { response in
-                                        print(response)
-                                })
-                                .store(in: &task)
-                        }
+                .webAuthenticationSession(isPresented: $isPresented) {
+                    WebAuthenticationSession(url: SplatNet2.shared.oauthURL, callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, _ in
+                        guard let code: String = callbackURL?.absoluteString.capture(pattern: "de=(.*)&", group: 1) else { return }
+                        splatNet2.getCookie(sessionTokenCode: code)
+                            .receive(on: DispatchQueue.main)
+                            .sink(receiveCompletion: { completion in
+                                switch completion {
+                                case .finished:
+                                    print("FINISHED")
+                                case .failure(let error):
+                                    print(error)
+                                }
+                            }, receiveValue: { response in
+                                print(response)
+                            })
+                            .store(in: &task)
                     }
+                }
                 Button(action: {
                     getSummaryCoop()
                 }, label: { Text("GET SUMMARY")})
@@ -57,12 +59,12 @@ struct ContentView: View {
     }
     
     private func deleteIksmSession() {
-        SplatNet2.shared.iksmSession = ""
+        splatNet2.iksmSession = ""
     }
-   
+    
     private func getKeychainServer() {
         let keychains = Keychain.allItems(.genericPassword)
-
+        
         for keychain in keychains {
             let service = keychain["service"]
             let key = keychain["key"] as! String
@@ -82,7 +84,7 @@ struct ContentView: View {
     }
     
     private func getLatestResult() {
-        SplatNet2.shared.getSummaryCoop()
+        splatNet2.getSummaryCoop()
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -92,8 +94,9 @@ struct ContentView: View {
                     print(error)
                 }
             }, receiveValue: { response in
+                print(response)
                 let latestId = response.summary.card.jobNum
-                SplatNet2.shared.getResultCoop(jobId: latestId)
+                splatNet2.getResultCoop(jobId: latestId)
                     .receive(on: DispatchQueue.main)
                     .sink(receiveCompletion: { completion in
                         switch completion {
@@ -103,6 +106,7 @@ struct ContentView: View {
                             print(error)
                         }
                     }, receiveValue: { response in
+                        print(response)
                         print("APPEAR", response.bossCounts)
                         print("KILL", response.bossKillCounts)
                         for player in response.results {
@@ -115,7 +119,7 @@ struct ContentView: View {
     }
     
     private func getSummaryCoop() {
-        SplatNet2.shared.getSummaryCoop()
+        splatNet2.getSummaryCoop()
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -132,7 +136,7 @@ struct ContentView: View {
     
     private func getNicknameAndIcons() {
         let playerId: [String] = ["3f89c3791c43ea57", "fc324b472a0dbb78"]
-        SplatNet2.shared.getNicknameAndIcons(playerId: playerId)
+        splatNet2.getNicknameAndIcons(playerId: playerId)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -142,7 +146,7 @@ struct ContentView: View {
                     print(error)
                 }
             }, receiveValue: { response in
-                    print(response)
+                print(response)
             })
             .store(in: &task)
     }
@@ -159,7 +163,7 @@ extension String {
         let result = capture(pattern: pattern, group: [group])
         return result.isEmpty ? nil : result[0]
     }
-
+    
     private func capture(pattern: String, group: [Int]) -> [String] {
         guard let regex = try? NSRegularExpression(pattern: pattern) else { return [] }
         guard let matched = regex.firstMatch(in: self, range: NSRange(location: 0, length: self.count)) else { return [] }

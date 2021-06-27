@@ -103,22 +103,15 @@ public class Response: Codable {
         public var nickname: String
         public var membership: Bool
         public var imageUri: String
-        public var expiresIn: String
         public var sessionToken: String
 
-        init(iksmSession: String, sessionToken: String, nsaid: String, nickname: String, membership: Bool, imageUri: String, expiresIn: Int) {
-            self.iksmSession = iksmSession
+        init(sessionToken: String, response: Response.IksmSession, splatoonToken: Response.SplatoonToken) {
             self.sessionToken = sessionToken
-            self.nsaid = nsaid
-            self.membership = membership
-            self.imageUri = imageUri
-            self.nickname = nickname
-            let formatter: ISO8601DateFormatter = {
-                let formatter = ISO8601DateFormatter()
-                formatter.timeZone = TimeZone.current
-                return formatter
-            }()
-            self.expiresIn = formatter.string(from: Date(timeIntervalSince1970: Date().timeIntervalSince1970 + TimeInterval(expiresIn)))
+            self.iksmSession = response.iksmSession
+            self.nsaid = response.nsaid
+            self.nickname = splatoonToken.result.user.name
+            self.membership = splatoonToken.result.user.membership.active
+            self.imageUri = splatoonToken.result.user.imageUri
         }
     }
 

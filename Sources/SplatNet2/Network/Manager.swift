@@ -7,12 +7,15 @@ import KeychainAccess
 final public class SplatNet2 {
     // State, Verifier
     #if DEBUG
-    private let state = "v1MguHzdCzhY7W7DMciwfFGPbzV0qdukFOnPX6czsT7m2END726qGJRrScHUT5AmZ2oS7RArsVj2z4eDH4BqThJpvQv7rgLIrHSOzp4NtwS3kFG3kIOqSE4vHCDUYE0X"
-    private let verifier = "VVSJwmWlQonJu047zDA2jgUtyuK3taxUV8tmUyQnpxLk4Q1ZBAUNvb6d1QPbyOKVbhKtr2IowR92oNP0eXCJvEWQkjeAB0WK7Klca2IjEyJvMVns2pn12UaJPquX9DKg"
+    internal let state = "v1MguHzdCzhY7W7DMciwfFGPbzV0qdukFOnPX6czsT7m2END726qGJRrScHUT5AmZ2oS7RArsVj2z4eDH4BqThJpvQv7rgLIrHSOzp4NtwS3kFG3kIOqSE4vHCDUYE0X"
+    internal let verifier = "VVSJwmWlQonJu047zDA2jgUtyuK3taxUV8tmUyQnpxLk4Q1ZBAUNvb6d1QPbyOKVbhKtr2IowR92oNP0eXCJvEWQkjeAB0WK7Klca2IjEyJvMVns2pn12UaJPquX9DKg"
     #else
-    private let state = String.randomString
-    private let verifier = String.randomString
+    internal let state = String.randomString
+    internal let verifier = String.randomString
     #endif
+   
+//    internal let queue = DispatchQueue(label: "Network Publisher")
+    internal static let semaphore = DispatchSemaphore(value: 0)
     
     // JSON Encoder
     private var encoder: JSONEncoder {
@@ -132,127 +135,7 @@ final public class SplatNet2 {
         }
     }
 
-    //
-    @discardableResult
-    public func getSessionToken(sessionTokenCode: String) -> Future<Response.SessionToken, Error> {
-        let request = SessionToken(code: sessionTokenCode, verifier: verifier)
-        return remote(request: request)
-    }
     
-    @discardableResult
-    func getAccessToken() -> Future<Response.AccessToken, Error> {
-        let request = AccessToken(sessionToken: sessionToken)
-        return remote(request: request)
-    }
-    
-    @discardableResult
-    func getSplatoonToken(accessToken: String) -> Future<Response.SplatoonToken, Error> {
-        Future { [self] promise in
-            getParameterF(accessToken: accessToken, type: false)
-                .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        break
-                    case .failure(let error):
-                        promise(.failure(error))
-                    }
-                }, receiveValue: { response in
-                    // Flapg API
-                    let request = SplatoonToken(from: response, version: version)
-                    remote(request: request)
-                        .receive(on: DispatchQueue.main)
-                        .sink(receiveCompletion: { completion in
-                            switch completion {
-                            case .finished:
-                                break
-                            case .failure(let error):
-                                promise(.failure(error))
-                            }
-                        }, receiveValue: { response in
-                            promise(.success(response))
-                        })
-                        .store(in: &task)
-                })
-                .store(in: &task)
-        }
-    }
-    
-    // Splatoon Access Token
-    @discardableResult
-    func getSplatoonAccessToken(splatoonToken: String) -> Future<Response.SplatoonAccessToken, Error> {
-        Future { [self] promise in
-            getParameterF(accessToken: splatoonToken, type: true)
-                .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        break
-                    case .failure(let error):
-                        promise(.failure(error))
-                    }
-                }, receiveValue: { response in
-                    let request = SplatoonAccessToken(from: response, splatoonToken: splatoonToken, version: version)
-                    remote(request: request)
-                        .receive(on: DispatchQueue.main)
-                        .sink(receiveCompletion: { completion in
-                            switch completion {
-                            case .finished:
-                                break
-                            case .failure(let error):
-                                promise(.failure(error))
-                            }
-                        }, receiveValue: { response in
-                            promise(.success(response))
-                        })
-                        .store(in: &task)
-                })
-                .store(in: &task)
-        }
-    }
-    
-    // Iksm Session
-    @discardableResult
-    func getIksmSession(accessToken: String) -> Future<Response.IksmSession, Error> {
-        let request = IksmSession(accessToken: accessToken)
-        return generate(request: request)
-    }
-    
-    // Parameter F
-    @discardableResult
-    func getParameterF(accessToken: String, type: Bool) -> Future<Response.FlapgAPI, Error> {
-        let timestamp = Int(Date().timeIntervalSince1970)
-        let request = S2SHash(accessToken: accessToken, timestamp: timestamp)
-        
-        return Future { [self] promise in
-            remote(request: request)
-                .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        break
-                    case .failure(let error):
-                        promise(.failure(error))
-                    }
-                }, receiveValue: { (response: Response.S2SHash) in
-                    let request = FlapgToken(accessToken: accessToken, timestamp: timestamp, hash: response.hash, type: type)
-                    remote(request: request)
-                        .receive(on: DispatchQueue.main)
-                        .sink(receiveCompletion: { completion in
-                            switch completion {
-                            case .finished:
-                                break
-                            case .failure(let error):
-                                promise(.failure(error))
-                            }
-                        }, receiveValue: { (response: Response.FlapgAPI) in
-                            promise(.success(response))
-                        })
-                        .store(in: &task)
-                })
-                .store(in: &task)
-        }
-    }
     
 //    @discardableResult
 //    public func convertResultWithJSONFormat(results: [Coop.Result]) -> [String] {

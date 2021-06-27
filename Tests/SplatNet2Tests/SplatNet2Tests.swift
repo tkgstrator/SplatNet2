@@ -32,7 +32,7 @@ final class SplatNet2Tests: XCTestCase {
 //
     func testAccessToken() {
         do {
-            let task = SplatNet2.shared.getAccessToken()
+            let task = SplatNet2.shared.getAccessToken(sessionToken: sessionToken)
             let recorder = task.record()
             let elements = try wait(for: recorder.elements, timeout: 10)
             print(elements)
@@ -40,7 +40,7 @@ final class SplatNet2Tests: XCTestCase {
             XCTFail()
         }
     }
-//
+    
 //    func testSplatoonToken() {
 //        do {
 //            let task = SplatNet2.shared.getSplatoonToken(accessToken: accessToken)
@@ -78,7 +78,7 @@ final class SplatNet2Tests: XCTestCase {
         do {
             let splatnet2 = SplatNet2()
             splatnet2.sessionToken = sessionToken
-            let task = splatnet2.getCookie()
+            let task = splatnet2.getCookie(sessionToken: sessionToken)
             let recorder = task.record()
             let elements = try wait(for: recorder.elements, timeout: 10)
             print(elements)

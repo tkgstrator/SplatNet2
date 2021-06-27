@@ -112,15 +112,20 @@ public class FlapgToken: RequestType {
     var headers: [String: String]?
     typealias ResponseType = Response.FlapgAPI
     
-    init(accessToken: String, timestamp: Int, hash: String, type: Bool) {
+    init(accessToken: String, timestamp: Int, hash: String, type: FlapgType) {
         self.headers = [
             "x-token": accessToken,
             "x-time": String(timestamp),
             "x-guid": "037239ef-1914-43dc-815d-178aae7d8934",
             "x-hash": hash,
             "x-ver": "3",
-            "x-iid": type ? "app" : "nso"
+            "x-iid": type.rawValue
         ]
+    }
+    
+    enum FlapgType: String, CaseIterable {
+        case app
+        case nso
     }
 }
 
