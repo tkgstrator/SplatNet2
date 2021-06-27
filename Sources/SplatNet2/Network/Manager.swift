@@ -145,8 +145,6 @@ final public class SplatNet2 {
         return remote(request: request)
     }
     
-    // Error Response
-    // [400] Invalid GrantType
     @discardableResult
     func getSplatoonToken(accessToken: String) -> Future<Response.SplatoonToken, Error> {
         Future { [self] promise in

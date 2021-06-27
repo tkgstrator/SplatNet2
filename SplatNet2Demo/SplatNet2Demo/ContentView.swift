@@ -42,7 +42,6 @@ struct ContentView: View {
                         }
                     }
                 Button(action: {
-                    SplatNet2.shared.iksmSession = ""
                     getSummaryCoop()
                 }, label: { Text("GET SUMMARY")})
                 Button(action: { getLatestResult() }, label: { Text("GET LATEST RESULT")})
@@ -50,10 +49,15 @@ struct ContentView: View {
             }
             Section() {
                 Toggle(isOn: $environment, label: { Text("ENVIRONMENT") })
+                Button(action: { deleteIksmSession() }, label: { Text("DELETE IKSM SESSION") })
                 Button(action: { getKeychainServer() }, label: { Text("KEYCHAIN DATA") })
                 Button(action: { deleteKeychainData() }, label: { Text("DEKETE KEYCHAIN") })
             }
         }
+    }
+    
+    private func deleteIksmSession() {
+        SplatNet2.shared.iksmSession = ""
     }
    
     private func getKeychainServer() {

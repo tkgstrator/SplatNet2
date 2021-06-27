@@ -18,7 +18,7 @@ extension SplatNet2 {
     
     // 失敗した場合セッショントークンの再生成を行う
     private func remote<T: RequestType>(request: T, promise: @escaping (Result<T.ResponseType, Error>) -> ()) {
-        Publisher.publish(request)
+        SplatNet2.publish(request)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [self] completion in
                 switch completion {
@@ -41,21 +41,19 @@ extension SplatNet2 {
     
     // 再要求を行わないリクエスト
     private func resend<T: RequestType>(request: T, promise: @escaping (Result<T.ResponseType, Error>) -> ()) {
-        Publisher.publish(request)
+        SplatNet2.publish(request)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [self] completion in
                 switch completion {
                 case .finished:
                     break
                 case .failure(let error as Response.ServerError):
-                    print(error)
-                    promise(.failure(APIError.upgrade))
-                case .failure(let error as SplatNet2.APIError):
-                    print(error)
-                    promise(.failure(error))
+//                    if error.status == 9999 {
+//                        getCookie(request: request, promise: promise)
+//                    }
+                    promise(.failure(APIError.badrequests))
                 case .failure(let error):
                     print(error)
-                    promise(.failure(APIError.upgrade))
                 }
             },
             receiveValue: { response in
@@ -66,15 +64,20 @@ extension SplatNet2 {
     
     // IKSM SESSIONを上書きして再リクエスト
     private func getCookie<T: RequestType>(request: T, promise: @escaping (Result<T.ResponseType, Error>) -> ()) {
-        getCookie()
+        guard let sessionToken = sessionToken else {
+            promise(.failure(APIError.badrequests))
+            return
+        }
+        
+        getCookie(sessionToken: sessionToken)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
                     break
                 case .failure(let error):
-                    promise(.failure(error))
                     print(error)
+                    promise(.failure(error))
                 }
             }, receiveValue: { [self] response in
                 self.iksmSession = response.iksmSession
@@ -93,7 +96,7 @@ extension SplatNet2 {
     }
     
     private func generate<Request: IksmSession>(request: Request, promise: @escaping (Result<Response.IksmSession, Error>) -> ()) {
-        Publisher.generate(request)
+        SplatNet2.generate(request)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {

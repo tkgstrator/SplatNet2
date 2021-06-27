@@ -2,8 +2,7 @@ import Foundation
 import Combine
 import Alamofire
 
-struct Publisher {
-    typealias APIError = SplatNet2.APIError
+extension SplatNet2 {
     
     static private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
@@ -26,7 +25,6 @@ struct Publisher {
                         #endif
                     }
                     .responseString { response in
-                        semaphore.signal()
                         switch response.result {
                         case .success(let value):
                             do {
@@ -41,7 +39,6 @@ struct Publisher {
                         }
                     }
                 alamofire.resume()
-                semaphore.wait()
             }
         }
     }
@@ -59,7 +56,6 @@ struct Publisher {
                         #endif
                     }
                     .responseJSON { response in
-                        semaphore.signal()
                         switch response.result {
                         case .success:
                             if let data = response.data {
@@ -99,7 +95,6 @@ struct Publisher {
                         }
                     }
                 alamofire.resume()
-                semaphore.wait()
             }
         }
     }
