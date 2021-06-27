@@ -15,7 +15,7 @@ struct Publisher {
     static private let semaphore = DispatchSemaphore(value: 0)
     
     // IksmSession取得のため
-    static func generate<T: IksmSession>(_ request: T) -> Future<Response.IksmSession, SplatNet2.APIError> {
+    static func generate<T: IksmSession>(_ request: T) -> Future<Response.IksmSession, Error> {
         Future { promise in
             self.queue.async {
                 let alamofire = AF.request(request)
@@ -34,10 +34,10 @@ struct Publisher {
                                 guard let iksmSession = HTTPCookie.cookies(withResponseHeaderFields: (response.response?.allHeaderFields as! [String: String]), for: (response.response?.url!)!).first?.value else { throw APIError.failure }
                                 promise(.success(Response.IksmSession(iksmSession: iksmSession, nsaid: nsaid)))
                             } catch {
-                                promise(.failure(SplatNet2.APIError.response))
+                                promise(.failure(APIError.response))
                             }
                         case .failure:
-                            promise(.failure(SplatNet2.APIError.response))
+                            promise(.failure(APIError.response))
                         }
                     }
                 alamofire.resume()
@@ -70,21 +70,7 @@ struct Publisher {
                                     do {
                                         // エラーレスポンスを受け取っている可能性があるので調べる
                                         let response = try decoder.decode(Response.ServerError.self, from: data)
-                                        print(response)
-                                        if let status = response.status {
-                                            switch status {
-                                            case 9400:
-                                                promise(.failure(response))
-                                            case 9403:
-                                                promise(.failure(response))
-                                            case 9406:
-                                                promise(.failure(response))
-                                            case 9427:
-                                                promise(.failure(response))
-                                            default:
-                                                promise(.failure(response))
-                                            }
-                                        }
+                                        promise(.failure(response))
                                     } catch {
                                         // エラーレスポンスもできなかった
                                         promise(.failure(APIError.decode))
@@ -98,30 +84,9 @@ struct Publisher {
                             if let data = response.data {
                                 do {
                                     if let statusCode = response.response?.statusCode {
-                                        let response = try decoder.decode(Response.ServerError.self, from: data)
-                                        print(response)
-                                        switch statusCode {
-                                        case 400:
-                                            promise(.failure(response))
-                                        case 401:
-                                            promise(.failure(response))
-                                        case 403:
-                                            promise(.failure(response))
-                                        case 404:
-                                            promise(.failure(response))
-                                        case 405:
-                                            promise(.failure(response))
-                                        case 406:
-                                            promise(.failure(response))
-                                        case 408:
-                                            promise(.failure(response))
-                                        case 426:
-                                            promise(.failure(response))
-                                        case 429: // Too many requests
-                                            promise(.failure(response))
-                                        default:
-                                            promise(.failure(response))
-                                        }
+                                        var response = try decoder.decode(Response.ServerError.self, from: data)
+                                        response.status = statusCode
+                                        promise(.failure(response))
                                     } else {
                                         promise(.failure(APIError.decode))
                                     }

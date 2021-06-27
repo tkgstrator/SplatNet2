@@ -15,12 +15,12 @@ struct ContentView: View {
     @State var task = Set<AnyCancellable>()
     @State var isPresented: Bool = false
     @State var environment: Bool = false
+    @State var serverError: Response.ServerError?
     
     var body: some View {
         Form {
             Section() {
                 Button(action: {
-                    SplatNet2.shared.version = "1.11.0"
                     isPresented.toggle()
                 }, label: { Text("SIGN IN")})
                     .webAuthenticationSession(isPresented: $isPresented) {
@@ -33,7 +33,7 @@ struct ContentView: View {
                                     case .finished:
                                         print("FINISHED")
                                     case .failure(let error):
-                                        print(error.errorDescription)
+                                        print(error)
                                     }
                                 }, receiveValue: { response in
                                         print(response)
@@ -42,6 +42,7 @@ struct ContentView: View {
                         }
                     }
                 Button(action: {
+                    SplatNet2.shared.iksmSession = ""
                     getSummaryCoop()
                 }, label: { Text("GET SUMMARY")})
                 Button(action: { getLatestResult() }, label: { Text("GET LATEST RESULT")})
@@ -117,10 +118,10 @@ struct ContentView: View {
                 case .finished:
                     break
                 case .failure(let error):
-                    print(error.errorDescription)
+                    print(error)
                 }
             }, receiveValue: { response in
-                    print(response)
+                print(response)
             })
             .store(in: &task)
     }

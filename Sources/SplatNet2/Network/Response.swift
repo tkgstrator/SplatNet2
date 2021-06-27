@@ -9,7 +9,8 @@ public class Response: Codable {
         public var weaponList: [Int]
     }
     
-    public struct ServerError: Codable, Error {
+    public struct ServerError: Codable, Error, Identifiable {
+        public var id: UUID { UUID() }
         var error: String?
         var errorDescription: String?
         var status: Int?

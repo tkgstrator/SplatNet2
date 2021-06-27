@@ -71,7 +71,15 @@ final public class SplatNet2 {
         }
     }
     
-    public static let shared: SplatNet2 = SplatNet2()
+    public static var shared: SplatNet2 {
+        let services = Keychain.allItems(.genericPassword)
+        if let service = services.first?["service"] as? String {
+            return SplatNet2(nsaid: service)
+        } else {
+            return SplatNet2()
+        }
+    }
+    
     internal var task = Set<AnyCancellable>()
     
     // 複数アカウント対応
@@ -83,25 +91,6 @@ final public class SplatNet2 {
         self.service = service
         self.iksmSession = iksmSession
     }
-//
-//    public func configure(sessionToken: String) -> Future<Void, APIError> {
-//        self.sessionToken = sessionToken
-//        return Future { [self] promise in
-//            getCookie()
-//                .receive(on: DispatchQueue.main)
-//                .sink(receiveCompletion: { completion in
-//                    switch completion {
-//                    case .finished:
-//                        break
-//                    case .failure(let error):
-//                        promise(.failure(error))
-//                    }
-//                }, receiveValue: { response in
-//                    print(response)
-//                })
-//                .store(in: &task)
-//        }
-//    }
 
     public var oauthURL: URL {
         let parameters: [String: String] = [
@@ -119,7 +108,7 @@ final public class SplatNet2 {
     
     // ローカルファイルを参照しているだけなのでエラーが発生するはずがない
     @discardableResult
-    public func getShiftSchedule() -> Future<[Response.ScheduleCoop], APIError> {
+    public func getShiftSchedule() -> Future<[Response.ScheduleCoop], Error> {
         return Future { promise in
             if let json = Bundle.module.url(forResource: "coop", withExtension: "json") {
                 if let data = try? Data(contentsOf: json) {
@@ -132,26 +121,26 @@ final public class SplatNet2 {
                     if let shift = try? decoder.decode([Response.ScheduleCoop].self, from: data) {
                         promise(.success(shift))
                     } else {
-                        promise(.failure(.unknown))
+                        promise(.failure(APIError.unknown))
                     }
                 } else {
-                    promise(.failure(.unknown))
+                    promise(.failure(APIError.unknown))
                 }
             } else {
-                promise(.failure(.unknown))
+                promise(.failure(APIError.unknown))
             }
         }
     }
 
     //
     @discardableResult
-    public func getSessionToken(sessionTokenCode: String) -> Future<Response.SessionToken, APIError> {
+    public func getSessionToken(sessionTokenCode: String) -> Future<Response.SessionToken, Error> {
         let request = SessionToken(code: sessionTokenCode, verifier: verifier)
         return remote(request: request)
     }
     
     @discardableResult
-    func getAccessToken() -> Future<Response.AccessToken, APIError> {
+    func getAccessToken() -> Future<Response.AccessToken, Error> {
         let request = AccessToken(sessionToken: sessionToken)
         return remote(request: request)
     }
@@ -159,7 +148,7 @@ final public class SplatNet2 {
     // Error Response
     // [400] Invalid GrantType
     @discardableResult
-    func getSplatoonToken(accessToken: String) -> Future<Response.SplatoonToken, APIError> {
+    func getSplatoonToken(accessToken: String) -> Future<Response.SplatoonToken, Error> {
         Future { [self] promise in
             getParameterF(accessToken: accessToken, type: false)
                 .receive(on: DispatchQueue.main)
@@ -193,7 +182,7 @@ final public class SplatNet2 {
     
     // Splatoon Access Token
     @discardableResult
-    func getSplatoonAccessToken(splatoonToken: String) -> Future<Response.SplatoonAccessToken, APIError> {
+    func getSplatoonAccessToken(splatoonToken: String) -> Future<Response.SplatoonAccessToken, Error> {
         Future { [self] promise in
             getParameterF(accessToken: splatoonToken, type: true)
                 .receive(on: DispatchQueue.main)
@@ -226,14 +215,14 @@ final public class SplatNet2 {
     
     // Iksm Session
     @discardableResult
-    func getIksmSession(accessToken: String) -> Future<Response.IksmSession, APIError> {
+    func getIksmSession(accessToken: String) -> Future<Response.IksmSession, Error> {
         let request = IksmSession(accessToken: accessToken)
         return generate(request: request)
     }
     
     // Parameter F
     @discardableResult
-    func getParameterF(accessToken: String, type: Bool) -> Future<Response.FlapgAPI, APIError> {
+    func getParameterF(accessToken: String, type: Bool) -> Future<Response.FlapgAPI, Error> {
         let timestamp = Int(Date().timeIntervalSince1970)
         let request = S2SHash(accessToken: accessToken, timestamp: timestamp)
         
