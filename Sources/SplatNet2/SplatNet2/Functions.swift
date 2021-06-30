@@ -80,7 +80,7 @@ extension SplatNet2 {
                         promise(.success(response))
                     }).store(in: &task)
             } else {
-                promise(.failure(Response.APIError()))
+                promise(.failure(APIError.emptySessionToken))
             }
         }
     }

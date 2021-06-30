@@ -16,9 +16,53 @@ extension SplatNet2 {
     }
     
     internal func remote<T: RequestType>(request: T) -> Future<T.ResponseType, APIError> {
-        return SplatNet2.publish(request)
+        return Future { [self] promise in
+            remote(request: request, promise: promise)
+        }
     }
-
+    
+    private func remote<T: RequestType>(request: T, promise: @escaping (Result<T.ResponseType, APIError>) -> ()) {
+        SplatNet2.publish(request)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [self] completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    if error.statusCode == 403 {
+                        getCookie(request: request, promise: promise)
+                    } else {
+                        promise(.failure(error))
+                    }
+                }
+            },
+            receiveValue: { response in
+                promise(.success(response))
+            })
+            .store(in: &task)
+    }
+    
+    private func getCookie<T: RequestType>(request: T, promise: @escaping (Result<T.ResponseType, APIError>) -> ()) {
+        getCookie()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    promise(.failure(error))
+                }
+            }, receiveValue: { [self] response in
+                account = response
+                keychain.setValue(account: response)
+                
+                var request = request
+                request.headers = ["cookie": "iksm_session=\(response.iksmSession)"]
+                remote(request: request, promise: promise)
+            })
+            .store(in: &task)
+    }
+    
     private func generate(request: IksmSession, retry: Bool = false, promise: @escaping (Result<Response.IksmSession, APIError>) -> ()) {
         SplatNet2.publish(request)
             .receive(on: DispatchQueue.main)

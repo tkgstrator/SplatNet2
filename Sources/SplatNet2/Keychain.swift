@@ -40,7 +40,7 @@ extension Keychain {
     func getValue(nsaid: String) throws -> Response.UserInfo {
         print(nsaid)
         let decoder: JSONDecoder = JSONDecoder()
-        guard let data: Data = try getValue(forKey: nsaid) else { throw APIError() }
+        guard let data: Data = try getValue(forKey: nsaid) else { throw APIError.invalidAccount }
         return try decoder.decode(Response.UserInfo.self, from: data)
     }
     

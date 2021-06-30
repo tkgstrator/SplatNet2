@@ -22,14 +22,16 @@ extension SplatNet2 {
                         switch response.result {
                         case .success(let value):
                             do {
-                                guard let nsaid = value.capture(pattern: "data-nsa-id=([/0-f/]{16})", group: 1) else { throw APIError() }
-                                guard let iksmSession = HTTPCookie.cookies(withResponseHeaderFields: (response.response?.allHeaderFields as! [String: String]), for: (response.response?.url!)!).first?.value else { throw APIError() }
+                                guard let nsaid = value.capture(pattern: "data-nsa-id=([/0-f/]{16})", group: 1) else { throw APIError.invalidResponse(from: value) }
+                                guard let iksmSession = HTTPCookie.cookies(withResponseHeaderFields: (response.response?.allHeaderFields as! [String: String]), for: (response.response?.url!)!).first?.value else { throw APIError.invalidResponse(from: value) }
                                 promise(.success(Response.IksmSession(iksmSession: iksmSession, nsaid: nsaid)))
+                            } catch(let error as APIError) {
+                                promise(.failure(error))
                             } catch {
                                 promise(.failure(APIError()))
                             }
-                        case .failure:
-                            promise(.failure(APIError()))
+                        case .failure(let error):
+                            promise(.failure(APIError.invalidResponse(error: error)))
                         }
                     }
                 alamofire.resume()
@@ -52,43 +54,36 @@ extension SplatNet2 {
                     .responseJSON { response in
                         semaphore.signal()
                         switch response.result {
-                        case .success(let value):
-//                            print("RESPONSE", value)
-//                            promise(.failure(Response.APIError.decode))
+                        case .success:
                             if let data = response.data {
                                 do {
                                     promise(.success(try decoder.decode(V.self, from: data)))
                                 } catch {
-                                    // 目的のレスポンス形式にデコードできなかった場合
                                     do {
+                                        // 目的のレスポンス形式にデコードできなかった場合
                                         // エラーレスポンスを受け取っている可能性があるので調べる
-                                        let response = try decoder.decode(APIError.self, from: data)
+                                        let statusCode = response.response?.statusCode
+                                        var response = try decoder.decode(APIError.self, from: data)
+                                        response.statusCode = statusCode
                                         promise(.failure(response))
-                                    } catch {
-                                        // エラーレスポンスもできなかった
-                                        promise(.failure(APIError()))
+                                    } catch(let error) {
+                                        // エラーレスポンスもデコードできなかった
+                                        promise(.failure(APIError.invalidJSON(error: error, from: data)))
                                     }
                                 }
-                            } else {
-                                // レスポンスにBodyが含まれていなかった
-                                promise(.failure(APIError()))
                             }
                         case .failure(let error):
                             if let data = response.data {
                                 do {
-                                    if let statusCode = response.response?.statusCode {
-                                        var response = try decoder.decode(APIError.self, from: data)
-                                        response.status = statusCode
-                                        promise(.failure(response))
-                                    } else {
-                                        promise(.failure(APIError()))
-                                    }
-                                } catch {
-                                    promise(.failure(APIError()))
+                                    let statusCode = response.response?.statusCode
+                                    var response = try decoder.decode(APIError.self, from: data)
+                                    response.statusCode = statusCode
+                                    promise(.failure(response))
+                                } catch(let error) {
+                                    promise(.failure(APIError.invalidJSON(error: error, from: data)))
                                 }
                             } else {
-                                print(error)
-                                print(dump(response.data))
+                                promise(.failure(APIError.invalidResponse(error: error)))
                             }
                         }
                     }
