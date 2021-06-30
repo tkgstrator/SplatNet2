@@ -18,83 +18,30 @@ final public class SplatNet2 {
     internal static let semaphore = DispatchSemaphore(value: 0)
     
     // JSON Encoder
-    private var encoder: JSONEncoder {
+    private var encoder: JSONEncoder = {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
         return encoder
-    }
-    
-    internal var keychain: Keychain {
-        if let service = service {
-            return Keychain(service: service)
-        } else {
-            return Keychain()
-        }
-    }
-    
-    internal var service: String?
-    
-    // IksmSession
-    public var iksmSession: String? {
-        get {
-            keychain.getValue(forKey: .iksmSession)
-        }
-        set {
-            keychain.setValue(value: newValue, forKey: .iksmSession)
-        }
-    }
-    
-    // SessionToken
-    public var sessionToken: String? {
-        get {
-            return keychain.getValue(forKey: .sessionToken)
-        }
-        set {
-            keychain.setValue(value: newValue, forKey: .sessionToken)
-        }
-    }
-    
-    // nsaid
-    public var playerId: String? {
-        get {
-            keychain.getValue(forKey: .playerId)
-        }
-        set {
-            keychain.setValue(value: newValue, forKey: .playerId)
-        }
-    }
-    
-    // Version
-    public var version: String {
-        get {
-            keychain.getValue(forKey: .version) ?? "1.11.0"
-        }
-        set {
-            keychain.setValue(value: newValue, forKey: .version)
-        }
-    }
-    
-    public static var shared: SplatNet2 {
-        let services = Keychain.allItems(.genericPassword)
-        if let service = services.first?["service"] as? String {
-            return SplatNet2(nsaid: service)
-        } else {
-            return SplatNet2()
-        }
-    }
+    }()
     
     internal var task = Set<AnyCancellable>()
-    
-    // 複数アカウント対応
-    public init(nsaid service: String? = nil) {
-        self.service = service
+
+    internal var keychain: Keychain {
+        Keychain(server: URL(string: "https://tkgstrator.work")!, protocolType: .https)
     }
     
-    public init(nsaid service: String? = nil, iksmSession: String) {
-        self.service = service
-        self.iksmSession = iksmSession
+    internal var account: Response.UserInfo?
+
+    internal let version: String = "1.11.0"
+
+    public init(nsaid: String) throws {
+        self.account = try keychain.getValue(nsaid: nsaid)
     }
 
+    public init() {
+        
+    }
+    
     public var oauthURL: URL {
         let parameters: [String: String] = [
             "state": state,
@@ -107,6 +54,11 @@ final public class SplatNet2 {
             "theme": "login_form"
         ]
         return URL(string: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")!
+    }
+    
+    public func getAllAccounts() -> [Response.UserInfo] {
+        guard let accounts = try? keychain.getAccounts() else { return [] }
+        return accounts
     }
     
     // ローカルファイルを参照しているだけなのでエラーが発生するはずがない
@@ -134,13 +86,6 @@ final public class SplatNet2 {
             }
         }
     }
-
-    
-    
-//    @discardableResult
-//    public func convertResultWithJSONFormat(results: [Coop.Result]) -> [String] {
-//        return results.map{ String(data: try! encoder.encode($0), encoding: .utf8)! }
-//    }
 }
 
 extension String {

@@ -12,7 +12,7 @@ extension SplatNet2 {
     
     @discardableResult
     public func getResultCoop(jobId: Int) -> Future<SplatNet2.Coop.Result, Error> {
-        let request = ResultCoop(iksmSession: iksmSession, jobId: jobId)
+        let request = ResultCoop(iksmSession: account?.iksmSession, jobId: jobId)
         return Future { [self] promise in
             remote(request: request)
                 .sink(receiveCompletion: { completion in
@@ -31,7 +31,7 @@ extension SplatNet2 {
 
     @discardableResult
     public func getResultCoopWithJSON(jobId: Int) -> Future<(json: Response.ResultCoop, data: SplatNet2.Coop.Result), Error> {
-        let request = ResultCoop(iksmSession: iksmSession, jobId: jobId)
+        let request = ResultCoop(iksmSession: account?.iksmSession, jobId: jobId)
         return Future { [self] promise in
             remote(request: request)
                 .sink(receiveCompletion: { completion in
@@ -50,20 +50,20 @@ extension SplatNet2 {
 
     @discardableResult
     public func getSummaryCoop() -> Future<Response.SummaryCoop, Error> {
-        let request = SummaryCoop(iksmSession: iksmSession)
+        let request = SummaryCoop(iksmSession: account?.iksmSession)
         return remote(request: request)
     }
 
     @discardableResult
     public func getNicknameAndIcons(playerId: [String]) -> Future<Response.NicknameIcons, Error> {
-        let request = NicknameIcons(iksmSession: iksmSession, playerId: playerId)
+        let request = NicknameIcons(iksmSession: account?.iksmSession, playerId: playerId)
         return remote(request: request)
     }
 
     @discardableResult
     public func getCookie() -> Future<Response.UserInfo, Error> {
         return Future { [self] promise in
-            if let sessionToken = sessionToken {
+            if let sessionToken = account?.sessionToken {
                 getCookie(sessionToken: sessionToken)
                     .receive(on: DispatchQueue.main)
                     .sink(receiveCompletion: { completion in
@@ -74,6 +74,7 @@ extension SplatNet2 {
                             promise(.failure(error))
                         }
                     }, receiveValue: { response in
+                        keychain.setValue(account: response)
                         promise(.success(response))
                     }).store(in: &task)
             } else {
@@ -107,7 +108,8 @@ extension SplatNet2 {
                                 promise(.failure(error))
                             }
                         }, receiveValue: { response in
-                            print(response)
+                            // Keychainに保存
+                            keychain.setValue(account: response)
                             promise(.success(response))
                         }).store(in: &task)
                 }).store(in: &task)
@@ -202,7 +204,6 @@ extension SplatNet2 {
                                                                                 promise(.failure(error))
                                                                             }
                                                                         }, receiveValue: { response in
-                                                                            print(response)
                                                                             promise(.success(Response.UserInfo(sessionToken: sessionToken, response: response, splatoonToken: splatoonTokenResponse)))
                                                                         }).store(in: &task)
                                                                 }).store(in: &task)

@@ -11,9 +11,7 @@ public class ResultCoop: RequestType {
     
     init(iksmSession: String?, jobId: Int) {
         self.path = "coop_results/\(jobId)"
-        if let iksmSession = iksmSession {
-            self.headers = ["cookie": "iksm_session=\(iksmSession)"]
-        }
+        self.headers = ["cookie": "iksm_session=\(iksmSession ?? "")"]
     }
 }
 
@@ -26,9 +24,7 @@ public class SummaryCoop: RequestType {
     typealias ResponseType = Response.SummaryCoop
     
     init(iksmSession: String?) {
-        if let iksmSession = iksmSession {
-            self.headers = ["cookie": "iksm_session=\(iksmSession)"]
-        }
+        self.headers = ["cookie": "iksm_session=\(iksmSession ?? "")"]
     }
 }
 
@@ -42,9 +38,7 @@ public class NicknameIcons: RequestType {
     
     init(iksmSession: String?, playerId: [String]) {
         self.path = "nickname_and_icon?\(playerId.queryString)"
-        if let iksmSession = iksmSession {
-            self.headers = ["cookie": "iksm_session=\(iksmSession)"]
-        }
+        self.headers = ["cookie": "iksm_session=\(iksmSession ?? "")"]
     }
 }
 

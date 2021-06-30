@@ -26,7 +26,7 @@ struct ContentView: View {
                     isPresented.toggle()
                 }, label: { Text("SIGN IN")})
                 .webAuthenticationSession(isPresented: $isPresented) {
-                    WebAuthenticationSession(url: SplatNet2.shared.oauthURL, callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, _ in
+                    WebAuthenticationSession(url: splatNet2.oauthURL, callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, _ in
                         guard let code: String = callbackURL?.absoluteString.capture(pattern: "de=(.*)&", group: 1) else { return }
                         splatNet2.getCookie(sessionTokenCode: code)
                             .receive(on: DispatchQueue.main)
@@ -59,7 +59,8 @@ struct ContentView: View {
     }
     
     private func deleteIksmSession() {
-        splatNet2.iksmSession = ""
+        print(splatNet2.getAllAccounts())
+//        splatNet2.iksmSession = ""
     }
     
     private func getKeychainServer() {
