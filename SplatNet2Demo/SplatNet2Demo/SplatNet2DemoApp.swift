@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import SplatNet2
+
+var splatNet2 = SplatNet2()
 
 @main
 struct SplatNet2DemoApp: App {

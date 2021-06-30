@@ -11,13 +11,11 @@ import Combine
 import BetterSafariView
 import KeychainAccess
 
-let splatNet2 = SplatNet2()
-
 struct ContentView: View {
     @State var task = Set<AnyCancellable>()
     @State var isPresented: Bool = false
     @State var environment: Bool = false
-    @State var serverError: Response.ServerError?
+    @State var apiError: Response.APIError?
     
     var body: some View {
         Form {
@@ -38,6 +36,8 @@ struct ContentView: View {
                                     print(error)
                                 }
                             }, receiveValue: { response in
+                                let nsaid = response.nsaid
+                                splatNet2 = SplatNet2(nsaid: nsaid)
                                 print(response)
                             })
                             .store(in: &task)
@@ -60,27 +60,32 @@ struct ContentView: View {
     
     private func deleteIksmSession() {
         print(splatNet2.getAllAccounts())
-//        splatNet2.iksmSession = ""
     }
     
     private func getKeychainServer() {
-        let keychains = Keychain.allItems(.genericPassword)
+        let keychains = Keychain.allItems(.internetPassword)
         
         for keychain in keychains {
-            let service = keychain["service"]
+            let server = keychain["server"]
             let key = keychain["key"] as! String
-            print("\(service): \(key) -> \(keychain["value"])")
+            print("\(server): \(key) -> \(keychain["value"])")
         }
     }
     
     private func deleteKeychainData() {
-        let keychains = Keychain.allItems(.genericPassword)
+        let keychains = Keychain.allItems(.internetPassword)
         
         for keychain in keychains {
-            let service = keychain["service"]
+            let server = keychain["server"] as! String
             let key = keychain["key"]
-            let keychain = Keychain(service: service as! String)
-            keychain[key as! String] = nil
+            
+            if let url = URL(string: server) {
+                let keychain = Keychain(server: url, protocolType: .https)
+                keychain[key as! String] = nil
+            } else {
+                let keychain = Keychain(server: "work.tkgstrator", protocolType: .https)
+                keychain[key as! String] = nil
+            }
         }
     }
     

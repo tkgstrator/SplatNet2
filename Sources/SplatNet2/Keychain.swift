@@ -9,6 +9,8 @@ import Foundation
 import KeychainAccess
 
 extension Keychain {
+    typealias APIError = Response.APIError
+    
     func setValue(value: String?, forKey: String) {
         if let value = value {
             try? set(value, key: forKey)
@@ -38,12 +40,13 @@ extension Keychain {
     func getValue(nsaid: String) throws -> Response.UserInfo {
         print(nsaid)
         let decoder: JSONDecoder = JSONDecoder()
-        guard let data: Data = try getValue(forKey: nsaid) else { fatalError() }
+        guard let data: Data = try getValue(forKey: nsaid) else { throw APIError() }
         return try decoder.decode(Response.UserInfo.self, from: data)
     }
     
     func getAccounts() throws -> [Response.UserInfo] {
-        return try Set(Keychain.allKeys(.genericPassword).map({ $0.0 }).filter({ $0.count == 16 })).map({ try getValue(nsaid: $0) })
+        let keychain = Keychain(server: URL(string: "https://tkgstrator.work")!, protocolType: .https)
+        return try Set(keychain.allKeys()).map({ $0 }).map({ try getValue(nsaid: $0) })
     }
 
     func remove(forKey: String) {

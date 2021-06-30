@@ -11,7 +11,7 @@ import Combine
 extension SplatNet2 {
     
     @discardableResult
-    public func getResultCoop(jobId: Int) -> Future<SplatNet2.Coop.Result, Error> {
+    public func getResultCoop(jobId: Int) -> Future<SplatNet2.Coop.Result, Response.APIError> {
         let request = ResultCoop(iksmSession: account?.iksmSession, jobId: jobId)
         return Future { [self] promise in
             remote(request: request)
@@ -30,7 +30,7 @@ extension SplatNet2 {
     }
 
     @discardableResult
-    public func getResultCoopWithJSON(jobId: Int) -> Future<(json: Response.ResultCoop, data: SplatNet2.Coop.Result), Error> {
+    public func getResultCoopWithJSON(jobId: Int) -> Future<(json: Response.ResultCoop, data: SplatNet2.Coop.Result), Response.APIError> {
         let request = ResultCoop(iksmSession: account?.iksmSession, jobId: jobId)
         return Future { [self] promise in
             remote(request: request)
@@ -49,19 +49,19 @@ extension SplatNet2 {
     }
 
     @discardableResult
-    public func getSummaryCoop() -> Future<Response.SummaryCoop, Error> {
+    public func getSummaryCoop() -> Future<Response.SummaryCoop, Response.APIError> {
         let request = SummaryCoop(iksmSession: account?.iksmSession)
         return remote(request: request)
     }
 
     @discardableResult
-    public func getNicknameAndIcons(playerId: [String]) -> Future<Response.NicknameIcons, Error> {
+    public func getNicknameAndIcons(playerId: [String]) -> Future<Response.NicknameIcons, Response.APIError> {
         let request = NicknameIcons(iksmSession: account?.iksmSession, playerId: playerId)
         return remote(request: request)
     }
 
     @discardableResult
-    public func getCookie() -> Future<Response.UserInfo, Error> {
+    public func getCookie() -> Future<Response.UserInfo, Response.APIError> {
         return Future { [self] promise in
             if let sessionToken = account?.sessionToken {
                 getCookie(sessionToken: sessionToken)
@@ -74,18 +74,20 @@ extension SplatNet2 {
                             promise(.failure(error))
                         }
                     }, receiveValue: { response in
+                        // Keychainに保存
+                        account = response
                         keychain.setValue(account: response)
                         promise(.success(response))
                     }).store(in: &task)
             } else {
-                promise(.failure(fatalError()))
+                promise(.failure(Response.APIError()))
             }
         }
     }
     
     // MARK: セッショントークンコードからイカスミセッションを取得
     @discardableResult
-    public func getCookie(sessionTokenCode: String) -> Future<Response.UserInfo, Error> {
+    public func getCookie(sessionTokenCode: String) -> Future<Response.UserInfo, Response.APIError> {
         return Future { [self] promise in
             getSessionToken(sessionTokenCode: sessionTokenCode)
                 .receive(on: DispatchQueue.main)
@@ -109,6 +111,7 @@ extension SplatNet2 {
                             }
                         }, receiveValue: { response in
                             // Keychainに保存
+                            account = response
                             keychain.setValue(account: response)
                             promise(.success(response))
                         }).store(in: &task)
@@ -118,7 +121,7 @@ extension SplatNet2 {
 
     // MARK: セッショントークンからイカスミセッションを生成
     @discardableResult
-    public func getCookie(sessionToken: String) -> Future<Response.UserInfo, Error> {
+    public func getCookie(sessionToken: String) -> Future<Response.UserInfo, Response.APIError> {
         let timestamp: Int = Int(Date().timeIntervalSince1970)
         return Future { [self] promise in
             getAccessToken(sessionToken: sessionToken)

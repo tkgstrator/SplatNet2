@@ -9,7 +9,7 @@ public class Response: Codable {
         public var weaponList: [Int]
     }
     
-    public struct ServerError: Codable, Error, Identifiable {
+    public struct APIError: Codable, Error, Identifiable {
         public var id: UUID { UUID() }
         var error: String?
         var errorDescription: String?
@@ -305,7 +305,7 @@ protocol KeyName: Codable {
     var name: String { get }
 }
 
-extension Response.ServerError {
+extension Response.APIError {
     var localizedDescription: String? {
         // 有効な値が入っているものを返す
         if let errorDescription = errorDescription {

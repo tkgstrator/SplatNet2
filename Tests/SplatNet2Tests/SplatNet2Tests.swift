@@ -20,7 +20,7 @@ final class SplatNet2Tests: XCTestCase {
     
     func testSessionToken() {
         do {
-            guard let sessionTokenCode = redirectURL.queryValue(forKey: "session_token_code") else { fatalError() }
+            guard let sessionTokenCode = redirectURL.queryValue(forKey: "session_token_code") else { fatalResponse.APIError() }
             let task = SplatNet2.shared.getSessionToken(sessionTokenCode: sessionTokenCode)
             let recorder = task.record()
             let elements = try wait(for: recorder.elements, timeout: 10)

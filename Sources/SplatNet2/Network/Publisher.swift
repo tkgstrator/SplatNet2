@@ -10,7 +10,7 @@ extension SplatNet2 {
         return decoder
     }
 
-    static func generate<T: IksmSession>(_ request: T) -> Future<Response.IksmSession, Error> {
+    static func generate<T: IksmSession>(_ request: T) -> Future<Response.IksmSession, Response.APIError> {
         return Future { [self] promise in
             DispatchQueue(label: "Network Publisher").async {
                 let alamofire = AF.request(request)
@@ -22,14 +22,14 @@ extension SplatNet2 {
                         switch response.result {
                         case .success(let value):
                             do {
-                                guard let nsaid = value.capture(pattern: "data-nsa-id=([/0-f/]{16})", group: 1) else { throw SplatNet2.APIError.failure }
-                                guard let iksmSession = HTTPCookie.cookies(withResponseHeaderFields: (response.response?.allHeaderFields as! [String: String]), for: (response.response?.url!)!).first?.value else { throw APIError.failure }
+                                guard let nsaid = value.capture(pattern: "data-nsa-id=([/0-f/]{16})", group: 1) else { throw APIError() }
+                                guard let iksmSession = HTTPCookie.cookies(withResponseHeaderFields: (response.response?.allHeaderFields as! [String: String]), for: (response.response?.url!)!).first?.value else { throw APIError() }
                                 promise(.success(Response.IksmSession(iksmSession: iksmSession, nsaid: nsaid)))
                             } catch {
-                                promise(.failure(APIError.response))
+                                promise(.failure(APIError()))
                             }
                         case .failure:
-                            promise(.failure(APIError.response))
+                            promise(.failure(APIError()))
                         }
                     }
                 alamofire.resume()
@@ -38,7 +38,7 @@ extension SplatNet2 {
         }
     }
     
-    static func publish<T: RequestType, V: Codable>(_ request: T) -> Future<V, Error> {
+    static func publish<T: RequestType, V: Codable>(_ request: T) -> Future<V, Response.APIError> {
         return Future { [self] promise in
             DispatchQueue(label: "Network Publisher").async {
                 let alamofire = AF.request(request)
@@ -54,7 +54,7 @@ extension SplatNet2 {
                         switch response.result {
                         case .success(let value):
 //                            print("RESPONSE", value)
-//                            promise(.failure(APIError.decode))
+//                            promise(.failure(Response.APIError.decode))
                             if let data = response.data {
                                 do {
                                     promise(.success(try decoder.decode(V.self, from: data)))
@@ -62,29 +62,29 @@ extension SplatNet2 {
                                     // 目的のレスポンス形式にデコードできなかった場合
                                     do {
                                         // エラーレスポンスを受け取っている可能性があるので調べる
-                                        let response = try decoder.decode(Response.ServerError.self, from: data)
+                                        let response = try decoder.decode(APIError.self, from: data)
                                         promise(.failure(response))
                                     } catch {
                                         // エラーレスポンスもできなかった
-                                        promise(.failure(APIError.decode))
+                                        promise(.failure(APIError()))
                                     }
                                 }
                             } else {
                                 // レスポンスにBodyが含まれていなかった
-                                promise(.failure(APIError.response))
+                                promise(.failure(APIError()))
                             }
                         case .failure(let error):
                             if let data = response.data {
                                 do {
                                     if let statusCode = response.response?.statusCode {
-                                        var response = try decoder.decode(Response.ServerError.self, from: data)
+                                        var response = try decoder.decode(APIError.self, from: data)
                                         response.status = statusCode
                                         promise(.failure(response))
                                     } else {
-                                        promise(.failure(APIError.decode))
+                                        promise(.failure(APIError()))
                                     }
                                 } catch {
-                                    promise(.failure(APIError.response))
+                                    promise(.failure(APIError()))
                                 }
                             } else {
                                 print(error)

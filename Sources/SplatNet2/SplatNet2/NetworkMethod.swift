@@ -9,24 +9,23 @@ import Foundation
 import Combine
 
 extension SplatNet2 {
+//    typealias APIError = Response.APIError
     
-    internal func generate<T: IksmSession>(request: T) -> Future<T.ResponseType, Error> {
+    internal func generate<T: IksmSession>(request: T) -> Future<T.ResponseType, APIError> {
         return SplatNet2.generate(request)
     }
     
-    internal func remote<T: RequestType>(request: T) -> Future<T.ResponseType, Error> {
+    internal func remote<T: RequestType>(request: T) -> Future<T.ResponseType, APIError> {
         return SplatNet2.publish(request)
     }
 
-    private func generate(request: IksmSession, retry: Bool = false, promise: @escaping (Result<Response.IksmSession, Error>) -> ()) {
+    private func generate(request: IksmSession, retry: Bool = false, promise: @escaping (Result<Response.IksmSession, APIError>) -> ()) {
         SplatNet2.publish(request)
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [self] completion in
+            .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
                     break
-                case .failure(let error as Response.ServerError):
-                    promise(.failure(error))
                 case .failure(let error):
                     promise(.failure(error))
                 }
@@ -39,15 +38,13 @@ extension SplatNet2 {
     }
     
     // 失敗した場合セッショントークンの再生成を行う
-    private func remote<T: RequestType>(request: T, retry: Bool = false, promise: @escaping (Result<T.ResponseType, Error>) -> ()) {
+    private func remote<T: RequestType>(request: T, retry: Bool = false, promise: @escaping (Result<T.ResponseType, APIError>) -> ()) {
         SplatNet2.publish(request)
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [self] completion in
+            .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
                     break
-                case .failure(let error as Response.ServerError):
-                    promise(.failure(error))
                 case .failure(let error):
                     promise(.failure(error))
                 }
@@ -58,24 +55,4 @@ extension SplatNet2 {
             })
             .store(in: &task)
     }
-    
-//    // IKSM SESSIONを上書きして再リクエスト
-//    private func getCookie<T: RequestType>(request: T, promise: @escaping (Result<T.ResponseType, Error>) -> Void) {
-//        getCookie(sessionToken: sessionToken!)
-//            .receive(on: DispatchQueue.main)
-//            .sink(receiveCompletion: { completion in
-//                switch completion {
-//                case .finished:
-//                    break
-//                case .failure(let error):
-//                    promise(.failure(error))
-//                }
-//            }, receiveValue: { [self] response in
-//                self.iksmSession = response.iksmSession
-//                var request = request
-//                request.headers = ["cookie": "iksm_session=\(iksmSession!)"]
-//                remote(request: request, retry: true, promise: promise)
-//            })
-//            .store(in: &task)
-//    }
 }

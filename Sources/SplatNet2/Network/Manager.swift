@@ -5,6 +5,8 @@ import CryptoKit
 import KeychainAccess
 
 final public class SplatNet2 {
+    
+    typealias APIError = Response.APIError
     // State, Verifier
     #if DEBUG
     internal let state = "v1MguHzdCzhY7W7DMciwfFGPbzV0qdukFOnPX6czsT7m2END726qGJRrScHUT5AmZ2oS7RArsVj2z4eDH4BqThJpvQv7rgLIrHSOzp4NtwS3kFG3kIOqSE4vHCDUYE0X"
@@ -14,7 +16,7 @@ final public class SplatNet2 {
     internal let verifier = String.randomString
     #endif
    
-//    internal let queue = DispatchQueue(label: "Network Publisher")
+    internal let queue = DispatchQueue(label: "Network Publisher")
     internal static let semaphore = DispatchSemaphore(value: 0)
     
     // JSON Encoder
@@ -34,12 +36,15 @@ final public class SplatNet2 {
 
     internal let version: String = "1.11.0"
 
-    public init(nsaid: String) throws {
-        self.account = try keychain.getValue(nsaid: nsaid)
+    public init(nsaid: String) {
+        // 指定されたIDのアカウント情報を読み込む
+        self.account = try? keychain.getValue(nsaid: nsaid)
     }
 
     public init() {
-        
+        // 何も指定しなければ適当に先頭のアカウントを読み込む
+        guard let account = try? keychain.getAccounts().first else { return }
+        self.account = try? keychain.getValue(nsaid: account.nsaid)
     }
     
     public var oauthURL: URL {
@@ -63,7 +68,7 @@ final public class SplatNet2 {
     
     // ローカルファイルを参照しているだけなのでエラーが発生するはずがない
     @discardableResult
-    public func getShiftSchedule() -> Future<[Response.ScheduleCoop], Error> {
+    public func getShiftSchedule() -> Future<[Response.ScheduleCoop], Response.APIError> {
         return Future { promise in
             if let json = Bundle.module.url(forResource: "coop", withExtension: "json") {
                 if let data = try? Data(contentsOf: json) {
@@ -76,15 +81,21 @@ final public class SplatNet2 {
                     if let shift = try? decoder.decode([Response.ScheduleCoop].self, from: data) {
                         promise(.success(shift))
                     } else {
-                        promise(.failure(APIError.unknown))
+                        promise(.failure(APIError()))
                     }
                 } else {
-                    promise(.failure(APIError.unknown))
+                    promise(.failure(APIError()))
                 }
             } else {
-                promise(.failure(APIError.unknown))
+                promise(.failure(APIError()))
             }
         }
+    }
+}
+
+extension SplatNet2 {
+    static var allAccounts: [Response.UserInfo] {
+        return try! Keychain().getAccounts()
     }
 }
 
