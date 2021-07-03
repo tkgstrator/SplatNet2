@@ -12,7 +12,7 @@ extension SplatNet2 {
     
     @discardableResult
     public func getResultCoop(jobId: Int) -> Future<SplatNet2.Coop.Result, APIError> {
-        let request = ResultCoop(iksmSession: account?.iksmSession, jobId: jobId)
+        let request = ResultCoop(iksmSession: account.iksmSession, jobId: jobId)
         return Future { [self] promise in
             remote(request: request)
                 .sink(receiveCompletion: { completion in
@@ -31,7 +31,7 @@ extension SplatNet2 {
 
     @discardableResult
     public func getResultCoopWithJSON(jobId: Int) -> Future<(json: Response.ResultCoop, data: SplatNet2.Coop.Result), APIError> {
-        let request = ResultCoop(iksmSession: account?.iksmSession, jobId: jobId)
+        let request = ResultCoop(iksmSession: account.iksmSession, jobId: jobId)
         return Future { [self] promise in
             remote(request: request)
                 .sink(receiveCompletion: { completion in
@@ -50,7 +50,7 @@ extension SplatNet2 {
 
     @discardableResult
     public func getSummaryCoop() -> Future<Response.SummaryCoop, APIError> {
-        let request = SummaryCoop(iksmSession: account?.iksmSession)
+        let request = SummaryCoop(iksmSession: account.iksmSession)
         return Future { [self] promise in
             remote(request: request)
                 .receive(on: DispatchQueue.main)
@@ -63,7 +63,7 @@ extension SplatNet2 {
                     }
                 }, receiveValue: { response in
                     // データを上書きする
-                    account?.coop = Response.UserInfo.CoopInfo(from: response)
+                    account.coop = UserInfo.CoopInfo(from: response)
                     keychain.setValue(account: account)
                     promise(.success(response))
                 }).store(in: &task)
@@ -72,12 +72,12 @@ extension SplatNet2 {
 
     @discardableResult
     public func getNicknameAndIcons(playerId: [String]) -> Future<Response.NicknameIcons, APIError> {
-        let request = NicknameIcons(iksmSession: account?.iksmSession, playerId: playerId)
+        let request = NicknameIcons(iksmSession: account.iksmSession, playerId: playerId)
         return remote(request: request)
     }
 
     @discardableResult
-    public func getCookie() -> Future<Response.UserInfo, APIError> {
+    public func getCookie() -> Future<UserInfo, APIError> {
         return Future { [self] promise in
             if let sessionToken = sessionToken {
                 getCookie(sessionToken: sessionToken)
@@ -103,7 +103,7 @@ extension SplatNet2 {
     
     // MARK: セッショントークンコードからイカスミセッションを取得
     @discardableResult
-    public func getCookie(sessionTokenCode: String) -> Future<Response.UserInfo, APIError> {
+    public func getCookie(sessionTokenCode: String) -> Future<UserInfo, APIError> {
         return Future { [self] promise in
             getSessionToken(sessionTokenCode: sessionTokenCode)
                 .receive(on: DispatchQueue.main)
@@ -137,7 +137,7 @@ extension SplatNet2 {
 
     // MARK: セッショントークンからイカスミセッションを生成
     @discardableResult
-    public func getCookie(sessionToken: String) -> Future<Response.UserInfo, APIError> {
+    public func getCookie(sessionToken: String) -> Future<UserInfo, APIError> {
         let timestamp: Int = Int(Date().timeIntervalSince1970)
         return Future { [self] promise in
             getAccessToken(sessionToken: sessionToken)
@@ -223,7 +223,7 @@ extension SplatNet2 {
                                                                                 promise(.failure(error))
                                                                             }
                                                                         }, receiveValue: { response in
-                                                                            promise(.success(Response.UserInfo(sessionToken: sessionToken, response: response, splatoonToken: splatoonTokenResponse)))
+                                                                            promise(.success(UserInfo(sessionToken: sessionToken, response: response, splatoonToken: splatoonTokenResponse)))
                                                                         }).store(in: &task)
                                                                 }).store(in: &task)
                                                         }).store(in: &task)

@@ -12,63 +12,68 @@ import BetterSafariView
 import KeychainAccess
 
 struct ContentView: View {
+
     @State var task = Set<AnyCancellable>()
     @State var isPresented: Bool = false
     @State var environment: Bool = false
     @State var apiError: APIError?
+    @State var account: UserInfo = splatNet2.account
     
     var body: some View {
-        Form {
-            Section() {
-                Button(action: {
-                    isPresented.toggle()
-                }, label: { Text("SIGN IN")})
-                .webAuthenticationSession(isPresented: $isPresented) {
-                    WebAuthenticationSession(url: splatNet2.oauthURL, callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, _ in
-                        guard let code: String = callbackURL?.absoluteString.capture(pattern: "de=(.*)&", group: 1) else { return }
-                        splatNet2.getCookie(sessionTokenCode: code)
-                            .receive(on: DispatchQueue.main)
-                            .sink(receiveCompletion: { completion in
-                                switch completion {
-                                case .finished:
-                                    print("FINISHED")
-                                case .failure(let error):
-                                    apiError = error
-                                }
-                            }, receiveValue: { response in
-                                let nsaid = response.nsaid
-                                splatNet2 = SplatNet2(nsaid: nsaid)
-                                print(response)
-                            })
-                            .store(in: &task)
+        NavigationView {
+            Form {
+                Section() {
+                    Button(action: {
+                        isPresented.toggle()
+                    }, label: { Text("SIGN IN")})
+                    .webAuthenticationSession(isPresented: $isPresented) {
+                        WebAuthenticationSession(url: splatNet2.oauthURL, callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, _ in
+                            guard let code: String = callbackURL?.absoluteString.capture(pattern: "de=(.*)&", group: 1) else { return }
+                            splatNet2.getCookie(sessionTokenCode: code)
+                                .receive(on: DispatchQueue.main)
+                                .sink(receiveCompletion: { completion in
+                                    switch completion {
+                                    case .finished:
+                                        print("FINISHED")
+                                    case .failure(let error):
+                                        apiError = error
+                                    }
+                                }, receiveValue: { response in
+                                    let nsaid = response.nsaid
+                                    splatNet2 = SplatNet2(nsaid: nsaid)
+                                    print(response)
+                                })
+                                .store(in: &task)
+                        }
                     }
+                    Button(action: {
+                        getSummaryCoop()
+                    }, label: { Text("GET SUMMARY")})
+                    Button(action: { getLatestResult() }, label: { Text("GET LATEST RESULT")})
+                    Button(action: { getNicknameAndIcons() }, label: { Text("GET PLAYER DATA")})
                 }
-                Button(action: {
-                    getSummaryCoop()
-                }, label: { Text("GET SUMMARY")})
-                Button(action: { getLatestResult() }, label: { Text("GET LATEST RESULT")})
-                Button(action: { getNicknameAndIcons() }, label: { Text("GET PLAYER DATA")})
+                AccountPicker(account: account) { account in
+                    splatNet2.account = account
+                }
+                Section() {
+                    Button(action: { getKeychainData() }, label: { Text("PRINT KEYCHAIN") })
+                }
+                Section() {
+                    Toggle(isOn: $environment, label: { Text("ENVIRONMENT") })
+                    Button(action: { deleteIksmSession() }, label: { Text("DELETE IKSM SESSION") })
+                    Button(action: { getKeychainServer() }, label: { Text("KEYCHAIN DATA") })
+                    Button(action: { deleteKeychainData() }, label: { Text("DEKETE KEYCHAIN") })
+                }
             }
-            Picker() {
-                
+            .alert(item: $apiError) { error in
+                Alert(title: Text("ERROR"), message: Text(error.localizedDescription))
             }
-            Section() {
-                Button(action: { getKeychainData() }, label: { Text("PRINT KEYCHAIN") })
-            }
-            Section() {
-                Toggle(isOn: $environment, label: { Text("ENVIRONMENT") })
-                Button(action: { deleteIksmSession() }, label: { Text("DELETE IKSM SESSION") })
-                Button(action: { getKeychainServer() }, label: { Text("KEYCHAIN DATA") })
-                Button(action: { deleteKeychainData() }, label: { Text("DEKETE KEYCHAIN") })
-            }
-        }
-        .alert(item: $apiError) { error in
-            Alert(title: Text("ERROR"), message: Text(error.localizedDescription))
+            .navigationTitle("SplatNet2 Demo")
         }
     }
     
     private func deleteIksmSession() {
-        print(splatNet2.getAllAccounts())
+        print(SplatNet2.getAllAccounts())
     }
     
     private func getKeychainData() {

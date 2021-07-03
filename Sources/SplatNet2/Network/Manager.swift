@@ -31,23 +31,23 @@ final public class SplatNet2 {
         Keychain(server: URL(string: "https://tkgstrator.work")!, protocolType: .https)
     }
     
-    public var account: Response.UserInfo?
+    public var account: UserInfo = UserInfo()
 
     public var playerId: String? {
         get {
-            return account?.nsaid
+            return account.nsaid
         }
     }
     
     public var iksmSession: String? {
         get {
-            return account?.iksmSession
+            return account.iksmSession
         }
     }
 
     public var sessionToken: String? {
         get {
-            return account?.sessionToken
+            return account.sessionToken
         }
     }
 
@@ -55,13 +55,17 @@ final public class SplatNet2 {
 
     public init(nsaid: String) {
         // 指定されたIDのアカウント情報を読み込む
-        self.account = try? keychain.getValue(nsaid: nsaid)
+        if let account = try? keychain.getValue(nsaid: nsaid) {
+            self.account = account
+        }
     }
 
     public init() {
         // 何も指定しなければ適当に先頭のアカウントを読み込む
-        guard let account = try? keychain.getAccounts().first else { return }
-        self.account = try? keychain.getValue(nsaid: account.nsaid)
+        // 先頭のアカウントがなければダミーデータを読み込む
+        if let account = try? Keychain.getAccounts().first {
+            self.account = try! keychain.getValue(nsaid: account.nsaid)
+        }
     }
     
     public var oauthURL: URL {
@@ -78,8 +82,8 @@ final public class SplatNet2 {
         return URL(string: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")!
     }
     
-    public func getAllAccounts() -> [Response.UserInfo] {
-        guard let accounts = try? keychain.getAccounts() else { return [] }
+    public static func getAllAccounts() -> [UserInfo] {
+        guard let accounts = try? Keychain.getAccounts() else { return [] }
         return accounts
     }
     
@@ -107,12 +111,6 @@ final public class SplatNet2 {
                 promise(.failure(APIError()))
             }
         }
-    }
-}
-
-extension SplatNet2 {
-    static var allAccounts: [Response.UserInfo] {
-        return try! Keychain().getAccounts()
     }
 }
 

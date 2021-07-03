@@ -87,43 +87,6 @@ public class Response: Codable {
         var nsaid: String
     }
 
-    public struct UserInfo: Codable {
-        public var iksmSession: String
-        public var nsaid: String
-        public var nickname: String
-        public var membership: Bool
-        public var imageUri: String
-        public var sessionToken: String
-        public var coop: CoopInfo
-
-        init(sessionToken: String, response: Response.IksmSession, splatoonToken: Response.SplatoonToken) {
-            self.sessionToken = sessionToken
-            self.iksmSession = response.iksmSession
-            self.nsaid = response.nsaid
-            self.nickname = splatoonToken.result.user.name
-            self.membership = splatoonToken.result.user.membership.active
-            self.imageUri = splatoonToken.result.user.imageUri
-            self.coop = CoopInfo()
-        }
-        
-        public struct CoopInfo: Codable {
-            var jobNum: Int = 0
-            var goldenIkuraTotal: Int = 0
-            var ikuraTotal: Int = 0
-            var kumaPoint: Int = 0
-            var kumaPointTotal: Int = 0
-            
-            init() {}
-            init(from response: Response.SummaryCoop) {
-                self.jobNum = response.summary.card.jobNum
-                self.goldenIkuraTotal = response.summary.card.goldenIkuraTotal
-                self.ikuraTotal = response.summary.card.ikuraTotal
-                self.kumaPoint = response.summary.card.kumaPoint
-                self.kumaPointTotal = response.summary.card.kumaPointTotal
-            }
-        }
-    }
-
     public struct ResultCoop: Codable {
         var jobId: Int
         var jobScore: Int
