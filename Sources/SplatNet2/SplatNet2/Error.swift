@@ -21,6 +21,18 @@ public struct APIError: Codable, Error, Identifiable {
 }
 
 extension APIError: LocalizedError, CustomNSError {
+    public var localizedDescription: String {
+        if let errorDescription = errorDescription {
+            return errorDescription
+        }
+        if let message = message {
+            return message
+        }
+        if let error = error {
+            return error
+        }
+        return "ERROR_UNKNOWN"
+    }
     
     public static var timeout: APIError {
         var apiError = APIError()
