@@ -74,7 +74,6 @@ extension SplatNet2 {
                             }
                         case .failure(let error):
                             if let data = response.data {
-                                print(response.data)
                                 do {
                                     let statusCode = response.response?.statusCode
                                     var response = try decoder.decode(APIError.self, from: data)

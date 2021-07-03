@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import KeychainAccess
 
 extension SplatNet2 {
     
@@ -63,8 +64,6 @@ extension SplatNet2 {
                     }
                 }, receiveValue: { response in
                     // データを上書きする
-                    account.coop = UserInfo.CoopInfo(from: response)
-                    keychain.setValue(account: account)
                     promise(.success(response))
                 }).store(in: &task)
         }
@@ -79,25 +78,19 @@ extension SplatNet2 {
     @discardableResult
     public func getCookie() -> Future<UserInfo, APIError> {
         return Future { [self] promise in
-            if let sessionToken = sessionToken {
-                getCookie(sessionToken: sessionToken)
-                    .receive(on: DispatchQueue.main)
-                    .sink(receiveCompletion: { completion in
-                        switch completion {
-                        case .finished:
-                            break
-                        case .failure(let error):
-                            promise(.failure(error))
-                        }
-                    }, receiveValue: { response in
-                        // Keychainに保存
-                        account = response
-                        keychain.setValue(account: response)
-                        promise(.success(response))
-                    }).store(in: &task)
-            } else {
-                promise(.failure(APIError.emptySessionToken))
-            }
+            getCookie(sessionToken: account.sessionToken)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        promise(.failure(error))
+                    }
+                }, receiveValue: { response in
+                    promise(.success(response))
+                }).store(in: &task)
+            promise(.failure(APIError.emptySessionToken))
         }
     }
     
@@ -126,9 +119,7 @@ extension SplatNet2 {
                                 promise(.failure(error))
                             }
                         }, receiveValue: { response in
-                            // Keychainに保存
-                            account = response
-                            keychain.setValue(account: response)
+                            print(response)
                             promise(.success(response))
                         }).store(in: &task)
                 }).store(in: &task)
@@ -223,7 +214,9 @@ extension SplatNet2 {
                                                                                 promise(.failure(error))
                                                                             }
                                                                         }, receiveValue: { response in
-                                                                            promise(.success(UserInfo(sessionToken: sessionToken, response: response, splatoonToken: splatoonTokenResponse)))
+                                                                            let user = UserInfo(sessionToken: sessionToken, response: response, splatoonToken: splatoonTokenResponse)
+                                                                            Keychain.setValue(account: user)
+                                                                            promise(.success(user))
                                                                         }).store(in: &task)
                                                                 }).store(in: &task)
                                                         }).store(in: &task)

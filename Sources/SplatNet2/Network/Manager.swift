@@ -21,44 +21,25 @@ final public class SplatNet2 {
     
     internal var task = Set<AnyCancellable>()
 
-    internal var keychain: Keychain {
-        Keychain(server: URL(string: "https://tkgstrator.work")!, protocolType: .https)
-    }
-    
-    public var account: UserInfo = UserInfo()
-
-    public var playerId: String? {
-        get {
-            return account.nsaid
-        }
-    }
-    
-    public var iksmSession: String? {
-        get {
-            return account.iksmSession
-        }
+    internal var account: UserInfo {
+        Keychain.getValue(nsaid: nsaid)
     }
 
-    public var sessionToken: String? {
-        get {
-            return account.sessionToken
-        }
-    }
-
+    internal let nsaid: String
     internal let version: String = "1.11.0"
 
     public init(nsaid: String) {
         // 指定されたIDのアカウント情報を読み込む
-        if let account = try? keychain.getValue(nsaid: nsaid) {
-            self.account = account
-        }
+        self.nsaid = nsaid
     }
 
     public init() {
         // 何も指定しなければ適当に先頭のアカウントを読み込む
         // 先頭のアカウントがなければダミーデータを読み込む
-        if let account = try? Keychain.getAccounts().first {
-            self.account = try! keychain.getValue(nsaid: account.nsaid)
+        if let account = Keychain.getAllAccounts().first {
+            self.nsaid = account.nsaid
+        } else {
+            self.nsaid = ""
         }
     }
     
@@ -74,11 +55,6 @@ final public class SplatNet2 {
             "theme": "login_form"
         ]
         return URL(string: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")!
-    }
-    
-    public static func getAllAccounts() -> [UserInfo] {
-        guard let accounts = try? Keychain.getAccounts() else { return [] }
-        return accounts
     }
     
     // ローカルファイルを参照しているだけなのでエラーが発生するはずがない

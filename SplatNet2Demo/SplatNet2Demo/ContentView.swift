@@ -17,7 +17,6 @@ struct ContentView: View {
     @State var isPresented: Bool = false
     @State var environment: Bool = false
     @State var apiError: APIError?
-    @State var account: UserInfo = splatNet2.account
     
     var body: some View {
         NavigationView {
@@ -33,9 +32,7 @@ struct ContentView: View {
                     Button(action: { getLatestResult() }, label: { Text("GET LATEST RESULT")})
                     Button(action: { getNicknameAndIcons() }, label: { Text("GET PLAYER DATA")})
                 }
-                AccountPicker(account: account) { account in
-                    splatNet2.account = account
-                }
+                AccountPicker()
                 Section() {
                     Button(action: { getKeychainData() }, label: { Text("PRINT KEYCHAIN") })
                 }
@@ -54,11 +51,10 @@ struct ContentView: View {
     }
     
     private func deleteIksmSession() {
-        print(SplatNet2.getAllAccounts())
+//        print(Keychain.getAllAccounts())
     }
     
     private func getKeychainData() {
-        print(splatNet2.account)
     }
     
     private func getKeychainServer() {

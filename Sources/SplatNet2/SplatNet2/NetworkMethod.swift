@@ -52,9 +52,6 @@ extension SplatNet2 {
                     promise(.failure(error))
                 }
             }, receiveValue: { [self] response in
-                account = response
-                keychain.setValue(account: response)
-                
                 var request = request
                 request.headers = ["cookie": "iksm_session=\(response.iksmSession)"]
                 remote(request: request, promise: promise)
