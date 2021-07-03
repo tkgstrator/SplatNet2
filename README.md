@@ -37,7 +37,7 @@ import Combine
 
 var task = Set<AnyCancellable>()
 
-SplatNet2.shared.getResultCoop(jobId: 1)
+manager.getResultCoop(jobId: 1)
     .sink(receiveCompletion: { completion in
         switch completion {
         case .finished:
@@ -61,7 +61,7 @@ import Combine
 
 var task = Set<AnyCancellable>()
 
-SplatNet2.shared.getNicknameAndIcons(jobId: 1)
+manager.getNicknameAndIcons(jobId: 1)
     .sink(receiveCompletion: { completion in
         switch completion {
         case .finished:

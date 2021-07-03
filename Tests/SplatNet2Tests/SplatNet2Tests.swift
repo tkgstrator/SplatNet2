@@ -20,8 +20,8 @@ final class SplatNet2Tests: XCTestCase {
     
     func testSessionToken() {
         do {
-            guard let sessionTokenCode = redirectURL.queryValue(forKey: "session_token_code") else { fatalResponse.APIError() }
-            let task = SplatNet2.shared.getSessionToken(sessionTokenCode: sessionTokenCode)
+            guard let sessionTokenCode = redirectURL.queryValue(forKey: "session_token_code") else { fatalAPIError() }
+            let task = manager.getSessionToken(sessionTokenCode: sessionTokenCode)
             let recorder = task.record()
             let elements = try wait(for: recorder.elements, timeout: 10)
             print(elements)
@@ -32,7 +32,7 @@ final class SplatNet2Tests: XCTestCase {
 //
     func testAccessToken() {
         do {
-            let task = SplatNet2.shared.getAccessToken(sessionToken: sessionToken)
+            let task = manager.getAccessToken(sessionToken: sessionToken)
             let recorder = task.record()
             let elements = try wait(for: recorder.elements, timeout: 10)
             print(elements)
@@ -43,7 +43,7 @@ final class SplatNet2Tests: XCTestCase {
     
 //    func testSplatoonToken() {
 //        do {
-//            let task = SplatNet2.shared.getSplatoonToken(accessToken: accessToken)
+//            let task = manager.getSplatoonToken(accessToken: accessToken)
 //            let recorder = task.record()
 //            let elements = try wait(for: recorder.elements, timeout: 10)
 //            print(elements)
@@ -54,7 +54,7 @@ final class SplatNet2Tests: XCTestCase {
 //
 //    func testSplatoonAccessToken() {
 //        do {
-//            let task = SplatNet2.shared.getSplatoonAccessToken(splatoonToken: splatoonToken)
+//            let task = manager.getSplatoonAccessToken(splatoonToken: splatoonToken)
 //            let recorder = task.record()
 //            let elements = try wait(for: recorder.elements, timeout: 10)
 //            print(elements)
@@ -65,7 +65,7 @@ final class SplatNet2Tests: XCTestCase {
 //
 //    func testIksmSession1() {
 //        do {
-//            let task = SplatNet2.shared.getIksmSession(accessToken: splatoonAccessToken)
+//            let task = manager.getIksmSession(accessToken: splatoonAccessToken)
 //            let recorder = task.record()
 //            let elements = try wait(for: recorder.elements, timeout: 10)
 //            print(elements)

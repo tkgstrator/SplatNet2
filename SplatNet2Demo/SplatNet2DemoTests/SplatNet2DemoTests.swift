@@ -10,11 +10,11 @@ import XCTest
 
 class SplatNet2DemoTests: XCTestCase {
 
-    override func setUpWithResponse.APIError() throws {
+    override func setUpWithAPIError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
 
-    override func tearDownWithResponse.APIError() throws {
+    override func tearDownWithAPIError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 

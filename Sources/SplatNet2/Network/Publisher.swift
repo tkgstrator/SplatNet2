@@ -10,9 +10,9 @@ extension SplatNet2 {
         return decoder
     }
 
-    static func generate<T: IksmSession>(_ request: T) -> Future<Response.IksmSession, Response.APIError> {
+    static func generate<T: IksmSession>(_ request: T) -> Future<Response.IksmSession, APIError> {
         return Future { [self] promise in
-            DispatchQueue(label: "Network Publisher").async {
+            dispatchQueue.async {
                 let alamofire = AF.request(request)
                     .validate(statusCode: 200...200)
                     .cURLDescription { request in
@@ -40,9 +40,9 @@ extension SplatNet2 {
         }
     }
     
-    static func publish<T: RequestType, V: Codable>(_ request: T) -> Future<V, Response.APIError> {
+    static func publish<T: RequestType, V: Codable>(_ request: T) -> Future<V, APIError> {
         return Future { [self] promise in
-            DispatchQueue(label: "Network Publisher").async {
+            dispatchQueue.async {
                 let alamofire = AF.request(request)
                     .validate(statusCode: 200...200)
                     .validate(contentType: ["application/json"])

@@ -1,25 +1,13 @@
 import Foundation
 
 public class Response: Codable {
+    
     public struct ScheduleCoop: Codable {
         public var startTime: Int
         public var stageId: Int
         public var rareWeapon: Int
         public var endTime: Int
         public var weaponList: [Int]
-    }
-    
-    public struct APIError: Codable, Error, Identifiable {
-        public var id: UUID { UUID() }
-        var statusCode: Int?
-        var error: String?
-        var errorDescription: String?
-        var status: Int?
-        var errorMessage: String?
-        var correlationId: String?
-        var message: String?            // https://app.splatoon2.nintendo.net/api
-        var code: String?               // https://app.splatoon2.nintendo.net/api
-        var response: [String: String]? // Error Response
     }
     
     public struct SessionToken: Codable {
@@ -106,6 +94,7 @@ public class Response: Codable {
         public var membership: Bool
         public var imageUri: String
         public var sessionToken: String
+        public var coop: CoopInfo
 
         init(sessionToken: String, response: Response.IksmSession, splatoonToken: Response.SplatoonToken) {
             self.sessionToken = sessionToken
@@ -114,6 +103,24 @@ public class Response: Codable {
             self.nickname = splatoonToken.result.user.name
             self.membership = splatoonToken.result.user.membership.active
             self.imageUri = splatoonToken.result.user.imageUri
+            self.coop = CoopInfo()
+        }
+        
+        public struct CoopInfo: Codable {
+            var jobNum: Int = 0
+            var goldenIkuraTotal: Int = 0
+            var ikuraTotal: Int = 0
+            var kumaPoint: Int = 0
+            var kumaPointTotal: Int = 0
+            
+            init() {}
+            init(from response: Response.SummaryCoop) {
+                self.jobNum = response.summary.card.jobNum
+                self.goldenIkuraTotal = response.summary.card.goldenIkuraTotal
+                self.ikuraTotal = response.summary.card.ikuraTotal
+                self.kumaPoint = response.summary.card.kumaPoint
+                self.kumaPointTotal = response.summary.card.kumaPointTotal
+            }
         }
     }
 
@@ -305,77 +312,4 @@ protocol IdName: Codable {
 protocol KeyName: Codable {
     var key: String { get }
     var name: String { get }
-}
-
-extension Response.APIError {
-    
-    static var emptySessionToken: Response.APIError {
-        var apiError = Response.APIError()
-        apiError.statusCode = 403
-        apiError.errorDescription = "ERROR_EMPTY_SESSIONTOKEN"
-        return apiError
-    }
-    
-    static var invalidAccount: Response.APIError {
-        var apiError = Response.APIError()
-        apiError.statusCode = 9999
-        apiError.errorDescription = "ERROR_INVALID_ACCOUNT"
-        return apiError
-    }
-    
-    static var invalidIksmSession: Response.APIError {
-        var apiError = Response.APIError()
-        apiError.statusCode = 403
-        apiError.errorDescription = "ERROR_INVALID_IKSMSESSION"
-        return apiError
-    }
-
-    static func invalidResponse(error: Error) -> Response.APIError {
-        var apiError = Response.APIError()
-        apiError.statusCode = 666
-        apiError.errorDescription = error.localizedDescription
-        return apiError
-    }
-    
-    static func invalidResponse(from response: String) -> Response.APIError {
-        var apiError = Response.APIError()
-        apiError.statusCode = 666
-        apiError.errorDescription = "ERROR_INVALID_RESPONSE"
-        apiError.response = ["response": response]
-        return apiError
-    }
-
-    static func invalidResponse(from response: Data) -> Response.APIError {
-        var apiError = Response.APIError()
-        apiError.statusCode = 666
-        let response = (try? JSONSerialization.jsonObject(with: response) as? [String: Any])
-        apiError.response = response?.compactMapValues({ $0 as? String })
-        return apiError
-    }
-
-    static func invalidJSON(error: Error, from response: Data) -> Response.APIError {
-        var apiError = Response.APIError()
-        apiError.statusCode = 666
-        apiError.errorDescription = error.localizedDescription
-        let response = (try? JSONSerialization.jsonObject(with: response) as? [String: Any])
-        apiError.response = response?.compactMapValues({ $0 as? String })
-        return apiError
-    }
-    
-    var localizedDescription: String? {
-        // 有効な値が入っているものを返す
-        if let errorDescription = errorDescription {
-            return errorDescription
-        }
-        if let errorMessage = errorMessage {
-            return errorMessage
-        }
-        if let error = error {
-            return error
-        }
-        if let code = code {
-            return code
-        }
-        return nil
-    }
 }

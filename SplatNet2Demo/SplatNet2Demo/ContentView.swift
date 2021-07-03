@@ -15,7 +15,7 @@ struct ContentView: View {
     @State var task = Set<AnyCancellable>()
     @State var isPresented: Bool = false
     @State var environment: Bool = false
-    @State var apiError: Response.APIError?
+    @State var apiError: APIError?
     
     var body: some View {
         Form {
@@ -33,7 +33,7 @@ struct ContentView: View {
                                 case .finished:
                                     print("FINISHED")
                                 case .failure(let error):
-                                    print(error)
+                                    apiError = error
                                 }
                             }, receiveValue: { response in
                                 let nsaid = response.nsaid
@@ -49,6 +49,12 @@ struct ContentView: View {
                 Button(action: { getLatestResult() }, label: { Text("GET LATEST RESULT")})
                 Button(action: { getNicknameAndIcons() }, label: { Text("GET PLAYER DATA")})
             }
+            Picker() {
+                
+            }
+            Section() {
+                Button(action: { getKeychainData() }, label: { Text("PRINT KEYCHAIN") })
+            }
             Section() {
                 Toggle(isOn: $environment, label: { Text("ENVIRONMENT") })
                 Button(action: { deleteIksmSession() }, label: { Text("DELETE IKSM SESSION") })
@@ -56,10 +62,17 @@ struct ContentView: View {
                 Button(action: { deleteKeychainData() }, label: { Text("DEKETE KEYCHAIN") })
             }
         }
+        .alert(item: $apiError) { error in
+            Alert(title: Text("ERROR"), message: Text(error.localizedDescription))
+        }
     }
     
     private func deleteIksmSession() {
         print(splatNet2.getAllAccounts())
+    }
+    
+    private func getKeychainData() {
+        print(splatNet2.account)
     }
     
     private func getKeychainServer() {
@@ -97,7 +110,7 @@ struct ContentView: View {
                 case .finished:
                     break
                 case .failure(let error):
-                    print(error)
+                    apiError = error
                 }
             }, receiveValue: { response in
                 print(response)
@@ -109,7 +122,7 @@ struct ContentView: View {
                         case .finished:
                             break
                         case .failure(let error):
-                            print(error)
+                            apiError = error
                         }
                     }, receiveValue: { response in
                         print(response)
@@ -132,7 +145,7 @@ struct ContentView: View {
                 case .finished:
                     break
                 case .failure(let error):
-                    print(error)
+                    apiError = error
                 }
             }, receiveValue: { response in
                 print(response)
@@ -149,7 +162,7 @@ struct ContentView: View {
                 case .finished:
                     break
                 case .failure(let error):
-                    print(error)
+                    apiError = error
                 }
             }, receiveValue: { response in
                 print(response)

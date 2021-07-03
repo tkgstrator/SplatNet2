@@ -6,7 +6,6 @@ import KeychainAccess
 
 final public class SplatNet2 {
     
-    typealias APIError = Response.APIError
     // State, Verifier
     #if DEBUG
     internal let state = "v1MguHzdCzhY7W7DMciwfFGPbzV0qdukFOnPX6czsT7m2END726qGJRrScHUT5AmZ2oS7RArsVj2z4eDH4BqThJpvQv7rgLIrHSOzp4NtwS3kFG3kIOqSE4vHCDUYE0X"
@@ -16,7 +15,7 @@ final public class SplatNet2 {
     internal let verifier = String.randomString
     #endif
    
-    internal let queue = DispatchQueue(label: "Network Publisher")
+    internal static let dispatchQueue = DispatchQueue(label: "Network Publisher")
     internal static let semaphore = DispatchSemaphore(value: 0)
     
     // JSON Encoder
@@ -32,7 +31,25 @@ final public class SplatNet2 {
         Keychain(server: URL(string: "https://tkgstrator.work")!, protocolType: .https)
     }
     
-    internal var account: Response.UserInfo?
+    public var account: Response.UserInfo?
+
+    public var playerId: String? {
+        get {
+            return account?.nsaid
+        }
+    }
+    
+    public var iksmSession: String? {
+        get {
+            return account?.iksmSession
+        }
+    }
+
+    public var sessionToken: String? {
+        get {
+            return account?.sessionToken
+        }
+    }
 
     internal let version: String = "1.11.0"
 
@@ -68,7 +85,7 @@ final public class SplatNet2 {
     
     // ローカルファイルを参照しているだけなのでエラーが発生するはずがない
     @discardableResult
-    public func getShiftSchedule() -> Future<[Response.ScheduleCoop], Response.APIError> {
+    public func getShiftSchedule() -> Future<[Response.ScheduleCoop], APIError> {
         return Future { promise in
             if let json = Bundle.module.url(forResource: "coop", withExtension: "json") {
                 if let data = try? Data(contentsOf: json) {

@@ -9,7 +9,6 @@ import Foundation
 import Combine
 
 extension SplatNet2 {
-//    typealias APIError = Response.APIError
     
     internal func generate<T: IksmSession>(request: T) -> Future<T.ResponseType, APIError> {
         return SplatNet2.generate(request)
@@ -75,7 +74,6 @@ extension SplatNet2 {
                 }
             },
             receiveValue: { (response: Response.IksmSession) in
-                print("GENERATE", response)
                 promise(.success(response))
             })
             .store(in: &task)

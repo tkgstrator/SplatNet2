@@ -9,7 +9,6 @@ import Foundation
 import KeychainAccess
 
 extension Keychain {
-    typealias APIError = Response.APIError
     
     func setValue(value: String?, forKey: String) {
         if let value = value {
@@ -23,7 +22,8 @@ extension Keychain {
         }
     }
     
-    func setValue(account: Response.UserInfo) {
+    func setValue(account: Response.UserInfo?) {
+        guard let account = account else { return }
         let encoder: JSONEncoder = JSONEncoder()
         let data = try? encoder.encode(account)
         setValue(value: data, forKey: account.nsaid)
@@ -38,7 +38,6 @@ extension Keychain {
     }
     
     func getValue(nsaid: String) throws -> Response.UserInfo {
-        print(nsaid)
         let decoder: JSONDecoder = JSONDecoder()
         guard let data: Data = try getValue(forKey: nsaid) else { throw APIError.invalidAccount }
         return try decoder.decode(Response.UserInfo.self, from: data)
