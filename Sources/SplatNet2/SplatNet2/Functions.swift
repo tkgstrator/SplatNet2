@@ -103,9 +103,9 @@ extension SplatNet2 {
     
     // MARK: セッショントークンコードからイカスミセッションを取得
     @discardableResult
-    public func getCookie(sessionTokenCode: String) -> Future<UserInfo, APIError> {
+    public func getCookie(sessionTokenCode: String, verifier: String) -> Future<UserInfo, APIError> {
         return Future { [self] promise in
-            getSessionToken(sessionTokenCode: sessionTokenCode)
+            getSessionToken(sessionTokenCode: sessionTokenCode, verifier: verifier)
                 .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { completion in
                     switch completion {

@@ -11,7 +11,7 @@ import Combine
 extension SplatNet2 {
     // セッショントークンコードからセッショントークンを取得
     @discardableResult
-    public func getSessionToken(sessionTokenCode: String) -> Future<Response.SessionToken, APIError> {
+    func getSessionToken(sessionTokenCode: String, verifier: String) -> Future<Response.SessionToken, APIError> {
         let request = SessionToken(code: sessionTokenCode, verifier: verifier)
         return remote(request: request)
     }

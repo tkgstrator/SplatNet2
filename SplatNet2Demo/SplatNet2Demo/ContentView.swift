@@ -26,26 +26,7 @@ struct ContentView: View {
                     Button(action: {
                         isPresented.toggle()
                     }, label: { Text("SIGN IN")})
-                    .webAuthenticationSession(isPresented: $isPresented) {
-                        WebAuthenticationSession(url: splatNet2.oauthURL, callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, _ in
-                            guard let code: String = callbackURL?.absoluteString.capture(pattern: "de=(.*)&", group: 1) else { return }
-                            splatNet2.getCookie(sessionTokenCode: code)
-                                .receive(on: DispatchQueue.main)
-                                .sink(receiveCompletion: { completion in
-                                    switch completion {
-                                    case .finished:
-                                        print("FINISHED")
-                                    case .failure(let error):
-                                        apiError = error
-                                    }
-                                }, receiveValue: { response in
-                                    let nsaid = response.nsaid
-                                    splatNet2 = SplatNet2(nsaid: nsaid)
-                                    print(response)
-                                })
-                                .store(in: &task)
-                        }
-                    }
+                    .authorize(isPresented: $isPresented)
                     Button(action: {
                         getSummaryCoop()
                     }, label: { Text("GET SUMMARY")})
@@ -62,7 +43,7 @@ struct ContentView: View {
                     Toggle(isOn: $environment, label: { Text("ENVIRONMENT") })
                     Button(action: { deleteIksmSession() }, label: { Text("DELETE IKSM SESSION") })
                     Button(action: { getKeychainServer() }, label: { Text("KEYCHAIN DATA") })
-                    Button(action: { deleteKeychainData() }, label: { Text("DEKETE KEYCHAIN") })
+                    Button(action: { deleteKeychainData() }, label: { Text("DELETE KEYCHAIN") })
                 }
             }
             .alert(item: $apiError) { error in

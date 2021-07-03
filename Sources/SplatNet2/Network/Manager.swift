@@ -7,14 +7,8 @@ import KeychainAccess
 final public class SplatNet2 {
     
     // State, Verifier
-    #if DEBUG
-    internal let state = "v1MguHzdCzhY7W7DMciwfFGPbzV0qdukFOnPX6czsT7m2END726qGJRrScHUT5AmZ2oS7RArsVj2z4eDH4BqThJpvQv7rgLIrHSOzp4NtwS3kFG3kIOqSE4vHCDUYE0X"
-    internal let verifier = "VVSJwmWlQonJu047zDA2jgUtyuK3taxUV8tmUyQnpxLk4Q1ZBAUNvb6d1QPbyOKVbhKtr2IowR92oNP0eXCJvEWQkjeAB0WK7Klca2IjEyJvMVns2pn12UaJPquX9DKg"
-    #else
-    internal let state = String.randomString
-    internal let verifier = String.randomString
-    #endif
-   
+    internal static let state = String.randomString
+    internal static let verifier = String.randomString
     internal static let dispatchQueue = DispatchQueue(label: "Network Publisher")
     internal static let semaphore = DispatchSemaphore(value: 0)
     
@@ -68,7 +62,7 @@ final public class SplatNet2 {
         }
     }
     
-    public var oauthURL: URL {
+    internal static var oauthURL: URL {
         let parameters: [String: String] = [
             "state": state,
             "redirect_uri": "npf71b963c1b7b6d119://auth",
