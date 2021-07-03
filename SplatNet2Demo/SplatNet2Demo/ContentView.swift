@@ -9,7 +9,6 @@ import SwiftUI
 import SplatNet2
 import Combine
 import BetterSafariView
-import KeychainAccess
 
 let manager: SplatNet2 = SplatNet2()
 
@@ -36,13 +35,8 @@ struct ContentView: View {
                 }
                 AccountPicker()
                 Section() {
-                    Button(action: { getKeychainData() }, label: { Text("PRINT KEYCHAIN") })
-                }
-                Section() {
-                    Toggle(isOn: $environment, label: { Text("ENVIRONMENT") })
-                    Button(action: { deleteIksmSession() }, label: { Text("DELETE IKSM SESSION") })
-                    Button(action: { getKeychainServer() }, label: { Text("KEYCHAIN DATA") })
-                    Button(action: { deleteKeychainData() }, label: { Text("DELETE KEYCHAIN") })
+                    Button(action: { getAllAccounts() }, label: { Text("GET ALL ACCOUNTS") })
+                    Button(action: { deleteAllAccounts() }, label: { Text("DELETE ALL ACCOUNTS") })
                 }
             }
             .alert(item: $apiError) { error in
@@ -51,39 +45,16 @@ struct ContentView: View {
             .navigationTitle("SplatNet2 Demo")
         }
     }
-    
-    private func deleteIksmSession() {
-//        print(Keychain.getAllAccounts())
-    }
-    
-    private func getKeychainData() {
-    }
-    
-    private func getKeychainServer() {
-        let keychains = Keychain.allItems(.internetPassword)
-        
-        for keychain in keychains {
-            let server = keychain["server"]
-            let key = keychain["key"] as! String
-            print("\(server): \(key) -> \(keychain["value"])")
+
+    private func getAllAccounts() {
+        let accounts = SplatNet2.getAllAccounts()
+        for account in accounts {
+            print(account)
         }
     }
-    
-    private func deleteKeychainData() {
-        let keychains = Keychain.allItems(.internetPassword)
-        
-        for keychain in keychains {
-            let server = keychain["server"] as! String
-            let key = keychain["key"]
-            
-            if let url = URL(string: server) {
-                let keychain = Keychain(server: url, protocolType: .https)
-                keychain[key as! String] = nil
-            } else {
-                let keychain = Keychain(server: "work.tkgstrator", protocolType: .https)
-                keychain[key as! String] = nil
-            }
-        }
+
+    private func deleteAllAccounts() {
+        SplatNet2.deleteAllAccounts()
     }
     
     private func getLatestResult() {
@@ -138,7 +109,7 @@ struct ContentView: View {
     }
     
     private func getNicknameAndIcons() {
-        let playerId: [String] = ["3f89c3791c43ea57", "fc324b472a0dbb78"]
+        let playerId: [String] = [manager.playerId]
         splatNet2.getNicknameAndIcons(playerId: playerId)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in

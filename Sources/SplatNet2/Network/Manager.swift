@@ -27,6 +27,10 @@ final public class SplatNet2 {
     }
 
     internal let version: String = "1.11.0"
+    
+    public var playerId: String {
+        account.nsaid
+    }
 
     internal static var oauthURL: URL {
         let parameters: [String: String] = [
@@ -43,6 +47,14 @@ final public class SplatNet2 {
     }
     
     public init() {}
+    
+    public class func deleteAllAccounts() -> Void {
+        Keychain.deleteAllAccounts()
+    }
+    
+    public class func getAllAccounts() -> [UserInfo] {
+        Keychain.getAllAccounts()
+    }
     
     // ローカルファイルを参照しているだけなのでエラーが発生するはずがない
     @discardableResult

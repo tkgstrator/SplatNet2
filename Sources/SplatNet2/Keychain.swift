@@ -38,7 +38,6 @@ extension Keychain {
         return try keychain.getData(forKey)
     }
     
-    
     class var account: UserInfo {
         if let activeId = activeId {
             return getValue(nsaid: activeId)
@@ -50,7 +49,12 @@ extension Keychain {
     // 有効化されているアカウントの情報を保存
     class var activeId: String? {
         get {
-            return try? keychain.get("activeId")
+            // 有効可されているアカウントがあればそのIDを返す
+            if let activeId = try? keychain.get("activeId") {
+                return activeId
+            }
+            // なければ全てのアカウントから先頭のものを返す
+            return Keychain.getAllAccounts().first?.nsaid
         }
         set {
             if let newValue = newValue {
@@ -76,6 +80,22 @@ extension Keychain {
         return Set(keychain.allKeys()).map({ $0 }).filter({ $0.count == 16 }).map({ getValue(nsaid: $0) })
     }
 
+    class func deleteAllAccounts() -> Void {
+        let keychains = keychain.allItems()
+        for keychain in keychains {
+            let server = keychain["server"] as! String
+            let key = keychain["key"]
+            
+            if let url = URL(string: server) {
+                let keychain = Keychain(server: url, protocolType: .https)
+                keychain[key as! String] = nil
+            } else {
+                let keychain = Keychain(server: "work.tkgstrator", protocolType: .https)
+                keychain[key as! String] = nil
+            }
+        }
+    }
+    
     func remove(forKey: String) {
         try? remove(forKey)
     }
