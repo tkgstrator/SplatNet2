@@ -21,28 +21,13 @@ final public class SplatNet2 {
     
     internal var task = Set<AnyCancellable>()
 
+    // 常に最新のデータを取得
     internal var account: UserInfo {
-        Keychain.getValue(nsaid: nsaid)
+        Keychain.account
     }
 
-    internal let nsaid: String
     internal let version: String = "1.11.0"
 
-    public init(nsaid: String) {
-        // 指定されたIDのアカウント情報を読み込む
-        self.nsaid = nsaid
-    }
-
-    public init() {
-        // 何も指定しなければ適当に先頭のアカウントを読み込む
-        // 先頭のアカウントがなければダミーデータを読み込む
-        if let account = Keychain.getAllAccounts().first {
-            self.nsaid = account.nsaid
-        } else {
-            self.nsaid = ""
-        }
-    }
-    
     internal static var oauthURL: URL {
         let parameters: [String: String] = [
             "state": state,
@@ -56,6 +41,8 @@ final public class SplatNet2 {
         ]
         return URL(string: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")!
     }
+    
+    public init() {}
     
     // ローカルファイルを参照しているだけなのでエラーが発生するはずがない
     @discardableResult

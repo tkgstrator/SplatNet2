@@ -11,13 +11,15 @@ import Combine
 import BetterSafariView
 import KeychainAccess
 
+let manager: SplatNet2 = SplatNet2()
+
 struct ContentView: View {
 
     @State var task = Set<AnyCancellable>()
     @State var isPresented: Bool = false
     @State var environment: Bool = false
     @State var apiError: APIError?
-    
+
     var body: some View {
         NavigationView {
             Form {

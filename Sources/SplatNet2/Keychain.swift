@@ -38,6 +38,27 @@ extension Keychain {
         return try keychain.getData(forKey)
     }
     
+    
+    class var account: UserInfo {
+        if let activeId = activeId {
+            return getValue(nsaid: activeId)
+        } else {
+            return UserInfo()
+        }
+    }
+    
+    // 有効化されているアカウントの情報を保存
+    class var activeId: String? {
+        get {
+            return try? keychain.get("activeId")
+        }
+        set {
+            if let newValue = newValue {
+                try? keychain.set(newValue, key: "activeId")
+            }
+        }
+    }
+
     // IDを指定してユーザ情報を取得
     // 該当IDがない場合はダミーデータを返す
     class func getValue(nsaid: String) -> UserInfo {
@@ -52,10 +73,7 @@ extension Keychain {
     
     // 全てのアカウントの情報を取得
     class func getAllAccounts() -> [UserInfo] {
-        let keychain = Keychain(server: URL(string: "https://tkgstrator.work")!, protocolType: .https)
-        let accounts = Set(keychain.allKeys()).map({ $0 }).map({ getValue(nsaid: $0) })
-        print(accounts.count)
-        return accounts
+        return Set(keychain.allKeys()).map({ $0 }).filter({ $0.count == 16 }).map({ getValue(nsaid: $0) })
     }
 
     func remove(forKey: String) {
