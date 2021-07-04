@@ -34,6 +34,13 @@ extension APIError: LocalizedError, CustomNSError {
         return "ERROR_UNKNOWN"
     }
     
+    public static var nonewresults: APIError {
+        var apiError = APIError()
+        apiError.statusCode = 9404
+        apiError.errorDescription = "ERROR_NO_NEWRESULTS"
+        return apiError
+    }
+
     public static var timeout: APIError {
         var apiError = APIError()
         apiError.statusCode = 408

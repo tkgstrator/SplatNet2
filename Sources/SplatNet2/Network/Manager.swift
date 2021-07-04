@@ -26,11 +26,11 @@ final public class SplatNet2 {
         Keychain.account
     }
 
-    internal let version: String = "1.11.0"
-    
     public var playerId: String {
         account.nsaid
     }
+
+    internal let version: String = "1.11.0"
 
     internal static var oauthURL: URL {
         let parameters: [String: String] = [
@@ -54,32 +54,6 @@ final public class SplatNet2 {
     
     public class func getAllAccounts() -> [UserInfo] {
         Keychain.getAllAccounts()
-    }
-    
-    // ローカルファイルを参照しているだけなのでエラーが発生するはずがない
-    @discardableResult
-    public func getShiftSchedule() -> Future<[Response.ScheduleCoop], APIError> {
-        return Future { promise in
-            if let json = Bundle.module.url(forResource: "coop", withExtension: "json") {
-                if let data = try? Data(contentsOf: json) {
-                    let decoder: JSONDecoder = {
-                        let decoder = JSONDecoder()
-                        decoder.keyDecodingStrategy = .convertFromSnakeCase
-                        return decoder
-                    }()
-                    
-                    if let shift = try? decoder.decode([Response.ScheduleCoop].self, from: data) {
-                        promise(.success(shift))
-                    } else {
-                        promise(.failure(APIError()))
-                    }
-                } else {
-                    promise(.failure(APIError()))
-                }
-            } else {
-                promise(.failure(APIError()))
-            }
-        }
     }
 }
 

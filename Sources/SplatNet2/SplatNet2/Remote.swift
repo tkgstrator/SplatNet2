@@ -20,7 +20,7 @@ extension SplatNet2 {
         }
     }
     
-    private func remote<T: RequestType>(request: T, promise: @escaping (Result<T.ResponseType, APIError>) -> ()) {
+    internal func remote<T: RequestType>(request: T, promise: @escaping (Result<T.ResponseType, APIError>) -> ()) {
         SplatNet2.publish(request)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [self] completion in
@@ -40,26 +40,8 @@ extension SplatNet2 {
             })
             .store(in: &task)
     }
-    
-    private func getCookie<T: RequestType>(request: T, promise: @escaping (Result<T.ResponseType, APIError>) -> ()) {
-        getCookie()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    promise(.failure(error))
-                }
-            }, receiveValue: { [self] response in
-                var request = request
-                request.headers = ["cookie": "iksm_session=\(response.iksmSession)"]
-                remote(request: request, promise: promise)
-            })
-            .store(in: &task)
-    }
-    
-    private func generate(request: IksmSession, retry: Bool = false, promise: @escaping (Result<Response.IksmSession, APIError>) -> ()) {
+
+    internal func generate(request: IksmSession, retry: Bool = false, promise: @escaping (Result<Response.IksmSession, APIError>) -> ()) {
         SplatNet2.publish(request)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
@@ -77,7 +59,7 @@ extension SplatNet2 {
     }
     
     // 失敗した場合セッショントークンの再生成を行う
-    private func remote<T: RequestType>(request: T, retry: Bool = false, promise: @escaping (Result<T.ResponseType, APIError>) -> ()) {
+    internal func remote<T: RequestType>(request: T, retry: Bool = false, promise: @escaping (Result<T.ResponseType, APIError>) -> ()) {
         SplatNet2.publish(request)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
