@@ -17,7 +17,7 @@ public struct UserInfo: Codable, Hashable, Identifiable {
     public var nsaid: String = ""
     public var nickname: String = ""
     public var membership: Bool = false
-    public var imageUri: String = ""
+    public var imageUri: URL = Bundle.module.url(forResource: "icon", withExtension: "png")!
     public var sessionToken: String = ""
     public var coop: CoopInfo = CoopInfo()
 
@@ -28,16 +28,16 @@ public struct UserInfo: Codable, Hashable, Identifiable {
         self.nsaid = response.nsaid
         self.nickname = splatoonToken.result.user.name
         self.membership = splatoonToken.result.user.membership.active
-        self.imageUri = splatoonToken.result.user.imageUri
+        self.imageUri = URL(string: splatoonToken.result.user.imageUri)!
         self.coop = CoopInfo()
     }
 
     public struct CoopInfo: Codable, Hashable {
-        var jobNum: Int = 0
-        var goldenIkuraTotal: Int = 0
-        var ikuraTotal: Int = 0
-        var kumaPoint: Int = 0
-        var kumaPointTotal: Int = 0
+        public var jobNum: Int = 0
+        public var goldenIkuraTotal: Int = 0
+        public var ikuraTotal: Int = 0
+        public var kumaPoint: Int = 0
+        public var kumaPointTotal: Int = 0
         
         init() {}
         init(from response: Response.SummaryCoop) {

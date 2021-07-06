@@ -30,7 +30,7 @@ extension SplatNet2 {
     }
     
     @discardableResult
-    public func getCookie() -> Future<UserInfo, APIError> {
+    internal func getCookie() -> Future<UserInfo, APIError> {
         return Future { [self] promise in
             getCookie(sessionToken: account.sessionToken)
                 .receive(on: DispatchQueue.main)
@@ -82,7 +82,7 @@ extension SplatNet2 {
     
     // MARK: セッショントークンからイカスミセッションを生成
     @discardableResult
-    internal func getCookie(sessionToken: String) -> Future<UserInfo, APIError> {
+    public func getCookie(sessionToken: String) -> Future<UserInfo, APIError> {
         let timestamp: Int = Int(Date().timeIntervalSince1970)
         return Future { [self] promise in
             getAccessToken(sessionToken: sessionToken)

@@ -12,8 +12,15 @@ import Combine
 public struct Authorize: ViewModifier {
     @Binding var isPresented: Bool
     @State var task = Set<AnyCancellable>()
-    @State var apiError: APIError?
     @State var manager: SplatNet2 = SplatNet2()
+    
+    public typealias CompletionHandler = (Result<Bool, APIError>) -> Void
+    let completionHandler: CompletionHandler
+    
+    public init(isPresented: Binding<Bool>, completionHandler: @escaping CompletionHandler) {
+        self._isPresented = isPresented
+        self.completionHandler = completionHandler
+    }
 
     public func body(content: Content) -> some View {
         content
@@ -25,24 +32,21 @@ public struct Authorize: ViewModifier {
                         .sink(receiveCompletion: { completion in
                             switch completion {
                             case .finished:
-                                break
+                                completionHandler(.success(true))
                             case .failure(let error):
-                                apiError = error
+                                completionHandler(.failure(error))
                             }
-                        }, receiveValue: { response in
-                            print(response)
-                        })
+                        }, receiveValue: { _ in })
                         .store(in: &task)
                 }
-            }
-            .alert(item: $apiError) { error in
-                Alert(title: Text("Error"), message: Text(error.localizedDescription))
             }
     }
 }
 
 public extension View {
-    func authorize(isPresented: Binding<Bool>) -> some View {
-        self.modifier(Authorize(isPresented: isPresented))
+    func authorize(isPresented: Binding<Bool>, completion: @escaping (Result<Bool, APIError>) -> Void) -> some View {
+        self.modifier(Authorize(isPresented: isPresented) { response in
+            completion(response)
+        })
     }
 }

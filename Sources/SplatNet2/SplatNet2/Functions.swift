@@ -67,7 +67,7 @@ extension SplatNet2 {
                     if jobNum == account.coop.jobNum {
                         promise(.failure(APIError.nonewresults))
                     }
-                    
+                    Keychain.update(summary: response)
                     // データを上書きする
                     promise(.success(response))
                 }).store(in: &task)

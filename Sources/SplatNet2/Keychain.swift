@@ -9,18 +9,19 @@ import Foundation
 import KeychainAccess
 
 extension Keychain {
+   
     // 共通なので再利用可能にする
     static let keychain = Keychain(server: URL(string: "https://tkgstrator.work")!, protocolType: .https)
-
+    
     // Data型を保存する
-    class func setValue(value: Data?, forKey: String) {
+    class func setValue(value: Data?, forKey: String) -> Void {
         if let value = value {
             try? keychain.set(value, key: forKey)
         }
     }
     
     // UserInfoをDate型に変換して保存
-    class func setValue(account: UserInfo) {
+    class func setValue(account: UserInfo) -> Void {
         let encoder: JSONEncoder = JSONEncoder()
         do {
             let data = try encoder.encode(account)
@@ -32,7 +33,15 @@ extension Keychain {
             fatalError(error.localizedDescription)
         }
     }
-   
+    
+    // Coop情報を更新
+    // こんな書き方しかないのかな...
+    class func update(summary: Response.SummaryCoop) -> Void {
+        var account = Keychain.account
+        account.coop = UserInfo.CoopInfo(from: summary)
+        setValue(account: account)
+    }
+    
     // Data型のデータを取得
     class func getValue(forKey: String) throws -> Data? {
         return try keychain.getData(forKey)
@@ -62,7 +71,7 @@ extension Keychain {
             }
         }
     }
-
+    
     // IDを指定してユーザ情報を取得
     // 該当IDがない場合はダミーデータを返す
     class func getValue(nsaid: String) -> UserInfo {
@@ -79,7 +88,7 @@ extension Keychain {
     class func getAllAccounts() -> [UserInfo] {
         return Set(keychain.allKeys()).map({ $0 }).filter({ $0.count == 16 }).map({ getValue(nsaid: $0) })
     }
-
+    
     class func deleteAllAccounts() -> Void {
         let keychains = keychain.allItems()
         for keychain in keychains {
@@ -96,7 +105,7 @@ extension Keychain {
         }
     }
     
-    func remove(forKey: String) {
+    func remove(forKey: String) -> Void {
         try? remove(forKey)
     }
 }

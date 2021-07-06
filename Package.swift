@@ -27,11 +27,12 @@ let package = Package(
         .target(
             name: "SplatNet2",
             dependencies: ["Alamofire", "KeychainAccess"],
-            resources: [.copy("Resources/coop.json")]
+            resources: [.copy("Resources/coop.json"), .copy("Resources/icon.png")]
         ),
         .testTarget(
             name: "SplatNet2Tests",
             dependencies: ["SplatNet2", "CombineExpectations", "KeychainAccess"],
-            resources: [.copy("Resources/coop.json")])
+            resources: [.copy("Resources/coop.json"), .copy("Resources/icon.png")]
+        )
     ]
 )

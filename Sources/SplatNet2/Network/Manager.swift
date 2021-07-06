@@ -22,7 +22,7 @@ final public class SplatNet2 {
     internal var task = Set<AnyCancellable>()
 
     // 常に最新のデータを取得
-    internal var account: UserInfo {
+    public var account: UserInfo {
         Keychain.account
     }
 
