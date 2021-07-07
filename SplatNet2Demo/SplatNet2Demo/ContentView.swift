@@ -26,7 +26,9 @@ struct ContentView: View {
                     Button(action: {
                         isPresented.toggle()
                     }, label: { Text("SIGN IN")})
-                    .authorize(isPresented: $isPresented)
+                    .authorize(isPresented: $isPresented) { completion in
+                        print(completion)
+                    }
                     Button(action: {
                         getSummaryCoop()
                     }, label: { Text("GET SUMMARY")})
@@ -58,7 +60,7 @@ struct ContentView: View {
     }
     
     private func getLatestResult() {
-        splatNet2.getSummaryCoop()
+        splatNet2.getSummaryCoop(jobNum: 0)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {

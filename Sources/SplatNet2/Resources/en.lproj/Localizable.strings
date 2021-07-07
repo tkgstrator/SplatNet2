@@ -16,3 +16,4 @@
 "ERROR_EMPTY"="No data in the response.";
 "ERROR_NONEWRESULTS"="No new results.";
 "ERROR_TIMEOUT"="Server did not respond,";
+"ACCOUNT_CHANGER"="Accounts";

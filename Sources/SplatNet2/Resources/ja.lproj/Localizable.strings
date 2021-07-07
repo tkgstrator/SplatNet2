@@ -16,3 +16,4 @@
 "ERROR_EMPTY"="空のデータを受け取りました。";
 "ERROR_NONEWRESULTS"="新しいリザルトがありません。";
 "ERROR_TIMEOUT"="サーバが応答しませんでした";
+"ACCOUNT_CHANGER"="アカウント";

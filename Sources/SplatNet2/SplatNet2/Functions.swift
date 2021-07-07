@@ -50,7 +50,7 @@ extension SplatNet2 {
     }
     
     @discardableResult
-    public func getSummaryCoop() -> Future<Response.SummaryCoop, APIError> {
+    public func getSummaryCoop(jobNum: Int = 0) -> Future<Response.SummaryCoop, APIError> {
         let request = SummaryCoop(iksmSession: account.iksmSession)
         return Future { [self] promise in
             remote(request: request)
@@ -63,8 +63,7 @@ extension SplatNet2 {
                         promise(.failure(error))
                     }
                 }, receiveValue: { response in
-                    let jobNum = response.summary.card.jobNum
-                    if jobNum == account.coop.jobNum {
+                    if jobNum == response.summary.card.jobNum {
                         promise(.failure(APIError.nonewresults))
                     }
                     Keychain.update(summary: response)
