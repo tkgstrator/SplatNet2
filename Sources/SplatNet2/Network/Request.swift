@@ -2,12 +2,12 @@ import Foundation
 import Alamofire
 
 public class ResultCoop: RequestType {
-    var baseURL: URL = URL(string: "https://app.splatoon2.nintendo.net/api/")!
-    var method: HTTPMethod = .get
-    var path: String
-    var parameters: Parameters?
-    var headers: [String: String]?
-    typealias ResponseType = Response.ResultCoop
+    public var baseURL: URL = URL(string: "https://app.splatoon2.nintendo.net/api/")!
+    public var method: HTTPMethod = .get
+    public var path: String
+    public var parameters: Parameters?
+    public var headers: [String: String]?
+    public typealias ResponseType = Response.ResultCoop
     
     init(iksmSession: String?, jobId: Int) {
         self.path = "coop_results/\(jobId)"
@@ -16,12 +16,12 @@ public class ResultCoop: RequestType {
 }
 
 public class SummaryCoop: RequestType {
-    var baseURL: URL = URL(string: "https://app.splatoon2.nintendo.net/api/")!
-    var method: HTTPMethod = .get
-    var path: String = "coop_results"
-    var parameters: Parameters?
-    var headers: [String: String]?
-    typealias ResponseType = Response.SummaryCoop
+    public var baseURL: URL = URL(string: "https://app.splatoon2.nintendo.net/api/")!
+    public var method: HTTPMethod = .get
+    public var path: String = "coop_results"
+    public var parameters: Parameters?
+    public var headers: [String: String]?
+    public typealias ResponseType = Response.SummaryCoop
     
     init(iksmSession: String?) {
         self.headers = ["cookie": "iksm_session=\(iksmSession ?? "")"]
@@ -29,12 +29,12 @@ public class SummaryCoop: RequestType {
 }
 
 public class NicknameIcons: RequestType {
-    var baseURL: URL = URL(string: "https://app.splatoon2.nintendo.net/api/")!
-    var method: HTTPMethod = .get
-    var path: String = "nickname_and_icon"
-    var parameters: Parameters?
-    var headers: [String: String]?
-    typealias ResponseType = Response.NicknameIcons
+    public var baseURL: URL = URL(string: "https://app.splatoon2.nintendo.net/api/")!
+    public var method: HTTPMethod = .get
+    public var path: String = "nickname_and_icon"
+    public var parameters: Parameters?
+    public var headers: [String: String]?
+    public typealias ResponseType = Response.NicknameIcons
     
     init(iksmSession: String?, playerId: [String]) {
         self.path = "nickname_and_icon?\(playerId.queryString)"
@@ -43,12 +43,12 @@ public class NicknameIcons: RequestType {
 }
 
 public class SessionToken: RequestType {
-    var method: HTTPMethod = .post
-    var baseURL = URL(string: "https://accounts.nintendo.com/")!
-    var path: String = "connect/1.0.0/api/session_token"
-    var parameters: Parameters?
-    var headers: [String: String]?
-    typealias ResponseType = Response.SessionToken
+    public var method: HTTPMethod = .post
+    public var baseURL = URL(string: "https://accounts.nintendo.com/")!
+    public var path: String = "connect/1.0.0/api/session_token"
+    public var parameters: Parameters?
+    public var headers: [String: String]?
+    public typealias ResponseType = Response.SessionToken
     
     init(code: String, verifier: String) {
         self.parameters = [
@@ -60,12 +60,12 @@ public class SessionToken: RequestType {
 }
 
 public class AccessToken: RequestType {
-    var method: HTTPMethod = .post
-    var baseURL = URL(string: "https://accounts.nintendo.com/")!
-    var path: String = "connect/1.0.0/api/token"
-    var parameters: Parameters?
-    var headers: [String: String]?
-    typealias ResponseType = Response.AccessToken
+    public var method: HTTPMethod = .post
+    public var baseURL = URL(string: "https://accounts.nintendo.com/")!
+    public var path: String = "connect/1.0.0/api/token"
+    public var parameters: Parameters?
+    public var headers: [String: String]?
+    public typealias ResponseType = Response.AccessToken
     
     init(sessionToken: String?) {
         if let sessionToken = sessionToken {
@@ -79,13 +79,13 @@ public class AccessToken: RequestType {
 }
 
 public class S2SHash: RequestType {
-    var method: HTTPMethod = .post
-    var baseURL = URL(string: "https://elifessler.com/s2s/api/")!
-    var path: String = "gen2"
-    var encoding: ParameterEncoding = URLEncoding.default
-    var parameters: Parameters?
-    var headers: [String: String]?
-    typealias ResponseType = Response.S2SHash
+    public var method: HTTPMethod = .post
+    public var baseURL = URL(string: "https://elifessler.com/s2s/api/")!
+    public var path: String = "gen2"
+    public var encoding: ParameterEncoding = URLEncoding.default
+    public var parameters: Parameters?
+    public var headers: [String: String]?
+    public typealias ResponseType = Response.S2SHash
     
     init(accessToken: String, timestamp: Int) {
         self.headers = [
@@ -99,12 +99,12 @@ public class S2SHash: RequestType {
 }
 
 public class FlapgToken: RequestType {
-    var method: HTTPMethod = .get
-    var baseURL = URL(string: "https://flapg.com/")!
-    var path: String = "ika2/api/login"
-    var parameters: Parameters?
-    var headers: [String: String]?
-    typealias ResponseType = Response.FlapgAPI
+    public var method: HTTPMethod = .get
+    public var baseURL = URL(string: "https://flapg.com/")!
+    public var path: String = "ika2/api/login"
+    public var parameters: Parameters?
+    public var headers: [String: String]?
+    public typealias ResponseType = Response.FlapgAPI
     
     init(accessToken: String, timestamp: Int, hash: String, type: FlapgType) {
         self.headers = [
@@ -124,12 +124,12 @@ public class FlapgToken: RequestType {
 }
 
 public class SplatoonToken: RequestType {
-    var method: HTTPMethod = .post
-    var baseURL = URL(string: "https://api-lp1.znc.srv.nintendo.net/")!
-    var path: String = "v1/Account/Login"
-    var parameters: Parameters?
-    var headers: [String: String]?
-    typealias ResponseType = Response.SplatoonToken
+    public var method: HTTPMethod = .post
+    public var baseURL = URL(string: "https://api-lp1.znc.srv.nintendo.net/")!
+    public var path: String = "v1/Account/Login"
+    public var parameters: Parameters?
+    public var headers: [String: String]?
+    public typealias ResponseType = Response.SplatoonToken
     
     init(from result: Response.FlapgAPI, version: String) {
         self.headers = [
@@ -151,12 +151,12 @@ public class SplatoonToken: RequestType {
 }
 
 public class SplatoonAccessToken: RequestType {
-    var method: HTTPMethod = .post
-    var baseURL = URL(string: "https://api-lp1.znc.srv.nintendo.net/")!
-    var path: String = "v2/Game/GetWebServiceToken"
-    var parameters: Parameters?
-    var headers: [String: String]?
-    typealias ResponseType = Response.SplatoonAccessToken
+    public var method: HTTPMethod = .post
+    public var baseURL = URL(string: "https://api-lp1.znc.srv.nintendo.net/")!
+    public var path: String = "v2/Game/GetWebServiceToken"
+    public var parameters: Parameters?
+    public var headers: [String: String]?
+    public typealias ResponseType = Response.SplatoonAccessToken
     
     init(from result: Response.FlapgAPI, splatoonToken: String, version: String) {
         self.headers = [
@@ -176,12 +176,12 @@ public class SplatoonAccessToken: RequestType {
 }
 
 public class IksmSession: RequestType {
-    var method: HTTPMethod = .get
-    var baseURL = URL(string: "https://app.splatoon2.nintendo.net/")!
-    var path: String = ""
-    var parameters: Parameters?
-    var headers: [String: String]?
-    typealias ResponseType = Response.IksmSession
+    public var method: HTTPMethod = .get
+    public var baseURL = URL(string: "https://app.splatoon2.nintendo.net/")!
+    public var path: String = ""
+    public var parameters: Parameters?
+    public var headers: [String: String]?
+    public typealias ResponseType = Response.IksmSession
     
     init(accessToken: String) {
         self.headers = [

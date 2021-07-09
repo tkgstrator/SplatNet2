@@ -1,7 +1,7 @@
 import Foundation
 import Alamofire
 
-protocol RequestType: URLRequestConvertible {
+public protocol RequestType: URLRequestConvertible {
     
     associatedtype ResponseType: Codable
     var method: HTTPMethod { get }
@@ -14,7 +14,7 @@ protocol RequestType: URLRequestConvertible {
 
 extension RequestType {
     
-    var encoding: ParameterEncoding {
+    public var encoding: ParameterEncoding {
         JSONEncoding.default
     }
     
