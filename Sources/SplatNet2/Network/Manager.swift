@@ -4,7 +4,7 @@ import Combine
 import CryptoKit
 import KeychainAccess
 
-public class SplatNet2 {
+open class SplatNet2 {
     
     // State, Verifier
     internal static let state = String.randomString
