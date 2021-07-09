@@ -165,12 +165,12 @@ public class Response: Codable {
             public var ikuraNum: Int
         }
 
-        struct KeyName: Codable {
+        public struct KeyName: Codable {
             public var key: String
             public var name: String
         }
 
-        struct BossSalmonid: Codable {
+        public struct BossSalmonid: Codable {
             public var boss: KeyName
             public var count: Int
         }
@@ -189,30 +189,30 @@ public class Response: Codable {
             public var pid: String
         }
 
-        struct Special: IdName, Codable {
+        public struct Special: IdName, Codable {
             public var id: String
             public var name: String
         }
 
-        struct WeaponList: Codable {
+        public struct WeaponList: Codable {
             public var id: String
             public var weapon: Weapon?
             public var coopSpecialWeapon: CoopWeapon?
         }
 
-        struct Weapon: IdName, Codable {
+        public struct Weapon: IdName, Codable {
             public var id: String
             public var name: String
             public var image: String
             public var thumbnail: String
         }
         
-        struct CoopWeapon: Codable {
+        public struct CoopWeapon: Codable {
             public var image: String
             public var name: String
         }
 
-        struct PlayerType: Codable {
+        public struct PlayerType: Codable {
             public var species: String
             public var style: String
         }
