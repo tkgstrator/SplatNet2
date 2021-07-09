@@ -88,28 +88,28 @@ public class Response: Codable {
     }
 
     public struct ResultCoop: Codable {
-        var jobId: Int
-        var jobScore: Int
-        var jobRate: Int
-        var jobResult: JobResult
-        var schedule: Schedule
-        var kumaPoint: Int
-        var grade: Grade
-        var gradePoint: Int
-        var gradePointDelta: Int
-        var startTime: Int
-        var playTime: Int
-        var endTime: Int
-        var waveDetails: [WaveResult]
-        var dangerRate: Double
-        var bossCounts: [String: BossSalmonid]
-        var otherResults: [PlayerResult]
-        var myResult: PlayerResult
+        public var jobId: Int
+        public var jobScore: Int
+        public var jobRate: Int
+        public var jobResult: JobResult
+        public var schedule: Schedule
+        public var kumaPoint: Int
+        public var grade: Grade
+        public var gradePoint: Int
+        public var gradePointDelta: Int
+        public var startTime: Int
+        public var playTime: Int
+        public var endTime: Int
+        public var waveDetails: [WaveResult]
+        public var dangerRate: Double
+        public var bossCounts: [String: BossSalmonid]
+        public var otherResults: [PlayerResult]
+        public var myResult: PlayerResult
 
         public struct JobResult: Codable {
-            var failureReason: String?
-            var failureWave: Int?
-            var isClear: Bool
+            public var failureReason: String?
+            public var failureWave: Int?
+            public var isClear: Bool
             
             public func encode(to encoder: Encoder) throws {
                 var container = encoder.container(keyedBy: CodingKeys.self)
@@ -120,23 +120,23 @@ public class Response: Codable {
         }
 
         public struct Schedule: Codable {
-            var stage: Stage
-            var startTime: Int
-            var endTime: Int
-            var weapons: [WeaponList]
+            public var stage: Stage
+            public var startTime: Int
+            public var endTime: Int
+            public var weapons: [WeaponList]
         }
 
         public struct Grade: Codable {
-            var id: String
-            var longName: String
-            var name: String
-            var shortName: String
+            public var id: String
+            public var longName: String
+            public var name: String
+            public var shortName: String
         }
 
         public struct Stage: Codable {
-            var image: String
-            var name: String
-            var stageId: Int {
+            public var image: String
+            public var name: String
+            public var stageId: Int {
                 get {
                     switch image {
                     case "/images/coop_stage/65c68c6f0641cc5654434b78a6f10b0ad32ccdee.png":
@@ -157,64 +157,64 @@ public class Response: Codable {
         }
 
         public struct WaveResult: Codable {
-            var eventType: KeyName
-            var waterLevel: KeyName
-            var goldenIkuraNum: Int
-            var goldenIkuraPopNum: Int
-            var quotaNum: Int
-            var ikuraNum: Int
+            public var eventType: KeyName
+            public var waterLevel: KeyName
+            public var goldenIkuraNum: Int
+            public var goldenIkuraPopNum: Int
+            public var quotaNum: Int
+            public var ikuraNum: Int
         }
 
         struct KeyName: Codable {
-            var key: String
-            var name: String
+            public var key: String
+            public var name: String
         }
 
         struct BossSalmonid: Codable {
-            var boss: KeyName
-            var count: Int
+            public var boss: KeyName
+            public var count: Int
         }
 
         public struct PlayerResult: Codable {
-            var bossKillCounts: [String: BossSalmonid]
-            var deadCount: Int
-            var helpCount: Int
-            var ikuraNum: Int
-            var goldenIkuraNum: Int
-            var special: Special
-            var specialCounts: [Int]
-            var weaponList: [WeaponList]
-            var playerType: PlayerType
-            var name: String
-            var pid: String
+            public var bossKillCounts: [String: BossSalmonid]
+            public var deadCount: Int
+            public var helpCount: Int
+            public var ikuraNum: Int
+            public var goldenIkuraNum: Int
+            public var special: Special
+            public var specialCounts: [Int]
+            public var weaponList: [WeaponList]
+            public var playerType: PlayerType
+            public var name: String
+            public var pid: String
         }
 
         struct Special: IdName, Codable {
-            var id: String
-            var name: String
+            public var id: String
+            public var name: String
         }
 
         struct WeaponList: Codable {
-            var id: String
-            var weapon: Weapon?
-            var coopSpecialWeapon: CoopWeapon?
+            public var id: String
+            public var weapon: Weapon?
+            public var coopSpecialWeapon: CoopWeapon?
         }
 
         struct Weapon: IdName, Codable {
-            var id: String
-            var name: String
-            var image: String
-            var thumbnail: String
+            public var id: String
+            public var name: String
+            public var image: String
+            public var thumbnail: String
         }
         
         struct CoopWeapon: Codable {
-            var image: String
-            var name: String
+            public var image: String
+            public var name: String
         }
 
         struct PlayerType: Codable {
-            var species: String
-            var style: String
+            public var species: String
+            public var style: String
         }
     }
     

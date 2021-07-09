@@ -9,15 +9,15 @@ import Foundation
 
 public struct APIError: Codable, Error, Identifiable {
     public var id: UUID { UUID() }
-    var statusCode: Int?
-    var error: String?
+    public var statusCode: Int?
+    public var error: String?
     public var errorDescription: String?
-    var status: Int?
-    var errorMessage: String?
-    var correlationId: String?
-    var message: String?            // https://app.splatoon2.nintendo.net/api
-    var code: String?               // https://app.splatoon2.nintendo.net/api
-    var response: [String: String]? // Error Response
+    public var status: Int?
+    public var errorMessage: String?
+    public var correlationId: String?
+    public var message: String?            // https://app.splatoon2.nintendo.net/api
+    public var code: String?               // https://app.splatoon2.nintendo.net/api
+    public var response: [String: String]? // Error Response
 }
 
 extension APIError: LocalizedError, CustomNSError {
