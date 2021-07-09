@@ -79,29 +79,15 @@ extension SplatNet2 {
         return remote(request: request)
     }
     
-    // ローカルファイルを参照しているだけなのでエラーが発生するはずがない
-    @discardableResult
-    public func getShiftSchedule() -> Future<[Response.ScheduleCoop], APIError> {
-        return Future { promise in
-            if let json = Bundle.module.url(forResource: "coop", withExtension: "json") {
-                if let data = try? Data(contentsOf: json) {
-                    let decoder: JSONDecoder = {
-                        let decoder = JSONDecoder()
-                        decoder.keyDecodingStrategy = .convertFromSnakeCase
-                        return decoder
-                    }()
-                    
-                    if let shift = try? decoder.decode([Response.ScheduleCoop].self, from: data) {
-                        promise(.success(shift))
-                    } else {
-                        promise(.failure(APIError()))
-                    }
-                } else {
-                    promise(.failure(APIError()))
-                }
-            } else {
-                promise(.failure(APIError()))
-            }
-        }
+    static public var shiftSchedule: [Response.ScheduleCoop] {
+        let json = Bundle.module.url(forResource: "coop", withExtension: "json")!
+        let data = (try? Data(contentsOf: json))!
+        let decoder: JSONDecoder = {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            return decoder
+        }()
+        let shift = (try? decoder.decode([Response.ScheduleCoop].self, from: data))!
+        return shift
     }
 }

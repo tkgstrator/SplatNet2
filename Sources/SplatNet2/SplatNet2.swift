@@ -8,15 +8,15 @@ public extension SplatNet2 {
         public struct Result: Codable {
             public var jobId: Int
             public var stageId: Int
-            public var jobScore: Int
-            public var jobRate: Int
+            public var jobScore: Int?
+            public var jobRate: Int?
             public var jobResult: ResultJob
             public var dangerRate: Double
             public var schedule: Schedule
-            public var kumaPoint: Int
-            public var grade: Int
-            public var gradePoint: Int
-            public var gradePointDelta: Int
+            public var kumaPoint: Int?
+            public var grade: Int?
+            public var gradePoint: Int?
+            public var gradePointDelta: Int?
             public var time: ResultTime
             public var bossCounts: [Int]
             public var bossKillCounts: [Int]
