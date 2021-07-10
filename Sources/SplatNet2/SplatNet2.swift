@@ -5,7 +5,7 @@ import Combine
 public extension SplatNet2 {
     // 変換用のクラス
     class Coop {
-        public struct Result: Codable {
+        public class Result: Codable {
             public var jobId: Int
             public var stageId: Int
             public var jobScore: Int?
@@ -24,7 +24,7 @@ public extension SplatNet2 {
             public var waveDetails: [ResultWave]
             public var goldenEggs: Int
             public var powerEggs: Int
-
+            
             internal init(from response: Response.ResultCoop) {
                 self.jobId = response.jobId
                 self.stageId = response.schedule.stage.stageId
