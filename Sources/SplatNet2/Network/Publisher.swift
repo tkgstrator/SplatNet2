@@ -57,7 +57,8 @@ extension SplatNet2 {
                         case .success:
                             if let data = response.data {
                                 do {
-                                    promise(.success(try decoder.decode(V.self, from: data)))
+                                    let response = try decoder.decode(V.self, from: data)
+                                    promise(.success(response))
                                 } catch {
                                     do {
                                         // 目的のレスポンス形式にデコードできなかった場合

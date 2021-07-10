@@ -27,7 +27,9 @@ struct ContentView: View {
                         isPresented.toggle()
                     }, label: { Text("SIGN IN")})
                     .authorize(isPresented: $isPresented) { completion in
+                        #if DEBUG
                         print(completion)
+                        #endif
                     }
                     Button(action: {
                         getSummaryCoop()

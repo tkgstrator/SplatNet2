@@ -73,7 +73,9 @@ extension SplatNet2 {
                                 promise(.failure(error))
                             }
                         }, receiveValue: { response in
+                            #if DEBUG
                             print(response)
+                            #endif
                             promise(.success(response))
                         }).store(in: &task)
                 }).store(in: &task)
