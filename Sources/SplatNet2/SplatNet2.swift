@@ -6,24 +6,24 @@ public extension SplatNet2 {
     // 変換用のクラス
     class Coop {
         public class Result: Codable {
-            public var jobId: Int
-            public var stageId: Int
+            public var jobId: Int = 0
+            public var stageId: Int = 5000
             public var jobScore: Int?
             public var jobRate: Int?
-            public var jobResult: ResultJob
-            public var dangerRate: Double
-            public var schedule: Schedule
+            public var jobResult: ResultJob = ResultJob()
+            public var dangerRate: Double = 0.0
+            public var schedule: Schedule = Schedule()
             public var kumaPoint: Int?
             public var grade: Int?
             public var gradePoint: Int?
             public var gradePointDelta: Int?
-            public var time: ResultTime
-            public var bossCounts: [Int]
-            public var bossKillCounts: [Int]
-            public var results: [ResultPlayer]
-            public var waveDetails: [ResultWave]
-            public var goldenEggs: Int
-            public var powerEggs: Int
+            public var time: ResultTime = ResultTime()
+            public var bossCounts: [Int] = []
+            public var bossKillCounts: [Int] = []
+            public var results: [ResultPlayer] = []
+            public var waveDetails: [ResultWave] = []
+            public var goldenEggs: Int = 0
+            public var powerEggs: Int = 0
             
             internal init(from response: Response.ResultCoop) {
                 self.jobId = response.jobId
@@ -54,10 +54,11 @@ public extension SplatNet2 {
         }
 
         public struct ResultTime: Codable {
-            public var playTime: Int
-            public var startTime: Int
-            public var endTime: Int
-
+            public var playTime: Int = 0
+            public var startTime: Int = 0
+            public var endTime: Int = 0
+            
+            init() {}
             internal init(from response: Response.ResultCoop) {
                 self.startTime = response.startTime
                 self.endTime = response.endTime
@@ -67,8 +68,9 @@ public extension SplatNet2 {
         public struct ResultJob: Codable {
             public var failureReason: String?
             public var failureWave: Int?
-            public var isClear: Bool
+            public var isClear: Bool = false
 
+            init() {}
             internal init(from response: Response.ResultCoop.JobResult) {
                 self.failureWave = response.failureWave
                 self.failureReason = response.failureReason
@@ -77,11 +79,12 @@ public extension SplatNet2 {
         }
 
         public struct Schedule: Codable {
-            public var startTime: Int
-            public var endTime: Int
-            public var weaponList: [Int]
-            public var stageId: Int
+            public var startTime: Int = 0
+            public var endTime: Int = 0
+            public var weaponList: [Int] = []
+            public var stageId: Int = 5000
 
+            init() {}
             internal init(from response: Response.ResultCoop.Schedule) {
                 self.startTime = response.startTime
                 self.endTime = response.endTime
@@ -91,18 +94,19 @@ public extension SplatNet2 {
         }
 
         public struct ResultPlayer: Codable {
-            public var bossKillCounts: [Int]
-            public var helpCount: Int
-            public var deadCount: Int
-            public var ikuraNum: Int
-            public var goldenIkuraNum: Int
-            public var pid: String
+            public var bossKillCounts: [Int] = Array(repeating: 0, count: 9)
+            public var helpCount: Int = 0
+            public var deadCount: Int = 0
+            public var ikuraNum: Int = 0
+            public var goldenIkuraNum: Int = 0
+            public var pid: String = ""
             public var name: String?
-            public var playerType: PlayerType
-            public var specialId: Int
-            public var specialCounts: [Int]
-            public var weaponList: [Int]
+            public var playerType: PlayerType = PlayerType()
+            public var specialId: Int = 0
+            public var specialCounts: [Int] = []
+            public var weaponList: [Int] = []
 
+            init() {}
             internal init(from response: Response.ResultCoop.PlayerResult) {
                 self.bossKillCounts = response.bossKillCounts.sorted(by: { Int($0.key)! < Int($1.key)!}).map { $0.value.count }
                 self.helpCount = response.helpCount
@@ -119,9 +123,10 @@ public extension SplatNet2 {
         }
 
         public struct PlayerType: Codable {
-            public var species: String
-            public var style: String
+            public var species: String = "inkling"
+            public var style: String = "girl"
 
+            init() {}
             internal init(from response: Response.ResultCoop.PlayerType) {
                 self.species = response.species
                 self.style = response.style
@@ -129,13 +134,14 @@ public extension SplatNet2 {
         }
 
         public struct ResultWave: Codable {
-            public var eventType: Int
-            public var waterLevel: Int
-            public var ikuraNum: Int
-            public var goldenIkuraNum: Int
-            public var goldenIkuraPopNum: Int
-            public var quotaNum: Int
+            public var eventType: Int = 0
+            public var waterLevel: Int = 1
+            public var ikuraNum: Int = 0
+            public var goldenIkuraNum: Int = 0
+            public var goldenIkuraPopNum: Int = 0
+            public var quotaNum: Int = 0
 
+            init() {}
             internal init(from response: Response.ResultCoop.WaveResult) {
                 self.eventType = EventType(rawValue: response.eventType.key)!.eventType
                 self.waterLevel = WaterLevel(rawValue: response.waterLevel.key)!.waterLevel
