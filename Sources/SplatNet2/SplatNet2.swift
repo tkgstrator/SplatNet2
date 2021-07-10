@@ -25,6 +25,7 @@ public extension SplatNet2 {
             public var goldenEggs: Int = 0
             public var powerEggs: Int = 0
             
+            public init() {}
             internal init(from response: Response.ResultCoop) {
                 self.jobId = response.jobId
                 self.stageId = response.schedule.stage.stageId
@@ -58,7 +59,7 @@ public extension SplatNet2 {
             public var startTime: Int = 0
             public var endTime: Int = 0
             
-            init() {}
+            public init() {}
             internal init(from response: Response.ResultCoop) {
                 self.startTime = response.startTime
                 self.endTime = response.endTime
@@ -70,7 +71,7 @@ public extension SplatNet2 {
             public var failureWave: Int?
             public var isClear: Bool = false
 
-            init() {}
+            public init() {}
             internal init(from response: Response.ResultCoop.JobResult) {
                 self.failureWave = response.failureWave
                 self.failureReason = response.failureReason
@@ -84,7 +85,7 @@ public extension SplatNet2 {
             public var weaponList: [Int] = []
             public var stageId: Int = 5000
 
-            init() {}
+            public init() {}
             internal init(from response: Response.ResultCoop.Schedule) {
                 self.startTime = response.startTime
                 self.endTime = response.endTime
@@ -106,7 +107,7 @@ public extension SplatNet2 {
             public var specialCounts: [Int] = []
             public var weaponList: [Int] = []
 
-            init() {}
+            public init() {}
             internal init(from response: Response.ResultCoop.PlayerResult) {
                 self.bossKillCounts = response.bossKillCounts.sorted(by: { Int($0.key)! < Int($1.key)!}).map { $0.value.count }
                 self.helpCount = response.helpCount
@@ -126,7 +127,7 @@ public extension SplatNet2 {
             public var species: String = "inkling"
             public var style: String = "girl"
 
-            init() {}
+            public init() {}
             internal init(from response: Response.ResultCoop.PlayerType) {
                 self.species = response.species
                 self.style = response.style
@@ -141,7 +142,7 @@ public extension SplatNet2 {
             public var goldenIkuraPopNum: Int = 0
             public var quotaNum: Int = 0
 
-            init() {}
+            public init() {}
             internal init(from response: Response.ResultCoop.WaveResult) {
                 self.eventType = EventType(rawValue: response.eventType.key)!.eventType
                 self.waterLevel = WaterLevel(rawValue: response.waterLevel.key)!.waterLevel
