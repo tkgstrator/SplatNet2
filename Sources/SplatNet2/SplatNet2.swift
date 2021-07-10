@@ -97,7 +97,7 @@ public extension SplatNet2 {
             public var ikuraNum: Int
             public var goldenIkuraNum: Int
             public var pid: String
-            public var name: String
+            public var name: String?
             public var playerType: PlayerType
             public var specialId: Int
             public var specialCounts: [Int]
