@@ -54,7 +54,7 @@ public extension SplatNet2 {
             }
         }
 
-        public struct ResultTime: Codable {
+        public class ResultTime: Codable {
             public var playTime: Int = 0
             public var startTime: Int = 0
             public var endTime: Int = 0
@@ -66,7 +66,7 @@ public extension SplatNet2 {
                 self.playTime = response.playTime
             }
         }
-        public struct ResultJob: Codable {
+        public class ResultJob: Codable {
             public var failureReason: String?
             public var failureWave: Int?
             public var isClear: Bool = false
@@ -79,7 +79,7 @@ public extension SplatNet2 {
             }
         }
 
-        public struct Schedule: Codable {
+        public class Schedule: Codable {
             public var startTime: Int = 0
             public var endTime: Int = 0
             public var weaponList: [Int] = []
@@ -94,7 +94,7 @@ public extension SplatNet2 {
             }
         }
 
-        public struct ResultPlayer: Codable {
+        public class ResultPlayer: Codable {
             public var bossKillCounts: [Int] = Array(repeating: 0, count: 9)
             public var helpCount: Int = 0
             public var deadCount: Int = 0
@@ -123,7 +123,7 @@ public extension SplatNet2 {
             }
         }
 
-        public struct PlayerType: Codable {
+        public class PlayerType: Codable {
             public var species: String = "inkling"
             public var style: String = "girl"
 
@@ -134,7 +134,7 @@ public extension SplatNet2 {
             }
         }
 
-        public struct ResultWave: Codable {
+        public class ResultWave: Codable {
             public var eventType: Int = 0
             public var waterLevel: Int = 1
             public var ikuraNum: Int = 0
