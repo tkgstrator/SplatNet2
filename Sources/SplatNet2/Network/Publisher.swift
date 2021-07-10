@@ -40,7 +40,7 @@ extension SplatNet2 {
         }
     }
     
-    static func publish<T: RequestType, V: Codable>(_ request: T) -> Future<V, APIError> {
+    public static func publish<T: RequestType, V: Codable>(_ request: T) -> Future<V, APIError> {
         return Future { [self] promise in
             dispatchQueue.async {
                 let alamofire = AF.request(request)
