@@ -10,7 +10,7 @@ import Combine
 
 extension SplatNet2 {
     
-    public func generate<T: IksmSession>(request: T) -> Future<T.ResponseType, APIError> {
+    internal func generate<T: IksmSession>(request: T) -> Future<T.ResponseType, APIError> {
         return SplatNet2.generate(request)
     }
     
@@ -41,7 +41,7 @@ extension SplatNet2 {
             .store(in: &task)
     }
 
-    public func generate(request: IksmSession, retry: Bool = false, promise: @escaping (Result<Response.IksmSession, APIError>) -> ()) {
+    internal func generate(request: IksmSession, retry: Bool = false, promise: @escaping (Result<Response.IksmSession, APIError>) -> ()) {
         SplatNet2.publish(request)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
@@ -59,21 +59,21 @@ extension SplatNet2 {
     }
     
     // 失敗した場合セッショントークンの再生成を行う
-    public func remote<T: RequestType>(request: T, retry: Bool = false, promise: @escaping (Result<T.ResponseType, APIError>) -> ()) {
-        SplatNet2.publish(request)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    promise(.failure(error))
-                }
-            },
-            receiveValue: { (response: T.ResponseType) in
-                print("REMOTE", response)
-                promise(.success(response))
-            })
-            .store(in: &task)
-    }
+//    public func remote<T: RequestType>(request: T, retry: Bool = false, promise: @escaping (Result<T.ResponseType, APIError>) -> ()) {
+//        SplatNet2.publish(request)
+//            .receive(on: DispatchQueue.main)
+//            .sink(receiveCompletion: { completion in
+//                switch completion {
+//                case .finished:
+//                    break
+//                case .failure(let error):
+//                    promise(.failure(error))
+//                }
+//            },
+//            receiveValue: { (response: T.ResponseType) in
+//                print("REMOTE", response)
+//                promise(.success(response))
+//            })
+//            .store(in: &task)
+//    }
 }
