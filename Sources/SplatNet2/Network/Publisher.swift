@@ -42,7 +42,7 @@ extension SplatNet2 {
     
     public static func publish<T: RequestType, V: Codable>(_ request: T) -> Future<V, APIError> {
         return Future { [self] promise in
-            dispatchQueue.async {
+//            dispatchQueue.async {
                 let alamofire = AF.request(request)
                     .validate(statusCode: 200...200)
                     .validate(contentType: ["application/json"])
@@ -52,7 +52,7 @@ extension SplatNet2 {
                         #endif
                     }
                     .responseJSON { response in
-                        semaphore.signal()
+//                        semaphore.signal()
                         switch response.result {
                         case .success:
                             if let data = response.data {
@@ -89,8 +89,8 @@ extension SplatNet2 {
                         }
                     }
                 alamofire.resume()
-                semaphore.wait()
-            }
+//                semaphore.wait()
+//            }
         }
     }
 }
