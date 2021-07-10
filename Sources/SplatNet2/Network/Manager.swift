@@ -9,8 +9,8 @@ open class SplatNet2 {
     // State, Verifier
     internal static let state = String.randomString
     internal static let verifier = String.randomString
-    internal static let dispatchQueue = DispatchQueue(label: "Network Publisher")
-    internal static let semaphore = DispatchSemaphore(value: 0)
+    public static let dispatchQueue = DispatchQueue(label: "Network Publisher")
+    public static let semaphore = DispatchSemaphore(value: 0)
     
     // JSON Encoder
     private var encoder: JSONEncoder = {
@@ -19,7 +19,7 @@ open class SplatNet2 {
         return encoder
     }()
     
-    internal var task = Set<AnyCancellable>()
+    public var task = Set<AnyCancellable>()
 
     // 常に最新のデータを取得
     public var account: UserInfo {
