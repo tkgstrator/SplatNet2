@@ -1,93 +1,27 @@
+//
+//  File.swift
+//  
+//
+//  Created by devonly on 2021/07/13.
+//
+
 import Foundation
+import Alamofire
 
-public class Response: Codable {
+public class ResultCoop: RequestType {
+    public var baseURL: URL = URL(string: "https://app.splatoon2.nintendo.net/api/")!
+    public var method: HTTPMethod = .get
+    public var path: String
+    public var parameters: Parameters?
+    public var headers: [String: String]?
+    public typealias ResponseType = ResultCoop.Response
     
-    public struct ScheduleCoop: Codable {
-        public var startTime: Int
-        public var stageId: Int
-        public var rareWeapon: Int
-        public var endTime: Int
-        public var weaponList: [Int]
+    init(iksmSession: String?, jobId: Int) {
+        self.path = "coop_results/\(jobId)"
+        self.headers = ["cookie": "iksm_session=\(iksmSession ?? "")"]
     }
     
-    public struct SessionToken: Codable {
-        public var sessionToken: String
-    }
-
-    public struct AccessToken: Codable {
-        var accessToken: String
-        var expiresIn: Int
-        var idToken: String
-        var scope: [String]
-        var tokenType: String
-    }
-
-    public struct S2SHash: Codable {
-        var hash: String
-    }
-
-    public struct FlapgAPI: Codable {
-        var result: FlapgParameters
-
-        struct FlapgParameters: Codable {
-            var f: String
-            var p1: String
-            var p2: String
-            var p3: String
-        }
-    }
-
-    public struct SplatoonToken: Codable {
-        var result: SplatoonTokenResult
-        var status: Int
-        var correlationId: String
-
-        struct SplatoonTokenResult: Codable {
-            var webApiServerCredential: WebAPIServerCredential
-            var user: WebAPIServerUser
-            var firebaseCredential: FirebaseCredential
-        }
-
-        struct WebAPIServerUser: Codable {
-            var name: String
-            var imageUri: String
-            var id: Int
-            var supportId: String
-            var membership: Membership
-        }
-
-        struct Membership: Codable {
-            var active: Bool
-        }
-
-        struct FirebaseCredential: Codable {
-            var expiresIn: Int
-            var accessToken: String
-        }
-
-        struct WebAPIServerCredential: Codable {
-            var expiresIn: Int
-            var accessToken: String
-        }
-    }
-
-    public struct SplatoonAccessToken: Codable {
-        var correlationId: String
-        var result: AccessToken
-        var status: Int
-
-        struct AccessToken: Codable {
-            var accessToken: String
-            var expiresIn: Int
-        }
-    }
-
-    public struct IksmSession: Codable {
-        var iksmSession: String
-        var nsaid: String
-    }
-
-    public struct ResultCoop: Codable {
+    public struct Response: Codable {
         public var jobId: Int
         public var jobScore: Int
         public var jobRate: Int
@@ -215,54 +149,6 @@ public class Response: Codable {
         public struct PlayerType: Codable {
             public var species: String
             public var style: String
-        }
-    }
-    
-    public struct SummaryCoop : Codable {
-//        var results: [ResultCoop]
-//        var rewardGear
-        public var summary: Summary
-        
-        public struct Summary: Codable {
-            public var card: SummaryCard
-            public var stats: [SummaryStat]
-            
-            public struct SummaryCard: Codable {
-                public var goldenIkuraTotal: Int
-                public var helpTotal: Int
-                public var ikuraTotal: Int
-                public var jobNum: Int
-                public var kumaPoint: Int
-                public var kumaPointTotal: Int
-            }
-            
-            public struct SummaryStat: Codable {
-                public var clearNum: Int
-                public var deadTotal: Int
-                public var endTime: Int
-                public var failureCounts: [Int]
-//              public   var grade
-                public var gradePoint: Int
-                public var helpTotal: Int
-                public var jobNum: Int
-                public var kumaPointTotal: Int
-                public var myGoldenIkuraTotal: Int
-                public var myIkuraTotal: Int
-                public var startTime: Int
-                public var teamGoldenIkuraTotal: Int
-                public var teamIkuraTotal: Int
-            }
-        }
-        
-    }
-    
-    public struct NicknameIcons: Codable {
-        public var nicknameAndIcons: [NicknameIcon]
-        
-        public struct NicknameIcon: Codable {
-            public var nickname: String
-            public var nsaId: String
-            public var thumbnailUrl: String
         }
     }
 }

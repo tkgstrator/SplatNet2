@@ -9,7 +9,6 @@ import Foundation
 import KeychainAccess
 
 extension Keychain {
-   
     // 共通なので再利用可能にする
     static let keychain = Keychain(server: URL(string: "https://tkgstrator.work")!, protocolType: .https)
     
@@ -25,18 +24,18 @@ extension Keychain {
         let encoder: JSONEncoder = JSONEncoder()
         do {
             let data = try encoder.encode(account)
-            // IDがからの場合はダミーデータなので保存しない
+            // IDが空の場合はダミーデータなので保存しない
             if !account.nsaid.isEmpty {
                 setValue(value: data, forKey: account.nsaid)
             }
         } catch(let error) {
+            // エンコードできないときはエラーを出力して停止
             fatalError(error.localizedDescription)
         }
     }
     
     // Coop情報を更新
-    // こんな書き方しかないのかな...
-    class func update(summary: Response.SummaryCoop) -> Void {
+    class func update(summary: SummaryCoop.Response) -> Void {
         var account = Keychain.account
         account.coop = UserInfo.CoopInfo(from: summary)
         setValue(account: account)

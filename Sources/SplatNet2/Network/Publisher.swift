@@ -10,7 +10,7 @@ extension SplatNet2 {
         return decoder
     }
 
-    static func generate<T: IksmSession>(_ request: T) -> Future<Response.IksmSession, APIError> {
+    static func generate<T: IksmSession>(_ request: T) -> Future<IksmSession.Response, APIError> {
         return Future { [self] promise in
             dispatchQueue.async {
                 let alamofire = AF.request(request)
@@ -24,7 +24,7 @@ extension SplatNet2 {
                             do {
                                 guard let nsaid = value.capture(pattern: "data-nsa-id=([/0-f/]{16})", group: 1) else { throw APIError.invalidResponse(from: value) }
                                 guard let iksmSession = HTTPCookie.cookies(withResponseHeaderFields: (response.response?.allHeaderFields as! [String: String]), for: (response.response?.url!)!).first?.value else { throw APIError.invalidResponse(from: value) }
-                                promise(.success(Response.IksmSession(iksmSession: iksmSession, nsaid: nsaid)))
+                                promise(.success(IksmSession.Response(iksmSession: iksmSession, nsaid: nsaid)))
                             } catch(let error as APIError) {
                                 promise(.failure(error))
                             } catch {
@@ -42,7 +42,7 @@ extension SplatNet2 {
     
     public static func publish<T: RequestType, V: Codable>(_ request: T) -> Future<V, APIError> {
         return Future { [self] promise in
-//            dispatchQueue.async {
+            dispatchQueue.async {
                 let alamofire = AF.request(request)
                     .validate(statusCode: 200...200)
                     .validate(contentType: ["application/json"])
@@ -52,7 +52,7 @@ extension SplatNet2 {
                         #endif
                     }
                     .responseJSON { response in
-//                        semaphore.signal()
+                        semaphore.signal()
                         switch response.result {
                         case .success:
                             if let data = response.data {
@@ -89,14 +89,13 @@ extension SplatNet2 {
                         }
                     }
                 alamofire.resume()
-//                semaphore.wait()
-//            }
+                semaphore.wait()
+            }
         }
     }
 }
 
 extension String {
-    
     func capture(pattern: String, group: Int) -> String? {
         let result = capture(pattern: pattern, group: [group])
         return result.isEmpty ? nil : result[0]

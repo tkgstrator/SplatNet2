@@ -26,7 +26,7 @@ public extension SplatNet2 {
             public var powerEggs: Int = 0
             
             public init() {}
-            internal init(from response: Response.ResultCoop) {
+            internal init(from response: ResultCoop.Response) {
                 self.jobId = response.jobId
                 self.stageId = response.schedule.stage.stageId
                 self.jobScore = response.jobScore
@@ -40,7 +40,7 @@ public extension SplatNet2 {
                 self.gradePointDelta = response.gradePointDelta
                 self.time = ResultTime(from: response)
                 self.bossCounts = response.bossCounts.sorted(by: { Int($0.key)! < Int($1.key)!}).map { $0.value.count }
-                var results: [Response.ResultCoop.PlayerResult] = [response.myResult]
+                var results: [ResultCoop.Response.PlayerResult] = [response.myResult]
                 results.append(contentsOf: response.otherResults)
                 self.results = results.map { ResultPlayer(from: $0) }
                 self.waveDetails = response.waveDetails.map { ResultWave(from: $0) }
@@ -60,7 +60,7 @@ public extension SplatNet2 {
             public var endTime: Int = 0
             
             public init() {}
-            internal init(from response: Response.ResultCoop) {
+            internal init(from response: ResultCoop.Response) {
                 self.startTime = response.startTime
                 self.endTime = response.endTime
                 self.playTime = response.playTime
@@ -72,7 +72,7 @@ public extension SplatNet2 {
             public var isClear: Bool = false
 
             public init() {}
-            internal init(from response: Response.ResultCoop.JobResult) {
+            internal init(from response: ResultCoop.Response.JobResult) {
                 self.failureWave = response.failureWave
                 self.failureReason = response.failureReason
                 self.isClear = response.isClear
@@ -86,7 +86,7 @@ public extension SplatNet2 {
             public var stageId: Int = 5000
 
             public init() {}
-            internal init(from response: Response.ResultCoop.Schedule) {
+            internal init(from response: ResultCoop.Response.Schedule) {
                 self.startTime = response.startTime
                 self.endTime = response.endTime
                 self.weaponList = response.weapons.map { Int($0.id)! }
@@ -108,7 +108,7 @@ public extension SplatNet2 {
             public var weaponList: [Int] = []
 
             public init() {}
-            internal init(from response: Response.ResultCoop.PlayerResult) {
+            internal init(from response: ResultCoop.Response.PlayerResult) {
                 self.bossKillCounts = response.bossKillCounts.sorted(by: { Int($0.key)! < Int($1.key)!}).map { $0.value.count }
                 self.helpCount = response.helpCount
                 self.deadCount = response.deadCount
@@ -128,7 +128,7 @@ public extension SplatNet2 {
             public var style: String = "girl"
 
             public init() {}
-            internal init(from response: Response.ResultCoop.PlayerType) {
+            internal init(from response: ResultCoop.Response.PlayerType) {
                 self.species = response.species
                 self.style = response.style
             }
@@ -143,7 +143,7 @@ public extension SplatNet2 {
             public var quotaNum: Int = 0
 
             public init() {}
-            internal init(from response: Response.ResultCoop.WaveResult) {
+            internal init(from response: ResultCoop.Response.WaveResult) {
                 self.eventType = EventType(rawValue: response.eventType.key)!.eventType
                 self.waterLevel = WaterLevel(rawValue: response.waterLevel.key)!.waterLevel
                 self.ikuraNum = response.ikuraNum

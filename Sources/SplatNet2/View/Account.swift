@@ -14,7 +14,7 @@ public struct AccountPicker: View {
     public init() {}
     public var body: some View {
         HStack {
-            Picker(selection: $account, label: Text("ACCOUNT_CHANGER".localized)) {
+            Picker("ACCOUNT_CHANGER".localized, selection: $account) {
                 ForEach(Keychain.getAllAccounts()) { account in
                     Text(account.nickname).tag(account)
                 }

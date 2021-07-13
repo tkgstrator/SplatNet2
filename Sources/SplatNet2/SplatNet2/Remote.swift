@@ -41,7 +41,7 @@ extension SplatNet2 {
             .store(in: &task)
     }
 
-    internal func generate(request: IksmSession, retry: Bool = false, promise: @escaping (Result<Response.IksmSession, APIError>) -> ()) {
+    internal func generate(request: IksmSession, retry: Bool = false, promise: @escaping (Result<IksmSession.Response, APIError>) -> ()) {
         SplatNet2.publish(request)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
@@ -52,7 +52,7 @@ extension SplatNet2 {
                     promise(.failure(error))
                 }
             },
-            receiveValue: { (response: Response.IksmSession) in
+            receiveValue: { (response: IksmSession.Response) in
                 promise(.success(response))
             })
             .store(in: &task)

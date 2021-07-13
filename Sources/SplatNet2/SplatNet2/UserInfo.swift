@@ -22,7 +22,7 @@ public struct UserInfo: Codable, Hashable, Identifiable {
     public var coop: CoopInfo = CoopInfo()
 
     init() {}
-    init(sessionToken: String, response: Response.IksmSession, splatoonToken: Response.SplatoonToken) {
+    init(sessionToken: String, response: IksmSession.Response, splatoonToken: SplatoonToken.Response) {
         self.sessionToken = sessionToken
         self.iksmSession = response.iksmSession
         self.nsaid = response.nsaid
@@ -40,7 +40,7 @@ public struct UserInfo: Codable, Hashable, Identifiable {
         public var kumaPointTotal: Int = 0
         
         init() {}
-        init(from response: Response.SummaryCoop) {
+        init(from response: SummaryCoop.Response) {
             self.jobNum = response.summary.card.jobNum
             self.goldenIkuraTotal = response.summary.card.goldenIkuraTotal
             self.ikuraTotal = response.summary.card.ikuraTotal

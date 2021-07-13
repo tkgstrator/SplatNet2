@@ -31,7 +31,7 @@ extension SplatNet2 {
     }
 
     @discardableResult
-    public func getResultCoopWithJSON(jobId: Int) -> Future<(json: Response.ResultCoop, data: SplatNet2.Coop.Result), APIError> {
+    public func getResultCoopWithJSON(jobId: Int) -> Future<(json: ResultCoop.Response, data: SplatNet2.Coop.Result), APIError> {
         let request = ResultCoop(iksmSession: account.iksmSession, jobId: jobId)
         return Future { [self] promise in
             remote(request: request)
@@ -50,7 +50,7 @@ extension SplatNet2 {
     }
     
     @discardableResult
-    public func getSummaryCoop(jobNum: Int = 0) -> Future<Response.SummaryCoop, APIError> {
+    public func getSummaryCoop(jobNum: Int = 0) -> Future<SummaryCoop.Response, APIError> {
         let request = SummaryCoop(iksmSession: account.iksmSession)
         return Future { [self] promise in
             remote(request: request)
@@ -74,12 +74,12 @@ extension SplatNet2 {
     }
     
     @discardableResult
-    public func getNicknameAndIcons(playerId: [String]) -> Future<Response.NicknameIcons, APIError> {
+    public func getNicknameAndIcons(playerId: [String]) -> Future<NicknameIcons.ResponseType, APIError> {
         let request = NicknameIcons(iksmSession: account.iksmSession, playerId: playerId)
         return remote(request: request)
     }
     
-    static public var shiftSchedule: [Response.ScheduleCoop] {
+    static public var shiftSchedule: [ScheduleCoop.Response] {
         let json = Bundle.module.url(forResource: "coop", withExtension: "json")!
         let data = (try? Data(contentsOf: json))!
         let decoder: JSONDecoder = {
@@ -87,7 +87,7 @@ extension SplatNet2 {
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             return decoder
         }()
-        let shift = (try? decoder.decode([Response.ScheduleCoop].self, from: data))!
+        let shift = (try? decoder.decode([ScheduleCoop.Response].self, from: data))!
         return shift
     }
 }
