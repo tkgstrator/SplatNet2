@@ -30,8 +30,8 @@ open class SplatNet2 {
         account.nsaid
     }
 
+    internal let userAgent: String
     internal let version: String = "1.11.0"
-
     internal static var oauthURL: URL {
         let parameters: [String: String] = [
             "state": state,
@@ -46,7 +46,9 @@ open class SplatNet2 {
         return URL(string: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")!
     }
     
-    public init() {}
+    public init(userAgent: String) {
+        self.userAgent = userAgent
+    }
     
     public class func deleteAllAccounts() -> Void {
         Keychain.deleteAllAccounts()

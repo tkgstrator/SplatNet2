@@ -8,9 +8,10 @@
 import Foundation
 import KeychainAccess
 
-extension Keychain {
+// ここの処理ゴミなのでなんとかしたい
+public extension Keychain {
     // 共通なので再利用可能にする
-    static let keychain = Keychain(server: URL(string: "https://tkgstrator.work")!, protocolType: .https)
+    internal static let keychain = Keychain(server: URL(string: "https://tkgstrator.work")!, protocolType: .https)
     
     // Data型を保存する
     class func setValue(value: Data?, forKey: String) -> Void {
@@ -35,7 +36,7 @@ extension Keychain {
     }
     
     // Coop情報を更新
-    class func update(summary: SummaryCoop.Response) -> Void {
+    internal class func update(summary: SummaryCoop.Response) -> Void {
         var account = Keychain.account
         account.coop = UserInfo.CoopInfo(from: summary)
         setValue(account: account)
@@ -57,7 +58,7 @@ extension Keychain {
     // 有効化されているアカウントの情報を保存
     class var activeId: String? {
         get {
-            // 有効可されているアカウントがあればそのIDを返す
+            // 有効化されているアカウントがあればそのIDを返す
             if let activeId = try? keychain.get("activeId") {
                 return activeId
             }

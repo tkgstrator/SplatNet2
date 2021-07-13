@@ -12,7 +12,7 @@ import Combine
 public struct Authorize: ViewModifier {
     @Binding var isPresented: Bool
     @State var task = Set<AnyCancellable>()
-    @State var manager: SplatNet2 = SplatNet2()
+    @State var manager: SplatNet2 = SplatNet2(userAgent: "Salmonia3/@tkgling")
     
     public typealias CompletionHandler = (Result<Bool, APIError>) -> Void
     let completionHandler: CompletionHandler

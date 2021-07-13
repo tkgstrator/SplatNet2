@@ -38,7 +38,7 @@ extension SplatNet2 {
     }
 
     func getS2SHash(accessToken: String, timestamp: Int) -> Future<S2SHash.Response, APIError> {
-        let request = S2SHash(accessToken: accessToken, timestamp: timestamp)
+        let request = S2SHash(accessToken: accessToken, timestamp: timestamp, userAgent: userAgent)
         return remote(request: request)
     }
     

@@ -17,9 +17,9 @@ public class S2SHash: RequestType {
     public var headers: [String: String]?
     public typealias ResponseType = S2SHash.Response
     
-    init(accessToken: String, timestamp: Int) {
+    init(accessToken: String, timestamp: Int, userAgent: String) {
         self.headers = [
-            "User-Agent": "Salmonia/@tkgling"
+            "User-Agent": userAgent
         ]
         self.parameters = [
             "naIdToken": accessToken,
