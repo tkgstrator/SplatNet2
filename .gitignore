@@ -3,3 +3,5 @@
 /Packages
 xcuserdata/
 ikaHash.swift
+.swiftpm/*
+Package.resolved
