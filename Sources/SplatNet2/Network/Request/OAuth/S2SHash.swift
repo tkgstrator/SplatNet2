@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  S2SHash.swift
+//  SplatNet2
 //
 //  Created by devonly on 2021/07/13.
 //
@@ -29,5 +29,9 @@ public class S2SHash: RequestType {
     
     public struct Response: Codable {
         var hash: String
+        
+        init(accessToken: String, timestamp: Int) {
+            self.hash = getIkaHash(idToken: accessToken, timestamp: timestamp)
+        }
     }
 }
