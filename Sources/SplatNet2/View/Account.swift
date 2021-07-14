@@ -1,6 +1,6 @@
 //
-//  SwiftUIView.swift
-//  
+//  AccountPicker.swift
+//  SplatNet2
 //
 //  Created by devonly on 2021/07/03.
 //

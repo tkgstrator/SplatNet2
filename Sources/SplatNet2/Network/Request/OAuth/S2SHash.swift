@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  S2SHash.swift
+//  SplatNet2
 //
 //  Created by devonly on 2021/07/13.
 //

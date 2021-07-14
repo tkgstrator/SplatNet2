@@ -214,6 +214,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 1240;
+				ORGANIZATIONNAME = "Magi, Inc.";
 				TargetAttributes = {
 					10F010B0263D7ADF002C40DA = {
 						CreatedOnToolsVersion = 12.4;
