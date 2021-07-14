@@ -10,8 +10,6 @@ import SplatNet2
 import Combine
 import BetterSafariView
 
-let manager: SplatNet2 = SplatNet2()
-
 struct ContentView: View {
 
     @State var task = Set<AnyCancellable>()
@@ -62,7 +60,7 @@ struct ContentView: View {
     }
     
     private func getLatestResult() {
-        splatNet2.getSummaryCoop(jobNum: 0)
+        manager.getSummaryCoop(jobNum: 0)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -74,7 +72,7 @@ struct ContentView: View {
             }, receiveValue: { response in
                 print(response)
                 let latestId = response.summary.card.jobNum
-                splatNet2.getResultCoop(jobId: latestId)
+                manager.getResultCoop(jobId: latestId)
                     .receive(on: DispatchQueue.main)
                     .sink(receiveCompletion: { completion in
                         switch completion {
@@ -97,7 +95,7 @@ struct ContentView: View {
     }
     
     private func getSummaryCoop() {
-        splatNet2.getSummaryCoop()
+        manager.getSummaryCoop()
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -114,7 +112,7 @@ struct ContentView: View {
     
     private func getNicknameAndIcons() {
         let playerId: [String] = [manager.playerId]
-        splatNet2.getNicknameAndIcons(playerId: playerId)
+        manager.getNicknameAndIcons(playerId: playerId)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {

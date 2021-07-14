@@ -38,8 +38,14 @@ extension SplatNet2 {
     }
 
     func getS2SHash(accessToken: String, timestamp: Int) -> Future<S2SHash.Response, APIError> {
+        #if DEBUG
+        return Future { promise in
+            promise(.success(S2SHash.Response(accessToken: accessToken, timestamp: timestamp)))
+        }
+        #else
         let request = S2SHash(accessToken: accessToken, timestamp: timestamp, userAgent: userAgent)
         return remote(request: request)
+        #endif
     }
     
     // Parameter F
