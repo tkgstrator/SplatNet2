@@ -30,8 +30,8 @@ public class S2SHash: RequestType {
     public struct Response: Codable {
         var hash: String
         
-        init(accessToken: String, timestamp: Int) {
-            self.hash = getIkaHash(idToken: accessToken, timestamp: timestamp)
+        init(hash: String) {
+            self.hash = hash
         }
     }
 }

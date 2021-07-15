@@ -156,6 +156,7 @@
 				10F010AD263D7ADF002C40DA /* Sources */,
 				10F010AE263D7ADF002C40DA /* Frameworks */,
 				10F010AF263D7ADF002C40DA /* Resources */,
+				1081B772269FDBA00063D947 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -278,6 +279,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1081B772269FDBA00063D947 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif find $(dirname ${SRCROOT})/Sources | grep IkaHash2.swift; then\n    paths=$(find $(dirname ${SRCROOT})/Sources | grep Cookie.swift)\n    for path in ${paths}; do\n        echo ${path}\n        sed -i \"\" -e \"s/getS2SHash/getIkaHash/\" ${path}\n    done\nelse\n    paths=$(find $(dirname ${SRCROOT})/Sources | grep Cookie.swift)\n    for path in ${paths}; do\n        echo ${path}\n        sed -i \"\" -e \"s/getIkaHash/getS2SHash/\" ${path}\n    done\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		10F010AD263D7ADF002C40DA /* Sources */ = {
