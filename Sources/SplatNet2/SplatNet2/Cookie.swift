@@ -32,7 +32,7 @@ extension SplatNet2 {
     @discardableResult
     internal func getCookie() -> Future<UserInfo, APIError> {
         return Future { [self] promise in
-            getCookie(sessionToken: account.sessionToken)
+            getCookie(sessionToken: sessionToken)
                 .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { completion in
                     switch completion {
@@ -44,7 +44,6 @@ extension SplatNet2 {
                 }, receiveValue: { response in
                     promise(.success(response))
                 }).store(in: &task)
-            promise(.failure(APIError.emptySessionToken))
         }
     }
     
@@ -171,7 +170,7 @@ extension SplatNet2 {
                                                                             }
                                                                         }, receiveValue: { response in
                                                                             let user = UserInfo(sessionToken: sessionToken, response: response, splatoonToken: splatoonTokenResponse)
-                                                                            Keychain.setValue(account: user)
+                                                                            keychain.setValue(user)
                                                                             promise(.success(user))
                                                                         }).store(in: &task)
                                                                 }).store(in: &task)

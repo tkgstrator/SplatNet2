@@ -11,7 +11,7 @@ import Combine
 import CryptoKit
 import KeychainAccess
 
-open class SplatNet2 {
+open class SplatNet2: ObservableObject {
     
     // State, Verifier
     internal static let state = String.randomString
@@ -27,16 +27,16 @@ open class SplatNet2 {
     }()
     
     public var task = Set<AnyCancellable>()
-
-    // 常に最新のデータを取得
-    public var account: UserInfo {
-        Keychain.account
+    internal var keychain: Keychain = Keychain(service: "SplatNet2")
+    // プレイヤーIDを切り替えるとKeychainが切り替わる
+    internal var playerId: String {
+        get {
+            keychain.getValue()?.nsaid ?? ""
+        }
+        set {
+            keychain = Keychain(service: newValue)
+        }
     }
-
-    public var playerId: String {
-        account.nsaid
-    }
-
     internal let userAgent: String
     internal let version: String = "1.11.0"
     internal static var oauthURL: URL {
@@ -53,16 +53,41 @@ open class SplatNet2 {
         return URL(string: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")!
     }
     
+    // イニシャライザ
     public init(userAgent: String) {
         self.userAgent = userAgent
     }
     
-    public class func deleteAllAccounts() -> Void {
-        Keychain.deleteAllAccounts()
+    internal var iksmSession: String {
+        SplatNet2.account.iksmSession
+    }
+    
+    internal var sessionToken: String {
+        SplatNet2.account.sessionToken
+    }
+    
+    public class var account: UserInfo {
+        SplatNet2.getAllAccounts().first ?? UserInfo()
     }
     
     public class func getAllAccounts() -> [UserInfo] {
-        Keychain.getAllAccounts()
+        print(Keychain.allItems(.genericPassword))
+        let account = Keychain.allItems(.genericPassword)
+            .compactMap({ $0["service"] as? String })
+            .filter({ $0.count == 16 })
+            .compactMap({ Keychain(service: $0).getValue() })
+        print(account)
+        return []
+    }
+    
+    public class func deleteAllAccounts() {
+        let services: [String] = Keychain.allItems(.genericPassword)
+            .compactMap({ $0["service"] as? String })
+//            .filter({ $0.count == 16 })
+        for service in services {
+            let keychain = Keychain(service: service)
+            try? keychain.removeAll()
+        }
     }
 }
 

@@ -13,8 +13,8 @@ extension SplatNet2 {
     
     @discardableResult
     public func getResultCoop(jobId: Int) -> Future<SplatNet2.Coop.Result, APIError> {
-        let request = ResultCoop(iksmSession: account.iksmSession, jobId: jobId)
         return Future { [self] promise in
+            let request = ResultCoop(iksmSession: iksmSession, jobId: jobId)
             remote(request: request)
                 .sink(receiveCompletion: { completion in
                     switch completion {
@@ -32,8 +32,8 @@ extension SplatNet2 {
 
     @discardableResult
     public func getResultCoopWithJSON(jobId: Int) -> Future<(json: ResultCoop.Response, data: SplatNet2.Coop.Result), APIError> {
-        let request = ResultCoop(iksmSession: account.iksmSession, jobId: jobId)
         return Future { [self] promise in
+            let request = ResultCoop(iksmSession: iksmSession, jobId: jobId)
             remote(request: request)
                 .sink(receiveCompletion: { completion in
                     switch completion {
@@ -51,8 +51,8 @@ extension SplatNet2 {
     
     @discardableResult
     public func getSummaryCoop(jobNum: Int = 0) -> Future<SummaryCoop.Response, APIError> {
-        let request = SummaryCoop(iksmSession: account.iksmSession)
         return Future { [self] promise in
+            let request = SummaryCoop(iksmSession: iksmSession)
             remote(request: request)
                 .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { completion in
@@ -66,7 +66,7 @@ extension SplatNet2 {
                     if jobNum == response.summary.card.jobNum {
                         promise(.failure(APIError.nonewresults))
                     }
-                    Keychain.update(summary: response)
+                    //                        keychain.update(summary: response)
                     // データを上書きする
                     promise(.success(response))
                 }).store(in: &task)
@@ -75,7 +75,7 @@ extension SplatNet2 {
     
     @discardableResult
     public func getNicknameAndIcons(playerId: [String]) -> Future<NicknameIcons.ResponseType, APIError> {
-        let request = NicknameIcons(iksmSession: account.iksmSession, playerId: playerId)
+        let request = NicknameIcons(iksmSession: iksmSession, playerId: playerId)
         return remote(request: request)
     }
     
