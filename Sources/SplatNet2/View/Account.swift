@@ -9,18 +9,29 @@ import SwiftUI
 import KeychainAccess
 
 public struct AccountPicker: View {
-    @State var account: UserInfo = SplatNet2.account
+    private var manager: SplatNet2
+    @State var account: UserInfo
     
-    public init() {}
+    public init(manager: SplatNet2) {
+        self.manager = manager
+        self._account = State(initialValue: manager.account)
+    }
+    
     public var body: some View {
-        Picker(selection: $account, label: Text(account.nickname)) {
-            ForEach(SplatNet2.getAllAccounts()) { account in
-                Text(account.nickname)
-                    .tag(account)
+        HStack {
+            Picker(selection: $account, label: Text("ACCOUNT_CHANGER".localized)) {
+                ForEach(manager.getAllAccounts()) { account in
+                    Text(account.nickname)
+                        .tag(account)
+                }
             }
+            Spacer()
+            Text(account.nickname)
+                .foregroundColor(.secondary)
         }
         .pickerStyle(MenuPickerStyle())
         .onChange(of: account) { newValue in
+            manager.account = newValue
         }
     }
 }

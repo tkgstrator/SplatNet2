@@ -35,7 +35,7 @@ struct ContentView: View {
                     Button(action: { getLatestResult() }, label: { Text("GET LATEST RESULT")})
                     Button(action: { getNicknameAndIcons() }, label: { Text("GET PLAYER DATA")})
                 }
-                AccountPicker()
+                AccountPicker(manager: manager)
                 Section() {
                     Button(action: { getAllAccounts() }, label: { Text("GET ALL ACCOUNTS") })
                     Button(action: { deleteAllAccounts() }, label: { Text("DELETE ALL ACCOUNTS") })
@@ -49,14 +49,14 @@ struct ContentView: View {
     }
 
     private func getAllAccounts() {
-        let accounts = SplatNet2.getAllAccounts()
-        for account in accounts {
-            print(account)
-        }
+//        let accounts = SplatNet2.getAllAccounts()
+//        for account in accounts {
+//            print(account)
+//        }
     }
 
     private func deleteAllAccounts() {
-        SplatNet2.deleteAllAccounts()
+//        SplatNet2.deleteAllAccounts()
     }
     
     private func getLatestResult() {
@@ -111,7 +111,7 @@ struct ContentView: View {
     }
     
     private func getNicknameAndIcons() {
-        let playerId: [String] = SplatNet2.getAllAccounts().map({ $0.nsaid })
+        let playerId: [String] = [manager.account.nsaid]
         manager.getNicknameAndIcons(playerId: playerId)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in

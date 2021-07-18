@@ -29,5 +29,9 @@ public class S2SHash: RequestType {
     
     public struct Response: Codable {
         var hash: String
+        
+        public init(hash: String) {
+            self.hash = hash
+        }
     }
 }

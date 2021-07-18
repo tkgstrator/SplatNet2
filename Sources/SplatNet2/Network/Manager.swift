@@ -56,36 +56,42 @@ open class SplatNet2: ObservableObject {
     // イニシャライザ
     public init(userAgent: String) {
         self.userAgent = userAgent
+        self.account = getAllAccounts().first ?? UserInfo()
     }
     
     internal var iksmSession: String {
-        SplatNet2.account.iksmSession
+        account.iksmSession
     }
     
     internal var sessionToken: String {
-        SplatNet2.account.sessionToken
+        account.sessionToken
     }
     
-    public class var account: UserInfo {
-        SplatNet2.getAllAccounts().first ?? UserInfo()
-    }
-    
-    public class func getAllAccounts() -> [UserInfo] {
+    public var account: UserInfo = UserInfo()
+
+    public func getAllAccounts() -> [UserInfo] {
         print(Keychain.allItems(.genericPassword))
         let account = Keychain.allItems(.genericPassword)
             .compactMap({ $0["service"] as? String })
             .filter({ $0.count == 16 })
             .compactMap({ Keychain(service: $0).getValue() })
         print(account)
-        return []
+        return account
     }
     
-    public class func deleteAllAccounts() {
+    public func deleteAllAccounts() {
         let services: [String] = Keychain.allItems(.genericPassword)
             .compactMap({ $0["service"] as? String })
 //            .filter({ $0.count == 16 })
         for service in services {
             let keychain = Keychain(service: service)
+            try? keychain.removeAll()
+        }
+        let servers: [String] = Keychain.allItems(.internetPassword)
+            .compactMap({ $0["server"] as? String })
+//            .filter({ $0.count == 16 })
+        for server in servers {
+            let keychain = Keychain(server: server, protocolType: .https)
             try? keychain.removeAll()
         }
     }
