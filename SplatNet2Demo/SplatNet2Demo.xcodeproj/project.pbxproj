@@ -1,0 +1,643 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		100D8C3726EF3D2E00286036 /* ProgressLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3626EF3D2E00286036 /* ProgressLogView.swift */; };
+		100D8C3B26EF3D7100286036 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3A26EF3D7100286036 /* SignInView.swift */; };
+		1090C67A263DC7BB000DD54C /* BetterSafariView in Frameworks */ = {isa = PBXBuildFile; productRef = 1090C679263DC7BB000DD54C /* BetterSafariView */; };
+		10F010B5263D7ADF002C40DA /* SplatNet2DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */; };
+		10F010B7263D7ADF002C40DA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010B6263D7ADF002C40DA /* ContentView.swift */; };
+		10F010B9263D7AE3002C40DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 10F010B8263D7AE3002C40DA /* Assets.xcassets */; };
+		10F010BC263D7AE3002C40DA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 10F010BB263D7AE3002C40DA /* Preview Assets.xcassets */; };
+		10F010C7263D7AE4002C40DA /* SplatNet2DemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010C6263D7AE4002C40DA /* SplatNet2DemoTests.swift */; };
+		10F010D2263D7AE4002C40DA /* SplatNet2DemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010D1263D7AE4002C40DA /* SplatNet2DemoUITests.swift */; };
+		10F010E8263D7C2B002C40DA /* SplatNet2 in Frameworks */ = {isa = PBXBuildFile; productRef = 10F010E7263D7C2B002C40DA /* SplatNet2 */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		10F010C3263D7AE4002C40DA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 10F010A9263D7ADF002C40DA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 10F010B0263D7ADF002C40DA;
+			remoteInfo = SplatNet2Demo;
+		};
+		10F010CE263D7AE4002C40DA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 10F010A9263D7ADF002C40DA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 10F010B0263D7ADF002C40DA;
+			remoteInfo = SplatNet2Demo;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		100D8C3626EF3D2E00286036 /* ProgressLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressLogView.swift; sourceTree = "<group>"; };
+		100D8C3A26EF3D7100286036 /* SignInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		1090C671263DA84F000DD54C /* SplatNet2Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SplatNet2Demo.entitlements; sourceTree = "<group>"; };
+		10F010B1263D7ADF002C40DA /* SplatNet2Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplatNet2Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplatNet2DemoApp.swift; sourceTree = "<group>"; };
+		10F010B6263D7ADF002C40DA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		10F010B8263D7AE3002C40DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		10F010BB263D7AE3002C40DA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		10F010BD263D7AE3002C40DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		10F010C2263D7AE4002C40DA /* SplatNet2DemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplatNet2DemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		10F010C6263D7AE4002C40DA /* SplatNet2DemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplatNet2DemoTests.swift; sourceTree = "<group>"; };
+		10F010C8263D7AE4002C40DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		10F010CD263D7AE4002C40DA /* SplatNet2DemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplatNet2DemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		10F010D1263D7AE4002C40DA /* SplatNet2DemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplatNet2DemoUITests.swift; sourceTree = "<group>"; };
+		10F010D3263D7AE4002C40DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		10F010E2263D7B6B002C40DA /* SplatNet2 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SplatNet2; path = ..; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		10F010AE263D7ADF002C40DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10F010E8263D7C2B002C40DA /* SplatNet2 in Frameworks */,
+				1090C67A263DC7BB000DD54C /* BetterSafariView in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		10F010BF263D7AE4002C40DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		10F010CA263D7AE4002C40DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		10F010A8263D7ADF002C40DA = {
+			isa = PBXGroup;
+			children = (
+				10F010E2263D7B6B002C40DA /* SplatNet2 */,
+				10F010B3263D7ADF002C40DA /* SplatNet2Demo */,
+				10F010C5263D7AE4002C40DA /* SplatNet2DemoTests */,
+				10F010D0263D7AE4002C40DA /* SplatNet2DemoUITests */,
+				10F010B2263D7ADF002C40DA /* Products */,
+				10F010E6263D7C2B002C40DA /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		10F010B2263D7ADF002C40DA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				10F010B1263D7ADF002C40DA /* SplatNet2Demo.app */,
+				10F010C2263D7AE4002C40DA /* SplatNet2DemoTests.xctest */,
+				10F010CD263D7AE4002C40DA /* SplatNet2DemoUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		10F010B3263D7ADF002C40DA /* SplatNet2Demo */ = {
+			isa = PBXGroup;
+			children = (
+				1090C671263DA84F000DD54C /* SplatNet2Demo.entitlements */,
+				10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */,
+				10F010B6263D7ADF002C40DA /* ContentView.swift */,
+				100D8C3A26EF3D7100286036 /* SignInView.swift */,
+				100D8C3626EF3D2E00286036 /* ProgressLogView.swift */,
+				10F010B8263D7AE3002C40DA /* Assets.xcassets */,
+				10F010BD263D7AE3002C40DA /* Info.plist */,
+				10F010BA263D7AE3002C40DA /* Preview Content */,
+			);
+			path = SplatNet2Demo;
+			sourceTree = "<group>";
+		};
+		10F010BA263D7AE3002C40DA /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				10F010BB263D7AE3002C40DA /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		10F010C5263D7AE4002C40DA /* SplatNet2DemoTests */ = {
+			isa = PBXGroup;
+			children = (
+				10F010C6263D7AE4002C40DA /* SplatNet2DemoTests.swift */,
+				10F010C8263D7AE4002C40DA /* Info.plist */,
+			);
+			path = SplatNet2DemoTests;
+			sourceTree = "<group>";
+		};
+		10F010D0263D7AE4002C40DA /* SplatNet2DemoUITests */ = {
+			isa = PBXGroup;
+			children = (
+				10F010D1263D7AE4002C40DA /* SplatNet2DemoUITests.swift */,
+				10F010D3263D7AE4002C40DA /* Info.plist */,
+			);
+			path = SplatNet2DemoUITests;
+			sourceTree = "<group>";
+		};
+		10F010E6263D7C2B002C40DA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		10F010B0263D7ADF002C40DA /* SplatNet2Demo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 10F010D6263D7AE4002C40DA /* Build configuration list for PBXNativeTarget "SplatNet2Demo" */;
+			buildPhases = (
+				10F010AD263D7ADF002C40DA /* Sources */,
+				10F010AE263D7ADF002C40DA /* Frameworks */,
+				10F010AF263D7ADF002C40DA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SplatNet2Demo;
+			packageProductDependencies = (
+				10F010E7263D7C2B002C40DA /* SplatNet2 */,
+				1090C679263DC7BB000DD54C /* BetterSafariView */,
+			);
+			productName = SplatNet2Demo;
+			productReference = 10F010B1263D7ADF002C40DA /* SplatNet2Demo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		10F010C1263D7AE4002C40DA /* SplatNet2DemoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 10F010D9263D7AE4002C40DA /* Build configuration list for PBXNativeTarget "SplatNet2DemoTests" */;
+			buildPhases = (
+				10F010BE263D7AE4002C40DA /* Sources */,
+				10F010BF263D7AE4002C40DA /* Frameworks */,
+				10F010C0263D7AE4002C40DA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				10F010C4263D7AE4002C40DA /* PBXTargetDependency */,
+			);
+			name = SplatNet2DemoTests;
+			productName = SplatNet2DemoTests;
+			productReference = 10F010C2263D7AE4002C40DA /* SplatNet2DemoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		10F010CC263D7AE4002C40DA /* SplatNet2DemoUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 10F010DC263D7AE4002C40DA /* Build configuration list for PBXNativeTarget "SplatNet2DemoUITests" */;
+			buildPhases = (
+				10F010C9263D7AE4002C40DA /* Sources */,
+				10F010CA263D7AE4002C40DA /* Frameworks */,
+				10F010CB263D7AE4002C40DA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				10F010CF263D7AE4002C40DA /* PBXTargetDependency */,
+			);
+			name = SplatNet2DemoUITests;
+			productName = SplatNet2DemoUITests;
+			productReference = 10F010CD263D7AE4002C40DA /* SplatNet2DemoUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		10F010A9263D7ADF002C40DA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1240;
+				LastUpgradeCheck = 1240;
+				ORGANIZATIONNAME = "Magi, Inc.";
+				TargetAttributes = {
+					10F010B0263D7ADF002C40DA = {
+						CreatedOnToolsVersion = 12.4;
+					};
+					10F010C1263D7AE4002C40DA = {
+						CreatedOnToolsVersion = 12.4;
+						TestTargetID = 10F010B0263D7ADF002C40DA;
+					};
+					10F010CC263D7AE4002C40DA = {
+						CreatedOnToolsVersion = 12.4;
+						TestTargetID = 10F010B0263D7ADF002C40DA;
+					};
+				};
+			};
+			buildConfigurationList = 10F010AC263D7ADF002C40DA /* Build configuration list for PBXProject "SplatNet2Demo" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				ja,
+			);
+			mainGroup = 10F010A8263D7ADF002C40DA;
+			packageReferences = (
+				1090C678263DC7BB000DD54C /* XCRemoteSwiftPackageReference "BetterSafariView" */,
+			);
+			productRefGroup = 10F010B2263D7ADF002C40DA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				10F010B0263D7ADF002C40DA /* SplatNet2Demo */,
+				10F010C1263D7AE4002C40DA /* SplatNet2DemoTests */,
+				10F010CC263D7AE4002C40DA /* SplatNet2DemoUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		10F010AF263D7ADF002C40DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10F010BC263D7AE3002C40DA /* Preview Assets.xcassets in Resources */,
+				10F010B9263D7AE3002C40DA /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		10F010C0263D7AE4002C40DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		10F010CB263D7AE4002C40DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		10F010AD263D7ADF002C40DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10F010B7263D7ADF002C40DA /* ContentView.swift in Sources */,
+				100D8C3726EF3D2E00286036 /* ProgressLogView.swift in Sources */,
+				100D8C3B26EF3D7100286036 /* SignInView.swift in Sources */,
+				10F010B5263D7ADF002C40DA /* SplatNet2DemoApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		10F010BE263D7AE4002C40DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10F010C7263D7AE4002C40DA /* SplatNet2DemoTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		10F010C9263D7AE4002C40DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10F010D2263D7AE4002C40DA /* SplatNet2DemoUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		10F010C4263D7AE4002C40DA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 10F010B0263D7ADF002C40DA /* SplatNet2Demo */;
+			targetProxy = 10F010C3263D7AE4002C40DA /* PBXContainerItemProxy */;
+		};
+		10F010CF263D7AE4002C40DA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 10F010B0263D7ADF002C40DA /* SplatNet2Demo */;
+			targetProxy = 10F010CE263D7AE4002C40DA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		10F010D4263D7AE4002C40DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		10F010D5263D7AE4002C40DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		10F010D7263D7AE4002C40DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SplatNet2Demo/SplatNet2Demo.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"SplatNet2Demo/Preview Content\"";
+				DEVELOPMENT_TEAM = D9HU6JZF2Q;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = SplatNet2Demo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = work.tkgstrator.SplatNet2Demo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		10F010D8263D7AE4002C40DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SplatNet2Demo/SplatNet2Demo.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"SplatNet2Demo/Preview Content\"";
+				DEVELOPMENT_TEAM = D9HU6JZF2Q;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = SplatNet2Demo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = work.tkgstrator.SplatNet2Demo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		10F010DA263D7AE4002C40DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D9HU6JZF2Q;
+				INFOPLIST_FILE = SplatNet2DemoTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = work.tkgstrator.SplatNet2DemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SplatNet2Demo.app/SplatNet2Demo";
+			};
+			name = Debug;
+		};
+		10F010DB263D7AE4002C40DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D9HU6JZF2Q;
+				INFOPLIST_FILE = SplatNet2DemoTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = work.tkgstrator.SplatNet2DemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SplatNet2Demo.app/SplatNet2Demo";
+			};
+			name = Release;
+		};
+		10F010DD263D7AE4002C40DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D9HU6JZF2Q;
+				INFOPLIST_FILE = SplatNet2DemoUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = work.tkgstrator.SplatNet2DemoUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SplatNet2Demo;
+			};
+			name = Debug;
+		};
+		10F010DE263D7AE4002C40DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D9HU6JZF2Q;
+				INFOPLIST_FILE = SplatNet2DemoUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = work.tkgstrator.SplatNet2DemoUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SplatNet2Demo;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		10F010AC263D7ADF002C40DA /* Build configuration list for PBXProject "SplatNet2Demo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				10F010D4263D7AE4002C40DA /* Debug */,
+				10F010D5263D7AE4002C40DA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		10F010D6263D7AE4002C40DA /* Build configuration list for PBXNativeTarget "SplatNet2Demo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				10F010D7263D7AE4002C40DA /* Debug */,
+				10F010D8263D7AE4002C40DA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		10F010D9263D7AE4002C40DA /* Build configuration list for PBXNativeTarget "SplatNet2DemoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				10F010DA263D7AE4002C40DA /* Debug */,
+				10F010DB263D7AE4002C40DA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		10F010DC263D7AE4002C40DA /* Build configuration list for PBXNativeTarget "SplatNet2DemoUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				10F010DD263D7AE4002C40DA /* Debug */,
+				10F010DE263D7AE4002C40DA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1090C678263DC7BB000DD54C /* XCRemoteSwiftPackageReference "BetterSafariView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stleamist/BetterSafariView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.3.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1090C679263DC7BB000DD54C /* BetterSafariView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1090C678263DC7BB000DD54C /* XCRemoteSwiftPackageReference "BetterSafariView" */;
+			productName = BetterSafariView;
+		};
+		10F010E7263D7C2B002C40DA /* SplatNet2 */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SplatNet2;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 10F010A9263D7ADF002C40DA /* Project object */;
+}
