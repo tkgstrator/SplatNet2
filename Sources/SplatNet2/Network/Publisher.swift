@@ -47,7 +47,9 @@ extension SplatNet2 {
                 .validate(statusCode: 200...200)
                 .validate(contentType: ["application/json"])
                 .cURLDescription { request in
-                    //                        print(request)
+                    #if DEBUG
+                    print(request)
+                    #endif
                 }
                 .responseJSON { response in
                     switch response.result {

@@ -8,7 +8,7 @@
 import SwiftUI
 import SplatNet2
 
-let manager = SplatNet2(userAgent: "Salmonia3/@tkgling")
+let manager = SplatNet2(userAgent: "Salmonia3/@tkgling", version: "1.13.2")
 
 @main
 struct SplatNet2DemoApp: App {

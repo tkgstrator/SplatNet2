@@ -22,7 +22,7 @@ struct SignInView: View {
                 Button(action: {
                     isPresented.toggle()
                 }, label: { Text("SIGN IN")})
-                .authorize(isPresented: $isPresented) { completion in
+                    .authorize(isPresented: $isPresented, manager: manager) { completion in
                     switch completion {
                     case .success(let value):
                         print(value)
@@ -33,7 +33,7 @@ struct SignInView: View {
                 Button(action: { getAllResults(latestJobId: 0) }, label: { Text("GET ALL RESULTS")})
                 Button(action: { getNicknameAndIcons() }, label: { Text("GET PLAYER DATA")})
             }
-            AccountPicker(manager: manager)
+            AccountView(manager: manager)
             Section() {
                 Button(action: { getAllAccounts() }, label: { Text("GET ALL ACCOUNTS") })
                 Button(action: { deleteAllAccounts() }, label: { Text("DELETE ALL ACCOUNTS") })

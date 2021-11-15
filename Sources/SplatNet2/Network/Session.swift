@@ -48,9 +48,15 @@ extension SplatNet2 {
         case .nso:
             NotificationCenter.default.post(name: SplatNet2.signIn, object: SignInState.s2shashnso)
         }
-//        let request = S2SHash(accessToken: accessToken, timestamp: timestamp, userAgent: userAgent)
-//        return remote(request: request).eraseToAnyPublisher()
-        return getIkaHash(accessToken: accessToken, timestamp: timestamp).eraseToAnyPublisher()
+        let request = S2SHash(accessToken: accessToken, timestamp: timestamp, userAgent: userAgent)
+        return remote(request: request).eraseToAnyPublisher()
+//        return getIkaHash(accessToken: accessToken, timestamp: timestamp)
+    }
+    
+    open func getIkaHash(accessToken: String, timestamp: Int) -> AnyPublisher<S2SHash.Response, APIError> {
+        Future { promise in
+            promise(.success(S2SHash.Response(hash: "")))
+        }.eraseToAnyPublisher()
     }
     
     // Parameter F
