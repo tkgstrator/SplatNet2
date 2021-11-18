@@ -1,21 +1,22 @@
 //
-//  FlapgParameters.swift
+//  FlapgToken.swift
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/07/13.
-//
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 
-import Foundation
 import Alamofire
+import Foundation
 
-public class FlapgToken: RequestType {
-    public var method: HTTPMethod = .get
-    public var baseURL = URL(string: "https://flapg.com/")!
-    public var path: String = "ika2/api/login"
-    public var parameters: Parameters?
-    public var headers: [String: String]?
-    public typealias ResponseType = FlapgToken.Response
-    
+internal class FlapgToken: RequestType {
+    typealias ResponseType = FlapgToken.Response
+
+    var method: HTTPMethod = .get
+    var baseURL = URL(unsafeString: "https://flapg.com/")
+    var path: String = "ika2/api/login"
+    var parameters: Parameters?
+    var headers: [String: String]?
+
     init(accessToken: String, timestamp: Int, hash: String, type: FlapgType) {
         self.headers = [
             "x-token": accessToken,
@@ -23,16 +24,16 @@ public class FlapgToken: RequestType {
             "x-guid": "037239ef-1914-43dc-815d-178aae7d8934",
             "x-hash": hash,
             "x-ver": "3",
-            "x-iid": type.rawValue
+            "x-iid": type.rawValue,
         ]
     }
-    
+
     enum FlapgType: String, CaseIterable {
         case app
         case nso
     }
-    
-    public struct Response: Codable {
+
+    internal struct Response: Codable {
         var result: FlapgParameters
 
         struct FlapgParameters: Codable {

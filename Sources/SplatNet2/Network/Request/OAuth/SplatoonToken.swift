@@ -3,23 +3,26 @@
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/07/13.
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
+//  swiftlint:disable discouraged_optional_collection
 
-import Foundation
 import Alamofire
+import Foundation
 
-public class SplatoonToken: RequestType {
-    public var method: HTTPMethod = .post
-    public var baseURL = URL(string: "https://api-lp1.znc.srv.nintendo.net/")!
-    public var path: String = "v1/Account/Login"
-    public var parameters: Parameters?
-    public var headers: [String: String]?
-    public typealias ResponseType = SplatoonToken.Response
-    
+internal class SplatoonToken: RequestType {
+    typealias ResponseType = SplatoonToken.Response
+
+    var method: HTTPMethod = .post
+    var baseURL = URL(unsafeString: "https://api-lp1.znc.srv.nintendo.net/")
+    var path: String = "v1/Account/Login"
+    var parameters: Parameters?
+    var headers: [String: String]?
+
     init(from result: FlapgToken.Response, version: String) {
         self.headers = [
             "X-ProductVersion": "\(version)",
-            "X-Platform": "Android"
+            "X-Platform": "Android",
         ]
         self.parameters = [
             "parameter": [
@@ -29,12 +32,12 @@ public class SplatoonToken: RequestType {
                 "requestId": result.result.p3,
                 "naCountry": "JP",
                 "naBirthday": "1990-01-01",
-                "language": "ja-JP"
-            ]
+                "language": "ja-JP",
+            ],
         ]
     }
-    
-    public struct Response: Codable {
+
+    internal struct Response: Codable {
         var result: SplatoonTokenResult
         var status: Int
         var correlationId: String

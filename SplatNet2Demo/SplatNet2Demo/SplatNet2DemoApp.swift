@@ -3,15 +3,16 @@
 //  SplatNet2Demo
 //
 //  Created by tkgstrator on 2021/05/01.
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
-import SwiftUI
 import SplatNet2
+import SwiftUI
 
-let manager = SplatNet2(userAgent: "Salmonia3/@tkgling")
+let manager = SplatNet2()
 
 @main
-struct SplatNet2DemoApp: App {
+internal struct SplatNet2DemoApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

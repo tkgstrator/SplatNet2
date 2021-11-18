@@ -3,12 +3,13 @@
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/07/13.
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
-import Foundation
 import Alamofire
+import Foundation
 
-public class ScheduleCoop: Codable {
+public class Schedule: Codable {
     public struct Response: Codable {
         public var startTime: Int
         public var stageId: Int

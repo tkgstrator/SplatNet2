@@ -3,35 +3,42 @@
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/07/13.
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
+//  swiftlint:disable discouraged_optional_collection
 
-import Foundation
 import Alamofire
+import Foundation
 
-public class S2SHash: RequestType {
-    public var method: HTTPMethod = .post
-    public var baseURL = URL(string: "https://elifessler.com/s2s/api/")!
-    public var path: String = "gen2"
-    public var encoding: ParameterEncoding = URLEncoding.default
-    public var parameters: Parameters?
-    public var headers: [String: String]?
-    public typealias ResponseType = S2SHash.Response
-    
+internal class S2SHash: RequestType {
+    typealias ResponseType = S2SHash.Response
+
+    var method: HTTPMethod = .post
+    var baseURL = URL(unsafeString: "https://elifessler.com/s2s/api/")
+    var path: String = "gen2"
+    var encoding: ParameterEncoding = URLEncoding.default
+    var parameters: Parameters?
+    var headers: [String: String]?
+
     init(accessToken: String, timestamp: Int, userAgent: String) {
         self.headers = [
-            "User-Agent": userAgent
+            "User-Agent": userAgent,
         ]
         self.parameters = [
             "naIdToken": accessToken,
-            "timestamp": String(timestamp)
+            "timestamp": String(timestamp),
         ]
     }
-    
-    public struct Response: Codable {
-        var hash: String
-        
-        public init(hash: String) {
-            self.hash = hash
+
+    internal struct Response: Codable {
+        let hash: String
+        let accessToken: String
+        let timestamp: Int
+
+        public init(accessToken: String, timestamp: Int) {
+            self.timestamp = timestamp
+            self.accessToken = accessToken
+            self.hash = getIkaHash(timestamp: timestamp, idToken: accessToken)
         }
     }
 }

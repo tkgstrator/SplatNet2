@@ -1,0 +1,15 @@
+{
+    "session_token_code": "",
+    "session_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdDpzY3AiOlswLDgsOSwxNywyM10sInN1YiI6IjVhZThmN2E3OGIwY2NhNGQiLCJleHAiOjE2ODI1NTA1NTUsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMubmludGVuZG8uY29tIiwidHlwIjoic2Vzc2lvbl90b2tlbiIsImlhdCI6MTYxOTQ3ODU1NSwiYXVkIjoiNzFiOTYzYzFiN2I2ZDExOSIsImp0aSI6IjUwNjgwMjkzODEifQ.CwI0tqAv186pEgo7HKn_q--l8fB-jmwFu6iJNNvY_W8",
+    "iksm_session": "",
+    "splatoon_token": "",
+    "splatoon_access_token": "",
+    "hash": {
+        "nso": "",
+        "app": ""
+    },
+    "f": {
+        "nso": "",
+        "app": ""
+    },
+}

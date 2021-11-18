@@ -3,23 +3,78 @@
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/05/01.
-//
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 
 import Foundation
 import KeychainAccess
 
 public extension Keychain {
-    func setValue(_ account: UserInfo) {
-        let service: String = account.nsaid
-        let keychain = Keychain(service: service)
-        let encoder = JSONEncoder()
-        guard let account = try? encoder.encode(account) else { return }
-        try? keychain.set(account, key: service)
+    internal enum Service: String {
+        case splatnet2 = "SplatNet2"
+        case userinfo = "UserInfo"
+    }
+
+    convenience internal init(service: Service) {
+        self.init(service: service.rawValue)
+    }
+
+    internal func getData() throws -> Data? {
+        try getData(Service.userinfo.rawValue)
     }
     
-    func getValue() -> UserInfo? {
+    /// 自動でキーを設定して書き換え
+    private func setValue(_ value: Data) throws {
+        try set(value, key: Service.userinfo.rawValue)
+    }
+    
+    func setValue(_ accounts: [UserInfo]) throws {
+        let encoder = JSONEncoder()
+        
+        do {
+            // Keychainからデータを取得
+            let userdata = try getValue()
+            // アカウントを上書き
+            userdata.accounts = accounts
+            // JSONEncoderでDataに変換
+            let data = try encoder.encode(userdata)
+            // Keychainに書き込み
+            try setValue(data)
+        } catch {
+            
+        }
+    }
+    /// アカウント追加(重複していた場合はアップデート)
+    func setValue(_ account: UserInfo) throws {
+        let encoder = JSONEncoder()
+        
+        do {
+            // アカウント登録済みの場合(二重ログインのようなケース)
+            // 現在登録されているデータを取得
+            let userdata = try getValue()
+            // 重複しているアカウントを削除して新たなデータで上書き
+            let accounts = Array(userdata.accounts.drop(while: { $0.nsaid == account.nsaid || $0.nsaid == "0000000000000000" })) + [account]
+            // アカウントを書き換え
+            userdata.accounts = accounts
+            // JSONEncoderでDataに変換
+            let data = try encoder.encode(userdata)
+            // Keychainに書き込み
+            try setValue(data)
+        } catch {
+            // 初回登録のとき
+            // ユーザアクセスデータを作成
+            let userdata = UserAccess(accounts: [account])
+            // JSONEncoderでDataに変換
+            let data = try encoder.encode(userdata)
+            // Keychainに書き込み
+            try setValue(data)
+        }
+    }
+
+    func getValue() throws -> UserAccess {
         let decoder = JSONDecoder()
-        guard let account = try? getData(self.service) else { return nil }
-        return try? decoder.decode(UserInfo.self, from: account)
+        guard let account = try getData() else {
+            throw SP2Error.OAuth(.response, nil)
+        }
+        return try decoder.decode(UserAccess.self, from: account)
     }
 }

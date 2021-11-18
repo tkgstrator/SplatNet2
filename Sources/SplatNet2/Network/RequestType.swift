@@ -3,14 +3,14 @@
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/07/13.
-//
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 
-import Foundation
 import Alamofire
+import Foundation
 
-public protocol RequestType: URLRequestConvertible {
-    
+public protocol RequestType: URLRequestConvertible, RequestInterceptor {
     associatedtype ResponseType: Codable
+    
     var method: HTTPMethod { get }
     var parameters: Parameters? { get }
     var path: String { get }
@@ -20,13 +20,20 @@ public protocol RequestType: URLRequestConvertible {
 }
 
 extension RequestType {
+    public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
+    }
+    
+    public func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+    }
+    
     
     public var encoding: ParameterEncoding {
         JSONEncoding.default
     }
-    
-    public func asURLRequest() throws -> URLRequest {
-        var request = URLRequest(url: URL(string: baseURL.appendingPathComponent(path).absoluteString.removingPercentEncoding!)!)
+
+    func asURLRequest() throws -> URLRequest {
+        // swiftlint:disable:next force_unwrapping
+        var request = URLRequest(url: URL(unsafeString: baseURL.appendingPathComponent(path).absoluteString.removingPercentEncoding!))
         request.httpMethod = method.rawValue
         request.allHTTPHeaderFields = headers
         request.timeoutInterval = TimeInterval(5)

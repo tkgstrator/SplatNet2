@@ -3,24 +3,36 @@
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/07/13.
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
-import Foundation
 import Alamofire
+import Foundation
+
+internal protocol IdName: Codable {
+    var id: String { get }
+    var name: String { get }
+}
+
+internal protocol KeyName: Codable {
+    var key: String { get }
+    var name: String { get }
+}
 
 public class ResultCoop: RequestType {
-    public var baseURL: URL = URL(string: "https://app.splatoon2.nintendo.net/api/")!
+    public typealias ResponseType = ResultCoop.Response
+
+    public var baseURL = URL(unsafeString: "https://app.splatoon2.nintendo.net/api/")
     public var method: HTTPMethod = .get
     public var path: String
     public var parameters: Parameters?
     public var headers: [String: String]?
-    public typealias ResponseType = ResultCoop.Response
-    
+
     init(iksmSession: String?, jobId: Int) {
         self.path = "coop_results/\(jobId)"
         self.headers = ["cookie": "iksm_session=\(iksmSession ?? "")"]
     }
-    
+
     public struct Response: Codable {
         public var jobId: Int
         public var jobScore: Int
@@ -44,7 +56,7 @@ public class ResultCoop: RequestType {
             public var failureReason: String?
             public var failureWave: Int?
             public var isClear: Bool
-            
+
             public func encode(to encoder: Encoder) throws {
                 var container = encoder.container(keyedBy: CodingKeys.self)
                 try container.encode(failureReason, forKey: .failureReason)
@@ -71,21 +83,19 @@ public class ResultCoop: RequestType {
             public var image: String
             public var name: String
             public var stageId: Int {
-                get {
-                    switch image {
+                switch image {
                     case "/images/coop_stage/65c68c6f0641cc5654434b78a6f10b0ad32ccdee.png":
-                        return 5000
+                        return 5_000
                     case "/images/coop_stage/e07d73b7d9f0c64e552b34a2e6c29b8564c63388.png":
-                        return 5001
+                        return 5_001
                     case "/images/coop_stage/6d68f5baa75f3a94e5e9bfb89b82e7377e3ecd2c.png":
-                        return 5002
+                        return 5_002
                     case "/images/coop_stage/e9f7c7b35e6d46778cd3cbc0d89bd7e1bc3be493.png":
-                        return 5003
+                        return 5_003
                     case "/images/coop_stage/50064ec6e97aac91e70df5fc2cfecf61ad8615fd.png":
-                        return 5004
+                        return 5_004
                     default:
-                        return 5000
-                    }
+                        return 5_000
                 }
             }
         }
@@ -140,7 +150,7 @@ public class ResultCoop: RequestType {
             public var image: String
             public var thumbnail: String
         }
-        
+
         public struct CoopWeapon: Codable {
             public var image: String
             public var name: String
@@ -151,14 +161,4 @@ public class ResultCoop: RequestType {
             public var style: String
         }
     }
-}
-
-protocol IdName: Codable {
-    var id: String { get }
-    var name: String { get }
-}
-
-protocol KeyName: Codable {
-    var key: String { get }
-    var name: String { get }
 }
