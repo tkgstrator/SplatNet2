@@ -20,7 +20,7 @@ extension Array {
     }
 }
 
-extension URL {
+public extension URL {
     /// 文字列からUnsafeにURLを作成するイニシャライザ
     init(unsafeString: String) {
         // swiftlint:disable:next force_unwrapping
