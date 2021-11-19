@@ -25,7 +25,7 @@ public class Result: RequestType {
 
     // MARK: - Result
     public struct Response: Codable {
-        public let jobScore: Int
+        public let jobScore: Int?
         public let playerType: PlayerType?
         public let grade: GradeType?
         //  swiftlint:disable:next discouraged_optional_collection
@@ -35,13 +35,34 @@ public class Result: RequestType {
         public let waveDetails: [WaveDetail]
         public let jobResult: JobResult
         public let jobId: Int?
-        public let startTime: Int
         public let myResult: PlayerResult
         public let gradePointDelta: Int?
-        public let jobRate, endTime: Int
+        public let jobRate: Int?
+        public let startTime, playTime, endTime: Int
         public let bossCounts: [String: BossCount]
-        public let gradePoint, playTime: Int
+        public let gradePoint: Int?
         public let dangerRate: Double
+        
+        public init(jobScore: Int?, playerType: Result.PlayerType?, grade: Result.GradeType?, otherResults: [Result.PlayerResult], schedule: Result.Schedule, kumaPoint: Int?, waveDetails: [Result.WaveDetail], jobResult: Result.JobResult, jobId: Int?, myResult: Result.PlayerResult, gradePointDelta: Int?, jobRate: Int?, startTime: Int, playTime: Int, endTime: Int, bossCounts: [String : Result.BossCount], gradePoint: Int?, dangerRate: Double) {
+            self.jobScore = jobScore
+            self.playerType = playerType
+            self.grade = grade
+            self.otherResults = otherResults
+            self.schedule = schedule
+            self.kumaPoint = kumaPoint
+            self.waveDetails = waveDetails
+            self.jobResult = jobResult
+            self.jobId = jobId
+            self.myResult = myResult
+            self.gradePointDelta = gradePointDelta
+            self.jobRate = jobRate
+            self.startTime = startTime
+            self.playTime = playTime
+            self.endTime = endTime
+            self.bossCounts = bossCounts
+            self.gradePoint = gradePoint
+            self.dangerRate = dangerRate
+        }
     }
 
     // MARK: - BossCount
