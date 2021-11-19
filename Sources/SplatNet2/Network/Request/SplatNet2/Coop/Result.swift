@@ -25,46 +25,46 @@ public class Result: RequestType {
 
     // MARK: - Result
     public struct Response: Codable {
-        let jobScore: Int
-        let playerType: PlayerType
-        let grade: GradeType
+        public let jobScore: Int
+        public let playerType: PlayerType
+        public let grade: GradeType
         //  swiftlint:disable:next discouraged_optional_collection
-        let otherResults: [PlayerResult]?
-        let schedule: Schedule
-        let kumaPoint: Int
-        let waveDetails: [WaveDetail]
-        let jobResult: JobResult
-        let jobId, startTime: Int
-        let myResult: PlayerResult
-        let gradePointDelta, jobRate, endTime: Int
-        let bossCounts: [String: BossCount]
-        let gradePoint, playTime: Int
-        let dangerRate: Double
+        public let otherResults: [PlayerResult]?
+        public let schedule: Schedule
+        public let kumaPoint: Int
+        public let waveDetails: [WaveDetail]
+        public let jobResult: JobResult
+        public let jobId, startTime: Int
+        public let myResult: PlayerResult
+        public let gradePointDelta, jobRate, endTime: Int
+        public let bossCounts: [String: BossCount]
+        public let gradePoint, playTime: Int
+        public let dangerRate: Double
     }
 
     // MARK: - BossCount
-    struct BossCount: Codable {
-        let boss: Boss
-        let count: Int
+    public struct BossCount: Codable {
+        public let boss: Boss
+        public let count: Int
     }
 
     // MARK: - Boss
-    struct Boss: Codable {
-        let name: BossName
-        let key: BossKey
+    public struct Boss: Codable {
+        public let name: BossName
+        public let key: BossKey
     }
 
-    struct EventType: Codable {
-        let name: EventName
-        let key: EventKey
+    public struct EventType: Codable {
+        public let name: EventName
+        public let key: EventKey
     }
 
-    struct WaterLevel: Codable {
-        let name: WaterName
-        let key: WaterKey
+    public struct WaterLevel: Codable {
+        public let name: WaterName
+        public let key: WaterKey
     }
 
-    enum BossKey: String, Codable {
+    public enum BossKey: String, Codable {
         case sakediver = "sakediver"
         case sakedozer = "sakedozer"
         case sakelienBomber = "sakelien-bomber"
@@ -76,7 +76,7 @@ public class Result: RequestType {
         case sakerocket = "sakerocket"
     }
 
-    enum EventKey: String, Codable {
+    public enum EventKey: String, Codable {
         case cohockCharge = "cohock-charge"
         case fog = "fog"
         case goldieSeeking = "goldie-seeking"
@@ -86,13 +86,13 @@ public class Result: RequestType {
         case waterLevels = "water-levels"
     }
 
-    enum WaterKey: String, Codable {
+    public enum WaterKey: String, Codable {
         case high
         case low
         case normal
     }
 
-    enum BossName: String, Codable {
+    public enum BossName: String, Codable {
         case drizzler = "Drizzler"
         case flyfish = "Flyfish"
         case goldie = "Goldie"
@@ -104,7 +104,7 @@ public class Result: RequestType {
         case stinger = "Stinger"
     }
 
-    enum EventName: String, Codable {
+    public enum EventName: String, Codable {
         case rush = "Rush"
         case cohockCharge = "Cohock Charge"
         case waterLevels = "-"
@@ -114,21 +114,21 @@ public class Result: RequestType {
         case fog = "Fog"
     }
 
-    enum WaterName: String, Codable {
+    public enum WaterName: String, Codable {
         case highTide = "High tide"
         case lowTide = "Low tide"
         case normal = "Normal"
     }
 
     // MARK: - Grade
-    struct GradeType: Codable {
-        let longName: GradeName?
-        let id: String
-        let shortName: GradeName?
-        let name: GradeName
+    public struct GradeType: Codable {
+        public let longName: GradeName?
+        public let id: String
+        public let shortName: GradeName?
+        public let name: GradeName
     }
 
-    enum GradeName: String, Codable {
+    public enum GradeName: String, Codable {
         case profreshional = "Profreshional"
         case overachiver = "Over achiver"
         case gogetter = "Go getter"
@@ -138,66 +138,66 @@ public class Result: RequestType {
     }
 
     // MARK: - JobResult
-    struct JobResult: Codable {
-        let failureWave: Int?
-        let isClear: Bool
-        let failureReason: String?
+    public struct JobResult: Codable {
+        public let failureWave: Int?
+        public let isClear: Bool
+        public let failureReason: String?
     }
 
     // MARK: - PlayerResult
-    struct PlayerResult: Codable {
-        let pid: String
-        let specialCounts: [Int]
-        let goldenIkuraNum: Int
-        let bossKillCounts: [String: BossCount]
-        let special: SpecialType
-        let deadCount: Int
-        let name: String
-        let ikuraNum: Int
-        let playerType: PlayerType
-        let helpCount: Int
-        let weaponList: [WeaponList]
+    public struct PlayerResult: Codable {
+        public let pid: String
+        public let specialCounts: [Int]
+        public let goldenIkuraNum: Int
+        public let bossKillCounts: [String: BossCount]
+        public let special: SpecialType
+        public let deadCount: Int
+        public let name: String
+        public let ikuraNum: Int
+        public let playerType: PlayerType
+        public let helpCount: Int
+        public let weaponList: [WeaponList]
     }
 
     // MARK: - PlayerType
-    struct PlayerType: Codable {
-        let style: Style
-        let species: Species
+    public struct PlayerType: Codable {
+        public let style: Style
+        public let species: Species
     }
 
-    enum Species: String, Codable {
+    public enum Species: String, Codable {
         case inklings
         case octlings
     }
 
-    enum Style: String, Codable {
+    public enum Style: String, Codable {
         case girl
         case boy
     }
 
     // MARK: - Special
-    struct SpecialType: Codable {
-        let imageB: ImageB
-        let imageA: ImageA
-        let name: SpecialName
-        let id: String
+    public struct SpecialType: Codable {
+        public let imageA: ImageA
+        public let imageB: ImageB
+        public let name: SpecialName
+        public let id: String
     }
 
-    enum ImageA: String, Codable {
+    public enum ImageA: String, Codable {
         case inkjet = "/images/special/18990f646c551ee77c5b283ec814e371f692a553.png"
         case splashdown = "/images/special/324d41e9582d84101152849bc8c96d6595c9b0ff.png"
         case splatBombLauncher = "/images/special/7af300fdd872feb27b3d8e68a969457fac8b3bb7.png"
         case stingRay = "/images/special/9871c82952ed0141be0310ace1942c9f5f66d655.png"
     }
 
-    enum ImageB: String, Codable {
+    public enum ImageB: String, Codable {
         case inkjet = "/images/special/26e8117808ce17dadb0f23943359e5909fef4085.png"
         case splashdown = "/images/special/485b748720bbf809d8b28f9f4ee1a505cbcb339b.png"
         case splatBombLauncher = "/images/special/4eb81e00f5d707248879a7c7037d8475716a8045.png"
         case stingRay = "/images/special/9e89e1d67803c3021203182ecc7f38bc2c0f5400.png"
     }
 
-    enum SpecialName: String, Codable {
+    public enum SpecialName: String, Codable {
         case inkjet = "Inkjet"
         case splashdown = "Splashdown"
         case splatBombLauncher = "Splat-Bomb Launcher"
@@ -205,32 +205,32 @@ public class Result: RequestType {
     }
 
     // MARK: - WeaponListElement
-    struct WeaponList: Codable {
-        let id: String
-        let weapon: Brand?
-        let coopSpecialWeapon: Brand?
+    public struct WeaponList: Codable {
+        public let id: String
+        public let weapon: Brand?
+        public let coopSpecialWeapon: Brand?
     }
 
     // MARK: - Brand
-    struct Brand: Codable {
-        let id, thumbnail: String?
-        let image, name: String
+    public struct Brand: Codable {
+        public let id, thumbnail: String?
+        public let image, name: String
     }
 
     // MARK: - Schedule
-    struct Schedule: Codable {
-        let stage: Stage
-        let weapons: [WeaponList]
-        let endTime, startTime: Int
+    public struct Schedule: Codable {
+        public let stage: Stage
+        public let weapons: [WeaponList]
+        public let endTime, startTime: Int
     }
 
     // MARK: - Stage
-    struct Stage: Codable {
-        let name: StageName
-        let image: String
+    public struct Stage: Codable {
+        public let name: StageName
+        public let image: String
     }
 
-    enum StageName: String, Codable {
+    public enum StageName: String, Codable {
         case shakeship = "Marooner's Bay"
         case shakeride = "Ruins of Ark Polaris"
         case shakelift = "Salmonid Smokeyard"
@@ -239,10 +239,10 @@ public class Result: RequestType {
     }
 
     // MARK: - WaveDetail
-    struct WaveDetail: Codable {
-        let quotaNum, goldenIkuraPopNum: Int
-        let waterLevel: WaterLevel
-        let ikuraNum, goldenIkuraNum: Int
-        let eventType: EventType
+    public struct WaveDetail: Codable {
+        public let quotaNum, goldenIkuraPopNum: Int
+        public let waterLevel: WaterLevel
+        public let ikuraNum, goldenIkuraNum: Int
+        public let eventType: EventType
     }
 }
