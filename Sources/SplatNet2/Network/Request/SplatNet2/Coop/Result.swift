@@ -26,17 +26,19 @@ public class Result: RequestType {
     // MARK: - Result
     public struct Response: Codable {
         public let jobScore: Int
-        public let playerType: PlayerType
-        public let grade: GradeType
+        public let playerType: PlayerType?
+        public let grade: GradeType?
         //  swiftlint:disable:next discouraged_optional_collection
-        public let otherResults: [PlayerResult]?
+        public let otherResults: [PlayerResult]
         public let schedule: Schedule
-        public let kumaPoint: Int
+        public let kumaPoint: Int?
         public let waveDetails: [WaveDetail]
         public let jobResult: JobResult
-        public let jobId, startTime: Int
+        public let jobId: Int?
+        public let startTime: Int
         public let myResult: PlayerResult
-        public let gradePointDelta, jobRate, endTime: Int
+        public let gradePointDelta: Int?
+        public let jobRate, endTime: Int
         public let bossCounts: [String: BossCount]
         public let gradePoint, playTime: Int
         public let dangerRate: Double
