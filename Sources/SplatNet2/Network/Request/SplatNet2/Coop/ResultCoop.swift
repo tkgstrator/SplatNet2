@@ -28,9 +28,8 @@ public class ResultCoop: RequestType {
     public var parameters: Parameters?
     public var headers: [String: String]?
 
-    init(iksmSession: String?, jobId: Int) {
+    init(jobId: Int) {
         self.path = "coop_results/\(jobId)"
-        self.headers = ["cookie": "iksm_session=\(iksmSession ?? "")"]
     }
 
     public struct Response: Codable {

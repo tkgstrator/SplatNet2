@@ -10,11 +10,11 @@ import SwiftUI
 
 struct URLImage: View {
     @ObservedObject var model: URLImageModel
-    
+
     init(url: URL) {
         self.model = URLImageModel(url: url)
     }
-    
+
     var body: some View {
         guard let data = model.image, let image = UIImage(data: data) else {
             return Image(uiImage: UIImage())

@@ -16,45 +16,45 @@ extension SplatNet2 {
         let request = SessionToken(code: sessionTokenCode, verifier: verifier)
         return publish(request)
     }
-    
+
     internal func getAccessToken(sessionToken: String) -> AnyPublisher<AccessToken.Response, SP2Error> {
         let request = AccessToken(sessionToken: sessionToken)
         return publish(request)
     }
-    
+
 //    internal func getS2SHash(accessToken: String) -> AnyPublisher<S2SHash.Response, SP2Error> {
-//        let timestamp: Int = Int(Date().timeIntervalSince1970)
+//        let timestamp = Int(Date().timeIntervalSince1970)
 //        let request = S2SHash(accessToken: accessToken, timestamp: timestamp, userAgent: userAgent)
 //        return publish(request)
 //    }
-    
-    internal func getS2SHash(accessToken: String) -> AnyPublisher<S2SHash.Response, Never> {
-        let timestamp: Int = Int(Date().timeIntervalSince1970)
+
+    internal func getS2SHash(accessToken: String) -> AnyPublisher<S2SHash.Response, SP2Error> {
+        let timestamp = Int(Date().timeIntervalSince1970)
         return Future { promise in
             promise(.success(S2SHash.Response(accessToken: accessToken, timestamp: timestamp)))
         }
         .eraseToAnyPublisher()
     }
-    
+
     internal func getFlapgToken(response: S2SHash.Response, type: FlapgToken.FlapgType) -> AnyPublisher<FlapgToken.Response, SP2Error> {
         let request = FlapgToken(accessToken: response.accessToken, timestamp: response.timestamp, hash: response.hash, type: type)
         return publish(request)
     }
-    
+
     internal func getSplatoonToken(response: FlapgToken.Response) -> AnyPublisher<SplatoonToken.Response, SP2Error> {
         let request = SplatoonToken(from: response, version: version)
         return publish(request)
     }
-    
+
     internal func getSplatoonAccessToken(splatoonToken: String, response: FlapgToken.Response) -> AnyPublisher<SplatoonAccessToken.Response, SP2Error> {
         let request = SplatoonAccessToken(from: response, splatoonToken: splatoonToken, version: version)
         return publish(request)
     }
-    
+
     internal func getIksmSession(splatoonAccessToken: String) -> AnyPublisher<IksmSession.Response, SP2Error> {
-        return generate(accessToken: splatoonAccessToken)
+        generate(accessToken: splatoonAccessToken)
     }
-    
+
     internal func getCookie(sessionToken: String) -> AnyPublisher<UserInfo, SP2Error> {
         var splatoonToken: String = ""
         var thumbnailURL: String = ""
@@ -72,7 +72,7 @@ extension SplatNet2 {
                 .flatMap({
                     self.getSplatoonToken(response: $0)
                 })
-                .flatMap({ response -> AnyPublisher<S2SHash.Response, Never> in
+                .flatMap({ response -> AnyPublisher<S2SHash.Response, SP2Error> in
                     splatoonToken = response.result.webApiServerCredential.accessToken
                     nickname = response.result.user.name
                     thumbnailURL = response.result.user.imageUri
@@ -102,9 +102,9 @@ extension SplatNet2 {
         }
         .eraseToAnyPublisher()
     }
-    
+
     internal func getCookie(code sessionTokenCode: String, verifier: String) -> AnyPublisher<UserInfo, SP2Error> {
-        return Future { promise in
+        Future { promise in
             self.getSessionToken(sessionTokenCode: sessionTokenCode, verifier: verifier)
                 .flatMap({
                     self.getCookie(sessionToken: $0.sessionToken)

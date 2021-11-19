@@ -13,28 +13,33 @@ import Foundation
 extension SplatNet2 {
     /// Download coop results summary from SplatNet2
     public func getCoopSummary() -> AnyPublisher<Results.Response, SP2Error> {
-        let request = Results(iksmSession: iksmSession)
+        let request = Results()
         return publish(request)
     }
-    
+
     /// Download a specific coop result selected by result id from SplatNet2
     public func getCoopResult(resultId: Int) -> AnyPublisher<Result.Response, SP2Error> {
-        let request = Result(iksmSession: iksmSession, jobId: resultId)
+        let request = Result(jobId: resultId)
         return publish(request)
     }
-    
+
     /// Get latest X-Product version from App Store
     public func getVersion() -> AnyPublisher<XVersion.Response, SP2Error> {
         let request = XVersion()
         return publish(request)
     }
-    
+
+    public func interceptor(jobId: Int) {
+        let request = Result(jobId: jobId)
+        return execute(request)
+    }
+
     /// Download all gettable coop results from SplatNet2
     open func getCoopResults(resultId: Int) -> AnyPublisher<[Result.Response], SP2Error> {
-        return Future { [self] promise in
+        Future { [self] promise in
             getCoopSummary()
                 .flatMap({ Range((resultId + 1) ... $0.summary.card.jobNum).publisher })
-                .flatMap({ publish(Result(iksmSession: iksmSession, jobId: $0)) })
+                .flatMap({ publish(Result(jobId: $0)) })
                 .collect()
                 .sink(receiveCompletion: { completion in
                     switch completion {

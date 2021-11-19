@@ -14,22 +14,40 @@ public extension Keychain {
         case userinfo = "UserInfo"
     }
 
-    convenience internal init(service: Service) {
+    internal convenience init(service: Service) {
         self.init(service: service.rawValue)
     }
 
     internal func getData() throws -> Data? {
         try getData(Service.userinfo.rawValue)
     }
-    
+
     /// 自動でキーを設定して書き換え
     private func setValue(_ value: Data) throws {
         try set(value, key: Service.userinfo.rawValue)
     }
-    
+
+    /// バージョン情報のみを更新
+    func setVersion(_ version: String) throws {
+        let encoder = JSONEncoder()
+
+        do {
+            // Keychainからデータを取得
+            let userdata = try getValue()
+            // アカウントを上書き
+            userdata.version = version
+            // JSONEncoderでDataに変換
+            let data = try encoder.encode(userdata)
+            // Keychainに書き込み
+            try setValue(data)
+        } catch {
+        }
+    }
+
+    /// アカウントの並びを変更
     func setValue(_ accounts: [UserInfo]) throws {
         let encoder = JSONEncoder()
-        
+
         do {
             // Keychainからデータを取得
             let userdata = try getValue()
@@ -40,13 +58,13 @@ public extension Keychain {
             // Keychainに書き込み
             try setValue(data)
         } catch {
-            
         }
     }
+
     /// アカウント追加(重複していた場合はアップデート)
     func setValue(_ account: UserInfo) throws {
         let encoder = JSONEncoder()
-        
+
         do {
             // アカウント登録済みの場合(二重ログインのようなケース)
             // 現在登録されているデータを取得

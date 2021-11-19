@@ -10,7 +10,7 @@ import SwiftUI
 
 public struct AccountView: View {
     let manager: SplatNet2
-    @State var isPresented: Bool = false
+    @State var isPresented = false
 
     public init(manager: SplatNet2) {
         self.manager = manager
@@ -29,7 +29,7 @@ private struct AccountListView: View {
     @State var accounts: [UserInfo] {
         willSet {
         }
-        
+
         didSet {
             // 並び替えが終わったときにその値の先頭のアカウント情報を取る
             guard let account = accounts.first else {
@@ -40,12 +40,12 @@ private struct AccountListView: View {
             try? manager.keychain.setValue(accounts)
         }
     }
-    
+
     init(manager: SplatNet2) {
         self.manager = manager
         self._accounts = State(initialValue: manager.accounts)
     }
-    
+
     var body: some View {
         List(content: {
             ForEach(accounts) { account in
@@ -65,16 +65,16 @@ private struct AccountListView: View {
             .onAppear(perform: sync)
             .navigationTitle("ACCOUNTS".localized)
     }
-    
+
     func sync() {
         // 最新のデータを更新
         accounts = manager.accounts
     }
-    
+
     func move(from source: IndexSet, to destination: Int) {
         accounts.move(fromOffsets: source, toOffset: destination)
     }
-    
+
     func delete(at offsets: IndexSet) {
         accounts.remove(atOffsets: offsets)
     }

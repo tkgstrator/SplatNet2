@@ -5,22 +5,22 @@
 //  Created by tkgstrator on 2021/07/13.
 //
 
-import Foundation
 import Alamofire
+import Foundation
 
 public class Result: RequestType {
-    public var baseURL: URL = URL(string: "https://app.splatoon2.nintendo.net/api/")!
+    public typealias ResponseType = Result.Response
+
+    public var baseURL = URL(unsafeString: "https://app.splatoon2.nintendo.net/api/")
     public var method: HTTPMethod = .get
     public var path: String
     public var parameters: Parameters?
     public var headers: [String: String]?
-    public typealias ResponseType = Result.Response
-    
-    init(iksmSession: String?, jobId: Int) {
+
+    init(jobId: Int) {
         self.path = "coop_results/\(jobId)"
-        self.headers = ["cookie": "iksm_session=\(iksmSession ?? "")"]
     }
-    
+
     // MARK: - Result
     public struct Response: Codable {
         let jobScore: Int
@@ -50,12 +50,12 @@ public class Result: RequestType {
         let name: BossName
         let key: BossKey
     }
-    
+
     struct EventType: Codable {
         let name: EventName
         let key: EventKey
     }
-    
+
     struct WaterLevel: Codable {
         let name: WaterName
         let key: WaterKey
@@ -72,7 +72,7 @@ public class Result: RequestType {
         case sakelienTower = "sakelien-tower"
         case sakerocket = "sakerocket"
     }
-    
+
     enum EventKey: String, Codable {
         case cohockCharge = "cohock-charge"
         case fog = "fog"
@@ -82,7 +82,7 @@ public class Result: RequestType {
         case theMothership = "the-mothership"
         case waterLevels = "water-levels"
     }
-    
+
     enum WaterKey: String, Codable {
         case high
         case low
@@ -100,7 +100,7 @@ public class Result: RequestType {
         case griller = "Griller"
         case stinger = "Stinger"
     }
-    
+
     enum EventName: String, Codable {
         case rush = "Rush"
         case cohockCharge = "Cohock Charge"
@@ -110,7 +110,7 @@ public class Result: RequestType {
         case theMothership = "The Mothership"
         case fog = "Fog"
     }
-    
+
     enum WaterName: String, Codable {
         case highTide = "High tide"
         case lowTide = "Low tide"

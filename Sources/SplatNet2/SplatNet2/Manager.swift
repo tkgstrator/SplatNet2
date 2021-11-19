@@ -13,18 +13,8 @@ import Foundation
 import KeychainAccess
 
 open class SplatNet2 {
-    
     /// アクセス用のセッション
-    internal let session: Session = {
-        let configuration: URLSessionConfiguration = {
-            let config = URLSessionConfiguration.default
-            config.httpMaximumConnectionsPerHost = 1
-            config.timeoutIntervalForRequest = 30
-            return config
-        }()
-        return Session(configuration: configuration)
-    }()
-
+    internal let session: Session
     // JSON Encoder
     internal var encoder: JSONEncoder = {
         let encoder = JSONEncoder()
@@ -38,15 +28,15 @@ open class SplatNet2 {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }()
-    
+
     /// タスク管理
     public var task = Set<AnyCancellable>()
-    /// ユーザデータを格納するキーチェイン
-    public private(set) var keychain: Keychain = Keychain(service: .splatnet2)
+    /// ユーザデータを格納するKeychain
+    public private(set) var keychain = Keychain(service: .splatnet2)
     /// 現在利用しているアカウント
-    public var account: UserInfo {
+    public internal(set) var account: UserInfo {
         willSet {
-            // アカウントを切り替えるとその値をセットする
+            // アカウントを上書きするとその値をKeychainに書き込む
             try? keychain.setValue(newValue)
         }
     }
@@ -60,14 +50,28 @@ open class SplatNet2 {
     /// ユーザーエージェント
     internal let userAgent: String
     /// X-Product Version
-    public private(set) var version: String
-    
+    public internal(set) var version: String {
+        willSet {
+            try? keychain.setVersion(newValue)
+        }
+    }
+
     // イニシャライザ
-    public init(version: String = "1.13.1") {
+    public init(version: String = "1.13.2") {
+        session = {
+            let configuration: URLSessionConfiguration = {
+                let config = URLSessionConfiguration.default
+                config.httpMaximumConnectionsPerHost = 1
+                config.timeoutIntervalForRequest = 30
+                return config
+            }()
+            return Session(configuration: configuration, serializationQueue: DispatchQueue(label: "SplatNet2"))
+        }()
+
         do {
             // Keychainからバージョン情報を取得する
             let userdata: UserAccess = try keychain.getValue()
-            self.version = version
+            self.version = userdata.version
             self.userAgent = "SplatNet2/@tkgling"
             // 保存されているアカウントから最も新しいものを選択
             if let account = userdata.accounts.first {
@@ -83,10 +87,10 @@ open class SplatNet2 {
             self.account = UserInfo(nsaid: "0000000000000000", nickname: "Unregistered")
         }
     }
-    
+
     internal var iksmSession: String {
         #if DEBUG
-        return "9f0cdbed50a522f9b03e7889aa7ae231c969fcd3"
+        return account.iksmSession
         #else
         return account.iksmSession
         #endif
@@ -95,7 +99,7 @@ open class SplatNet2 {
     internal var sessionToken: String {
         account.sessionToken
     }
-    
+
     internal func oauthURL(state: String, verifier: String) -> URL {
         let parameters: [String: String] = [
             "state": state,
@@ -112,7 +116,7 @@ open class SplatNet2 {
 }
 
 extension String {
-    static public var randomString: String {
+    public static var randomString: String {
         let letters: String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         // swiftlint:disable:next force_unwrapping
         return String((0 ..< 128).map({ _ in letters.randomElement()! }))

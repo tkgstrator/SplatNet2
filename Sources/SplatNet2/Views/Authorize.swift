@@ -14,9 +14,9 @@ public struct Authorize: ViewModifier {
     @State var task = Set<AnyCancellable>()
     @State var sp2Error: SP2Error?
     let manager: SplatNet2
-    let state: String = String.randomString
-    let verifier: String = String.randomString
-    
+    let state = String.randomString
+    let verifier = String.randomString
+
     public typealias CompletionHandler = (Swift.Result<UserInfo, SP2Error>) -> Void
     let completionHandler: CompletionHandler
 
@@ -33,17 +33,17 @@ public struct Authorize: ViewModifier {
                     do {
                         // Domain
                         if let _ = error { throw SP2Error.OAuth(.domain, nil) }
-                        
+
                         // Session State
                         guard let session_state: String = callbackURL?.absoluteString.capture(pattern: "state=(.*)&session", group: 1) else {
                             throw SP2Error.OAuth(.session, nil)
                         }
-                        
+
                         // State
                         guard let state: String = callbackURL?.absoluteString.capture(pattern: "&state=(.*)", group: 1) else {
                             throw SP2Error.OAuth(.state, nil)
                         }
-                        
+
                         if state != self.state {
                             throw SP2Error.OAuth(.state, nil)
                         }
@@ -62,11 +62,12 @@ public struct Authorize: ViewModifier {
                                         print(error)
                                 }
                             }, receiveValue: { response in
+                                print(dump(response))
                                 // 利用しているアカウントを新しいものに上書きする
                                 manager.account = response
                             })
                             .store(in: &task)
-                    } catch (let error as SP2Error) {
+                    } catch let error as SP2Error {
                         sp2Error = error
                     } catch {
                     }

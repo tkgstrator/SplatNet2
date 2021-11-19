@@ -5,21 +5,20 @@
 //  Created by tkgstrator on 2021/07/13.
 //
 
-import Foundation
 import Alamofire
+import Foundation
 
 public class Results: RequestType {
-    public var baseURL: URL = URL(string: "https://app.splatoon2.nintendo.net/api/")!
+    public typealias ResponseType = Results.Response
+
+    public var baseURL = URL(unsafeString: "https://app.splatoon2.nintendo.net/api/")
     public var method: HTTPMethod = .get
     public var path: String = "coop_results"
     public var parameters: Parameters?
     public var headers: [String: String]?
-    public typealias ResponseType = Results.Response
-    
-    init(iksmSession: String) {
-        self.headers = ["cookie": "iksm_session=\(iksmSession)"]
-    }
-    
+
+    init() {}
+
     // MARK: - CoopResults
     public struct Response: Codable {
         let summary: Summary

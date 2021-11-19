@@ -35,10 +35,11 @@ internal class S2SHash: RequestType {
         let accessToken: String
         let timestamp: Int
 
-        public init(accessToken: String, timestamp: Int) {
+        init(accessToken: String, timestamp: Int) {
             self.timestamp = timestamp
             self.accessToken = accessToken
             self.hash = getIkaHash(timestamp: timestamp, idToken: accessToken)
+            print(hash)
         }
     }
 }

@@ -21,7 +21,7 @@ let package = Package(
         .package(url: "https://github.com/groue/CombineExpectations.git", from: "0.7.0"),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", from: "4.2.2"),
         .package(url: "https://github.com/stleamist/BetterSafariView.git", from: "2.4.0"),
-        .package(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", from: "5.0.0")
+        .package(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", from: "5.0.0"),
         .package(url: "https://github.com/realm/SwiftLint.git", from: "0.45.0"),
     ],
     targets: [

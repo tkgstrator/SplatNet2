@@ -17,7 +17,7 @@ public enum SP2Error: Error {
     case Common(Http, AFError)
     /// 共通エラー
     case Data(Decode, AFError?)
-    
+
     public enum Token: Int, CaseIterable {
         /// Stateが一致しない
         case state      = 8_400
@@ -30,7 +30,7 @@ public enum SP2Error: Error {
         /// レスポンスが不正
         case response   = 8_404
     }
-    
+
     public enum Http: Int, CaseIterable {
         /// 400: Bad request
         case badrequest     = 400
@@ -55,16 +55,16 @@ public enum SP2Error: Error {
         /// 503: Server is unavailable
         case unavailable    = 503
     }
-    
+
     public enum Decode: Int, CaseIterable {
         /// 432: Undecodable
-        case undecodable    = 9432
+        case undecodable    = 9_432
         /// 433: Invalid response
-        case response       = 9433
+        case response       = 9_433
         /// 444: Unknown error
-        case unknown        = 9444
+        case unknown        = 9_444
     }
-    
+
     /// ステータスコード
     var statusCode: Int {
         switch self {
@@ -81,7 +81,7 @@ public enum SP2Error: Error {
             return value.rawValue
         }
     }
-    
+
     /// 
     public struct Failure: Codable {
         let errorDescription: String?
@@ -113,10 +113,9 @@ extension SP2Error: LocalizedError {
             case .response:
                 return "Provided iksm_session is invalid."
             }
-        case .Data(_, _):
+        case .Data:
             return "Invalid response."
         }
-        
     }
 }
 

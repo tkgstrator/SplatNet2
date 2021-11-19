@@ -9,6 +9,7 @@
 import Alamofire
 import Foundation
 
+/// シフトスケジュール
 public class Schedule: Codable {
     public struct Response: Codable {
         public var startTime: Int

@@ -22,7 +22,7 @@ public class UserInfo: Codable {
     public var sessionToken: String
     /// バイト情報
     public var coop: CoopInfo
-    
+
     public init(nsaid: String, nickname: String) {
         self.sessionToken = ""
         self.iksmSession = ""
@@ -32,14 +32,14 @@ public class UserInfo: Codable {
         self.imageUri = Bundle.module.url(forResource: "icon", withExtension: "png")!
         self.coop = CoopInfo()
     }
-    
+
     init(sessionToken: String, response: IksmSession.Response, nickname: String, membership: Bool, imageUri: String) {
         self.sessionToken = sessionToken
         self.iksmSession = response.iksmSession
         self.nsaid = response.nsaid
         self.nickname = nickname
         self.membership = membership
-        self.imageUri = URL(string: imageUri)!
+        self.imageUri = URL(unsafeString: imageUri)
         self.coop = CoopInfo()
     }
 
@@ -67,16 +67,6 @@ public class UserInfo: Codable {
     }
 }
 
-extension UserInfo: Identifiable {
-    public var id: String { nsaid }
-}
-//
-//extension UserInfo: Hashable {
-//    public static func == (lhs: UserInfo, rhs: UserInfo) -> Bool {
-//        lhs.nsaid == rhs.nsaid
-//    }
-//}
-
 open class UserAccess: Codable {
     /// X-Product Version
     open var version: String = "1.13.2"
@@ -86,19 +76,23 @@ open class UserAccess: Codable {
     open var releaseDate: String = "2021-10-01T:00:00:00Z"
     /// SplatNet2 Account
     public var accounts: [UserInfo]
-    
+
     internal init(accounts: [UserInfo]) {
         self.accounts = accounts
     }
-    
+
     internal init(version: String, accounts: [UserInfo]) {
         self.version = version
         self.accounts = accounts
     }
-    
+
     internal init(version: String, releaseDate: String, accounts: [UserInfo]) {
         self.version = version
         self.releaseDate = releaseDate
         self.accounts = accounts
     }
+}
+
+extension UserInfo: Identifiable {
+    public var id: String { nsaid }
 }

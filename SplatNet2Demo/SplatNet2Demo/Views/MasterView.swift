@@ -6,14 +6,14 @@
 //  
 //
 
-import SwiftUI
 import Combine
 import SplatNet2
+import SwiftUI
 
 struct MasterView: View {
     @State var task = Set<AnyCancellable>()
-    @State var isPresented: Bool = false
-    @State var environment: Bool = false
+    @State var isPresented = false
+    @State var environment = false
     @State var sp2Error: SP2Error?
 
     var body: some View {
@@ -31,38 +31,35 @@ struct MasterView: View {
                     case .failure(let error):
                         sp2Error = error
                     }
-                
-                }
+                    }
                 Button(action: {
                     manager.getVersion()
                         .sink(receiveCompletion: { _ in }, receiveValue: { response in
                             print(response)
                         })
                         .store(in: &task)
-                    
-                }, label: { Text("GET X-PRODUCT VERSION")})
+                }, label: { Text("GET X-PRODUCT VERSION") })
                 Button(action: {
                     manager.getCoopSummary()
                         .sink(receiveCompletion: { _ in }, receiveValue: { response in
                             print(response)
                         })
                         .store(in: &task)
-                    
-                }, label: { Text("GET COOP RESULTS")})
+                }, label: { Text("GET COOP RESULTS") })
                 Button(action: {
-                    manager.getCoopResult(resultId: 3590)
+                    manager.getCoopResult(resultId: 3_590)
                         .sink(receiveCompletion: { _ in }, receiveValue: { response in
                             print(response)
                         })
                         .store(in: &task)
-                }, label: { Text("GET RESULT")})
+                }, label: { Text("GET RESULT") })
                 Button(action: {
-                    manager.getCoopResults(resultId: 3580)
+                    manager.getCoopResults(resultId: 3_580)
                         .sink(receiveCompletion: { _ in }, receiveValue: { response in
                             print(response)
                         })
                         .store(in: &task)
-                }, label: { Text("GET ALL RESULTS")})
+                }, label: { Text("GET ALL RESULTS") })
             })
             Section(content: {
                 NavigationLink(destination: DetailView(), label: {

@@ -6,14 +6,14 @@
 //  
 //
 
-import SwiftUI
 import SplatNet2
+import SwiftUI
 
 struct DetailView: View {
     @State var signInState: SplatNet2.SignInState?
     @State var currentValue: Int = 0
     @State var maxValue: Int = 0
-    
+
     var body: some View {
         Form {
             Section(content: {
@@ -44,6 +44,15 @@ struct DetailView: View {
                 })
             }, header: {
                 Text("Account")
+            })
+            Section(content: {
+                Button(action: {
+                    manager.interceptor(jobId: 3_590)
+                }, label: {
+                    Text("Interceptor")
+                })
+            }, header: {
+                Text("Execute")
             })
             Section(content: {
                 Text("\(signInState?.rawValue ?? 0)")

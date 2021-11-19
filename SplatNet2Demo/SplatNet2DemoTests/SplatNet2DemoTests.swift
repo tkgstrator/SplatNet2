@@ -9,7 +9,6 @@
 import XCTest
 
 class SplatNet2DemoTests: XCTestCase {
-
     override func setUpWithSP2Error() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }

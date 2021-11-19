@@ -10,8 +10,8 @@ import Foundation
 import SwiftUI
 
 final class URLImageModel: ObservableObject {
-    @Published var image: Data? = nil
-    
+    @Published var image: Data?
+
     init(url: URL) {
         DispatchQueue(label: "URLImage").async {
             let data = try? Data(contentsOf: url)

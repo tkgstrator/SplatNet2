@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		100D8C3726EF3D2E00286036 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3626EF3D2E00286036 /* DetailView.swift */; };
 		100D8C3B26EF3D7100286036 /* MasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3A26EF3D7100286036 /* MasterView.swift */; };
-		108B490D27437734007C6E4F /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108B490C27437734007C6E4F /* Manager.swift */; };
 		1090C67A263DC7BB000DD54C /* BetterSafariView in Frameworks */ = {isa = PBXBuildFile; productRef = 1090C679263DC7BB000DD54C /* BetterSafariView */; };
 		10F010B5263D7ADF002C40DA /* SplatNet2DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */; };
 		10F010B7263D7ADF002C40DA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010B6263D7ADF002C40DA /* ContentView.swift */; };
@@ -327,7 +326,6 @@
 				100D8C3726EF3D2E00286036 /* DetailView.swift in Sources */,
 				100D8C3B26EF3D7100286036 /* MasterView.swift in Sources */,
 				10F010B5263D7ADF002C40DA /* SplatNet2DemoApp.swift in Sources */,
-				108B490D27437734007C6E4F /* Manager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
