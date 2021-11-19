@@ -46,22 +46,43 @@ public class Result: RequestType {
     public struct BossCount: Codable {
         public let boss: Boss
         public let count: Int
+        
+        public init(boss: Result.Boss, count: Int) {
+            self.boss = boss
+            self.count = count
+        }
     }
 
     // MARK: - Boss
     public struct Boss: Codable {
         public let name: BossName
         public let key: BossKey
+        
+        public init(name: Result.BossName, key: Result.BossKey) {
+            self.name = name
+            self.key = key
+        }
     }
 
     public struct EventType: Codable {
         public let name: EventName
         public let key: EventKey
+        
+        public init(name: Result.EventName, key: Result.EventKey) {
+            self.name = name
+            self.key = key
+        }
+        
     }
 
     public struct WaterLevel: Codable {
         public let name: WaterName
         public let key: WaterKey
+    
+        public init(name: Result.WaterName, key: Result.WaterKey) {
+            self.name = name
+            self.key = key
+        }
     }
 
     public enum BossKey: String, Codable {
@@ -126,6 +147,13 @@ public class Result: RequestType {
         public let id: String
         public let shortName: GradeName?
         public let name: GradeName
+        
+        public init(longName: Result.GradeName?, id: String, shortName: Result.GradeName?, name: Result.GradeName) {
+            self.longName = longName
+            self.id = id
+            self.shortName = shortName
+            self.name = name
+        }
     }
 
     public enum GradeName: String, Codable {
@@ -142,6 +170,12 @@ public class Result: RequestType {
         public let failureWave: Int?
         public let isClear: Bool
         public let failureReason: String?
+        
+        public init(failureWave: Int?, isClear: Bool, failureReason: String?) {
+            self.failureWave = failureWave
+            self.isClear = isClear
+            self.failureReason = failureReason
+        }
     }
 
     // MARK: - PlayerResult
@@ -181,6 +215,13 @@ public class Result: RequestType {
         public let imageB: ImageB
         public let name: SpecialName
         public let id: String
+        
+        public init(imageA: Result.ImageA, imageB: Result.ImageB, name: Result.SpecialName, id: String) {
+            self.imageA = imageA
+            self.imageB = imageB
+            self.name = name
+            self.id = id
+        }
     }
 
     public enum ImageA: String, Codable {
@@ -209,12 +250,25 @@ public class Result: RequestType {
         public let id: String
         public let weapon: Brand?
         public let coopSpecialWeapon: Brand?
+        
+        public init(id: String, weapon: Result.Brand?, coopSpecialWeapon: Result.Brand?) {
+            self.id = id
+            self.weapon = weapon
+            self.coopSpecialWeapon = coopSpecialWeapon
+        }
     }
 
     // MARK: - Brand
     public struct Brand: Codable {
         public let id, thumbnail: String?
         public let image, name: String
+        
+        public init(id: String?, thumbnail: String?, image: String, name: String) {
+            self.id = id
+            self.thumbnail = thumbnail
+            self.image = image
+            self.name = name
+        }
     }
 
     // MARK: - Schedule
@@ -222,12 +276,24 @@ public class Result: RequestType {
         public let stage: Stage
         public let weapons: [WeaponList]
         public let endTime, startTime: Int
+        
+        public init(stage: Result.Stage, weapons: [Result.WeaponList], endTime: Int, startTime: Int) {
+            self.stage = stage
+            self.weapons = weapons
+            self.endTime = endTime
+            self.startTime = startTime
+        }
     }
 
     // MARK: - Stage
     public struct Stage: Codable {
         public let name: StageName
         public let image: String
+        
+        public init(name: Result.StageName, image: String) {
+            self.name = name
+            self.image = image
+        }
     }
 
     public enum StageName: String, Codable {
@@ -244,5 +310,14 @@ public class Result: RequestType {
         public let waterLevel: WaterLevel
         public let ikuraNum, goldenIkuraNum: Int
         public let eventType: EventType
+        
+        public init(quotaNum: Int, goldenIkuraPopNum: Int, waterLevel: Result.WaterLevel, ikuraNum: Int, goldenIkuraNum: Int, eventType: Result.EventType {
+            self.quotaNum = quotaNum
+            self.goldenIkuraPopNum = goldenIkuraPopNum
+            self.waterLevel = waterLevel
+            self.ikuraNum = ikuraNum
+            self.goldenIkuraNum = goldenIkuraNum
+            self.eventType = eventType
+        }
     }
 }
