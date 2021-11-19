@@ -87,7 +87,7 @@ public class Result: RequestType {
         }
     }
 
-    public enum BossKey: String, Codable {
+    public enum BossKey: String, Codable, CaseIterable {
         case sakediver = "sakediver"
         case sakedozer = "sakedozer"
         case sakelienBomber = "sakelien-bomber"
@@ -99,7 +99,7 @@ public class Result: RequestType {
         case sakerocket = "sakerocket"
     }
 
-    public enum EventKey: String, Codable {
+    public enum EventKey: String, Codable, CaseIterable {
         case cohockCharge = "cohock-charge"
         case fog = "fog"
         case goldieSeeking = "goldie-seeking"
@@ -109,13 +109,13 @@ public class Result: RequestType {
         case waterLevels = "water-levels"
     }
 
-    public enum WaterKey: String, Codable {
+    public enum WaterKey: String, Codable, CaseIterable {
         case high
         case low
         case normal
     }
 
-    public enum BossName: String, Codable {
+    public enum BossName: String, Codable, CaseIterable {
         case drizzler = "Drizzler"
         case flyfish = "Flyfish"
         case goldie = "Goldie"
@@ -127,7 +127,7 @@ public class Result: RequestType {
         case stinger = "Stinger"
     }
 
-    public enum EventName: String, Codable {
+    public enum EventName: String, Codable, CaseIterable {
         case rush = "Rush"
         case cohockCharge = "Cohock Charge"
         case waterLevels = "-"
@@ -137,7 +137,7 @@ public class Result: RequestType {
         case fog = "Fog"
     }
 
-    public enum WaterName: String, Codable {
+    public enum WaterName: String, Codable, CaseIterable {
         case highTide = "High tide"
         case lowTide = "Low tide"
         case normal = "Normal"
@@ -158,7 +158,7 @@ public class Result: RequestType {
         }
     }
 
-    public enum GradeName: String, Codable {
+    public enum GradeName: String, Codable, CaseIterable {
         case profreshional = "Profreshional"
         case overachiver = "Over achiver"
         case gogetter = "Go getter"
@@ -201,12 +201,12 @@ public class Result: RequestType {
         public let species: Species
     }
 
-    public enum Species: String, Codable {
+    public enum Species: String, Codable, CaseIterable {
         case inklings
         case octlings
     }
 
-    public enum Style: String, Codable {
+    public enum Style: String, Codable, CaseIterable {
         case girl
         case boy
     }
@@ -226,21 +226,21 @@ public class Result: RequestType {
         }
     }
 
-    public enum ImageA: String, Codable {
+    public enum ImageA: String, Codable, CaseIterable {
         case inkjet = "/images/special/18990f646c551ee77c5b283ec814e371f692a553.png"
         case splashdown = "/images/special/324d41e9582d84101152849bc8c96d6595c9b0ff.png"
         case splatBombLauncher = "/images/special/7af300fdd872feb27b3d8e68a969457fac8b3bb7.png"
         case stingRay = "/images/special/9871c82952ed0141be0310ace1942c9f5f66d655.png"
     }
 
-    public enum ImageB: String, Codable {
+    public enum ImageB: String, Codable, CaseIterable {
         case inkjet = "/images/special/26e8117808ce17dadb0f23943359e5909fef4085.png"
         case splashdown = "/images/special/485b748720bbf809d8b28f9f4ee1a505cbcb339b.png"
         case splatBombLauncher = "/images/special/4eb81e00f5d707248879a7c7037d8475716a8045.png"
         case stingRay = "/images/special/9e89e1d67803c3021203182ecc7f38bc2c0f5400.png"
     }
 
-    public enum SpecialName: String, Codable {
+    public enum SpecialName: String, Codable, CaseIterable {
         case inkjet = "Inkjet"
         case splashdown = "Splashdown"
         case splatBombLauncher = "Splat-Bomb Launcher"
@@ -298,7 +298,7 @@ public class Result: RequestType {
         }
     }
 
-    public enum StageName: String, Codable {
+    public enum StageName: String, Codable, CaseIterable {
         case shakeship = "Marooner's Bay"
         case shakeride = "Ruins of Ark Polaris"
         case shakelift = "Salmonid Smokeyard"
