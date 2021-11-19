@@ -29,7 +29,7 @@ public class Result: RequestType {
         public let playerType: PlayerType?
         public let grade: GradeType?
         //  swiftlint:disable:next discouraged_optional_collection
-        public let otherResults: [PlayerResult]
+        public let otherResults: [PlayerResult]?
         public let schedule: Schedule
         public let kumaPoint: Int?
         public let waveDetails: [WaveDetail]
@@ -42,8 +42,8 @@ public class Result: RequestType {
         public let bossCounts: [String: BossCount]
         public let gradePoint: Int?
         public let dangerRate: Double
-        
-        public init(jobScore: Int?, playerType: Result.PlayerType?, grade: Result.GradeType?, otherResults: [Result.PlayerResult], schedule: Result.Schedule, kumaPoint: Int?, waveDetails: [Result.WaveDetail], jobResult: Result.JobResult, jobId: Int?, myResult: Result.PlayerResult, gradePointDelta: Int?, jobRate: Int?, startTime: Int, playTime: Int, endTime: Int, bossCounts: [String : Result.BossCount], gradePoint: Int?, dangerRate: Double) {
+
+        public init(jobScore: Int?, playerType: Result.PlayerType?, grade: Result.GradeType?, otherResults: [Result.PlayerResult]?, schedule: Result.Schedule, kumaPoint: Int?, waveDetails: [Result.WaveDetail], jobResult: Result.JobResult, jobId: Int?, myResult: Result.PlayerResult, gradePointDelta: Int?, jobRate: Int?, startTime: Int, playTime: Int, endTime: Int, bossCounts: [String: Result.BossCount], gradePoint: Int?, dangerRate: Double) {
             self.jobScore = jobScore
             self.playerType = playerType
             self.grade = grade
@@ -69,7 +69,7 @@ public class Result: RequestType {
     public struct BossCount: Codable {
         public let boss: Boss
         public let count: Int
-        
+
         public init(boss: Result.Boss, count: Int) {
             self.boss = boss
             self.count = count
@@ -80,7 +80,7 @@ public class Result: RequestType {
     public struct Boss: Codable {
         public let name: BossName
         public let key: BossKey
-        
+
         public init(name: Result.BossName, key: Result.BossKey) {
             self.name = name
             self.key = key
@@ -90,18 +90,17 @@ public class Result: RequestType {
     public struct EventType: Codable {
         public let name: EventName
         public let key: EventKey
-        
+
         public init(name: Result.EventName, key: Result.EventKey) {
             self.name = name
             self.key = key
         }
-        
     }
 
     public struct WaterLevel: Codable {
         public let name: WaterName
         public let key: WaterKey
-    
+
         public init(name: Result.WaterName, key: Result.WaterKey) {
             self.name = name
             self.key = key
@@ -164,13 +163,18 @@ public class Result: RequestType {
         case normal = "Normal"
     }
 
+    public enum FailureReason: String, Codable, CaseIterable {
+        case wipeOut = "wipe_out"
+        case timeLimit = "time_limit"
+    }
+
     // MARK: - Grade
     public struct GradeType: Codable {
         public let longName: GradeName?
         public let id: String
         public let shortName: GradeName?
         public let name: GradeName
-        
+
         public init(longName: Result.GradeName?, id: String, shortName: Result.GradeName?, name: Result.GradeName) {
             self.longName = longName
             self.id = id
@@ -192,9 +196,9 @@ public class Result: RequestType {
     public struct JobResult: Codable {
         public let failureWave: Int?
         public let isClear: Bool
-        public let failureReason: String?
-        
-        public init(failureWave: Int?, isClear: Bool, failureReason: String?) {
+        public let failureReason: FailureReason?
+
+        public init(failureWave: Int?, isClear: Bool, failureReason: FailureReason?) {
             self.failureWave = failureWave
             self.isClear = isClear
             self.failureReason = failureReason
@@ -238,7 +242,7 @@ public class Result: RequestType {
         public let imageB: ImageB
         public let name: SpecialName
         public let id: String
-        
+
         public init(imageA: Result.ImageA, imageB: Result.ImageB, name: Result.SpecialName, id: String) {
             self.imageA = imageA
             self.imageB = imageB
@@ -273,7 +277,7 @@ public class Result: RequestType {
         public let id: String
         public let weapon: Brand?
         public let coopSpecialWeapon: Brand?
-        
+
         public init(id: String, weapon: Result.Brand?, coopSpecialWeapon: Result.Brand?) {
             self.id = id
             self.weapon = weapon
@@ -285,7 +289,7 @@ public class Result: RequestType {
     public struct Brand: Codable {
         public let id, thumbnail: String?
         public let image, name: String
-        
+
         public init(id: String?, thumbnail: String?, image: String, name: String) {
             self.id = id
             self.thumbnail = thumbnail
@@ -299,7 +303,7 @@ public class Result: RequestType {
         public let stage: Stage
         public let weapons: [WeaponList]
         public let endTime, startTime: Int
-        
+
         public init(stage: Result.Stage, weapons: [Result.WeaponList], endTime: Int, startTime: Int) {
             self.stage = stage
             self.weapons = weapons
@@ -312,7 +316,7 @@ public class Result: RequestType {
     public struct Stage: Codable {
         public let name: StageName
         public let image: String
-        
+
         public init(name: Result.StageName, image: String) {
             self.name = name
             self.image = image
@@ -333,8 +337,8 @@ public class Result: RequestType {
         public let waterLevel: WaterLevel
         public let ikuraNum, goldenIkuraNum: Int
         public let eventType: EventType
-        
-        public init(quotaNum: Int, goldenIkuraPopNum: Int, waterLevel: Result.WaterLevel, ikuraNum: Int, goldenIkuraNum: Int, eventType: Result.EventType {
+
+        public init(quotaNum: Int, goldenIkuraPopNum: Int, waterLevel: Result.WaterLevel, ikuraNum: Int, goldenIkuraNum: Int, eventType: Result.EventType) {
             self.quotaNum = quotaNum
             self.goldenIkuraPopNum = goldenIkuraPopNum
             self.waterLevel = waterLevel

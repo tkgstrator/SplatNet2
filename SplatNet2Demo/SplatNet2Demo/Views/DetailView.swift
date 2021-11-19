@@ -46,15 +46,6 @@ internal struct DetailView: View {
                 Text("Account")
             })
             Section(content: {
-                Button(action: {
-                    manager.interceptor(jobId: 3_590)
-                }, label: {
-                    Text("Interceptor")
-                })
-            }, header: {
-                Text("Execute")
-            })
-            Section(content: {
                 Text("\(signInState?.rawValue ?? 0)")
                 Text("\(currentValue)/\(maxValue)")
             }, header: {

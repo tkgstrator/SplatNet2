@@ -17,7 +17,7 @@ public enum SP2Error: Error {
     /// 共通エラー
     case Common(Http, AFError)
     /// 共通エラー
-    case Data(Decode, AFError?)
+    case Data(Decode, Error?)
 
     public enum Token: Int, CaseIterable {
         /// Stateが一致しない

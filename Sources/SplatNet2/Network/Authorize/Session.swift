@@ -13,30 +13,29 @@ import Foundation
 
 extension SplatNet2 {
     /// Download coop results summary from SplatNet2
-    public func getCoopSummary() -> AnyPublisher<Results.Response, SP2Error> {
+    public func getCoopSummary()
+    -> AnyPublisher<Results.Response, SP2Error> {
         let request = Results()
         return publish(request)
     }
 
     /// Download a specific coop result selected by result id from SplatNet2
-    public func getCoopResult(resultId: Int) -> AnyPublisher<Result.Response, SP2Error> {
+    public func getCoopResult(resultId: Int)
+    -> AnyPublisher<Result.Response, SP2Error> {
         let request = Result(jobId: resultId)
         return publish(request)
     }
 
     /// Get latest X-Product version from App Store
-    public func getVersion() -> AnyPublisher<XVersion.Response, SP2Error> {
+    public func getVersion()
+    -> AnyPublisher<XVersion.Response, SP2Error> {
         let request = XVersion()
         return publish(request)
     }
 
-    public func interceptor(jobId: Int) {
-        let request = Result(jobId: jobId)
-        return execute(request)
-    }
-
     /// Download all gettable coop results from SplatNet2
-    open func getCoopResults(resultId: Int) -> AnyPublisher<[Result.Response], SP2Error> {
+    open func getCoopResults(resultId: Int)
+    -> AnyPublisher<[Result.Response], SP2Error> {
         Future { [self] promise in
             getCoopSummary()
                 .flatMap({ Range((resultId + 1) ... $0.summary.card.jobNum).publisher })
@@ -44,10 +43,10 @@ extension SplatNet2 {
                 .collect()
                 .sink(receiveCompletion: { completion in
                     switch completion {
-                    case .finished:
-                        print("FINISHED")
-                    case .failure(let error):
-                        print("ERROR", error)
+                        case .finished:
+                            print("FINISHED")
+                        case .failure(let error):
+                            print("ERROR", error)
                     }
                 }, receiveValue: { response in
                     promise(.success(response))

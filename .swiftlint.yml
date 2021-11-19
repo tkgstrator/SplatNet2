@@ -126,6 +126,7 @@ opt_in_rules:
 disabled_rules:
   - identifier_name
   - nesting
+  - switch_case_alignment
 
 closure_body_length:
   - 50
