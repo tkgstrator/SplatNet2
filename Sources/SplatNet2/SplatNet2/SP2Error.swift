@@ -1,9 +1,10 @@
 //
 //  SP2Error.swift
-//
+//  SplatNet2
 //
 //  Created by tkgstrator on 2021/05/06.
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
+//
 
 import Alamofire
 import Foundation

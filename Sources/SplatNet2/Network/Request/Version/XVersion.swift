@@ -1,10 +1,11 @@
 //
-//  File.swift
-//  
+//  XVersion.swift
+//  SplatNet2
 //
 //  Created by tkgstrator on 2021/11/15.
-//  
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
+// swiftlint:disable discouraged_optional_collection
 
 import Alamofire
 import Foundation

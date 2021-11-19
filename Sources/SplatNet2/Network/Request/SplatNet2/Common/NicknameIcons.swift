@@ -1,5 +1,5 @@
 //
-//  NicknameAndIcons.swift
+//  NicknameIcons.swift
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/07/13.
@@ -10,16 +10,17 @@ import Alamofire
 import Foundation
 
 public class NicknameIcons: RequestType {
+    public typealias ResponseType = NicknameIcons.Response
+
     public var baseURL = URL(unsafeString: "https://app.splatoon2.nintendo.net/api/")
     public var method: HTTPMethod = .get
     public var path: String = "nickname_and_icon"
     public var parameters: Parameters?
+    //  swiftlint:disable:next discouraged_optional_collection
     public var headers: [String: String]?
-    public typealias ResponseType = NicknameIcons.Response
 
-    init(iksmSession: String?, playerId: [String]) {
+    init(playerId: [String]) {
         self.path = "nickname_and_icon?\(playerId.queryString)"
-        self.headers = ["cookie": "iksm_session=\(iksmSession ?? "")"]
     }
 
     public struct Response: Codable {

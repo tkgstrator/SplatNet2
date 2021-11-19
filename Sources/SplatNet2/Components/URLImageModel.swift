@@ -1,15 +1,15 @@
 //
 //  URLImageModel.swift
-//  
+//  SplatNet2
 //
 //  Created by tkgstrator on 2021/11/17.
-//  
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
 import Foundation
 import SwiftUI
 
-final class URLImageModel: ObservableObject {
+internal final class URLImageModel: ObservableObject {
     @Published var image: Data?
 
     init(url: URL) {

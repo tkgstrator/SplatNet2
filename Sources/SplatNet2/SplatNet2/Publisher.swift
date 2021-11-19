@@ -1,8 +1,10 @@
+//  swiftlint:disable:this file_name
 //
 //  Publisher.swift
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/07/13.
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
 import Alamofire
@@ -23,46 +25,46 @@ extension SplatNet2 {
                 }
                 .responseString { response in
                     switch response.result {
-                        case .success(let value):
-                            do {
-                                guard let nsaid = value.capture(pattern: "data-nsa-id=([/0-f/]{16})", group: 1) else {
-                                    throw SP2Error.OAuth(.response, nil)
-                                }
-                                guard let header = response.response?.allHeaderFields as? [String: String], let url = response.response?.url else {
-                                    throw SP2Error.OAuth(.response, nil)
-                                }
-                                guard let iksmSession = HTTPCookie.cookies(withResponseHeaderFields: header, for: url).first?.value else {
-                                    throw SP2Error.OAuth(.response, nil)
-                                }
-                                promise(.success(IksmSession.Response(iksmSession: iksmSession, nsaid: nsaid)))
-                            } catch let error as SP2Error {
-                                promise(.failure(error))
-                            } catch {
-                                promise(.failure(SP2Error.Session(.unavailable, nil, nil)))
+                    case .success(let value):
+                        do {
+                            guard let nsaid = value.capture(pattern: "data-nsa-id=([/0-f/]{16})", group: 1) else {
+                                throw SP2Error.OAuth(.response, nil)
                             }
-                        case .failure(let error):
-                            promise(.failure(SP2Error.Session(.unavailable, nil, error)))
+                            guard let header = response.response?.allHeaderFields as? [String: String], let url = response.response?.url else {
+                                throw SP2Error.OAuth(.response, nil)
+                            }
+                            guard let iksmSession = HTTPCookie.cookies(withResponseHeaderFields: header, for: url).first?.value else {
+                                throw SP2Error.OAuth(.response, nil)
+                            }
+                            promise(.success(IksmSession.Response(iksmSession: iksmSession, nsaid: nsaid)))
+                        } catch let error as SP2Error {
+                            promise(.failure(error))
+                        } catch {
+                            promise(.failure(SP2Error.Session(.unavailable, nil, nil)))
+                        }
+                    case .failure(let error):
+                        promise(.failure(SP2Error.Session(.unavailable, nil, error)))
                     }
                 }
         }
         .eraseToAnyPublisher()
     }
 
-    /// リクエストを実行
+    // リクエストを実行
+    //  swiftlint:disable cyclomatic_complexity function_body_length
     public func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
         Future { [self] promise in
             session.request(request, interceptor: self)
                 .validate()
                 .validate(contentType: ["application/json", "text/javascript"])
                 .cURLDescription { request in
-#if DEBUG
+                    #if DEBUG
                     print(request)
-#endif
+                    #endif
                 }
                 .responseJSON(completionHandler: { response in
                     switch response.result {
-                    case .success(let value):
-//                        print(JSON(value))
+                    case .success:
                         // データがない場合
                         guard let data = response.data else {
                             promise(.failure(SP2Error.Data(.response, nil)))
@@ -74,12 +76,11 @@ extension SplatNet2 {
                                 promise(.failure(SP2Error.Data(.undecodable, nil)))
                                 return
                             }
-                            /// ステータスコードが200なのにデコードできないことはない
+                            // ステータスコードが200なのにデコードできないことはない
                             guard let statusCode = response.status else {
                                 promise(.failure(SP2Error.Data(.unknown, nil)))
                                 return
                             }
-
                             // SplatoonToken/SplatoonAccessTokenでのエラー
                             switch statusCode {
                             case 400:
@@ -99,7 +100,6 @@ extension SplatNet2 {
                         }
                         promise(.success(response))
                     case .failure(let error):
-                        print(error)
                         guard let statusCode = response.response?.statusCode, let status = SP2Error.Http(rawValue: statusCode) else {
                             promise(.failure(SP2Error.Session(.unavailable, nil, error)))
                             return
@@ -110,16 +110,17 @@ extension SplatNet2 {
         }
         .eraseToAnyPublisher()
     }
+    //  swiftlint:enable cyclomatic_complexity function_body_length
 
     func execute<T: RequestType>(_ request: T) {
         session.request(request)
             .validate()
             .responseJSON(completionHandler: { response in
                 switch response.result {
-                    case .success(let value):
-                        print(value)
-                    case .failure(let error):
-                        print(error)
+                case .success(let value):
+                    print(value)
+                case .failure(let error):
+                    print(error)
                 }
             })
             .resume()

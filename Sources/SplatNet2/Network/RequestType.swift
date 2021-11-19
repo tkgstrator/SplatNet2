@@ -15,6 +15,7 @@ public protocol RequestType: URLRequestConvertible {
     var method: HTTPMethod { get }
     var parameters: Parameters? { get }
     var path: String { get }
+    //  swiftlint:disable:next discouraged_optional_collection
     var headers: [String: String]? { get set }
     var baseURL: URL { get }
     var encoding: ParameterEncoding { get }
@@ -33,11 +34,11 @@ extension SplatNet2: RequestInterceptor {
         getCookie(sessionToken: sessionToken)
             .sink(receiveCompletion: { result in
                 switch result {
-                    case .finished:
-                        break
-                    case .failure(let error):
-                        print(error)
-                        completion(.doNotRetry)
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error)
+                    completion(.doNotRetry)
                 }
             }, receiveValue: { response in
                 self.account = response
@@ -48,12 +49,12 @@ extension SplatNet2: RequestInterceptor {
     }
 }
 
-extension RequestType {
-    public var encoding: ParameterEncoding {
+public extension RequestType {
+    var encoding: ParameterEncoding {
         JSONEncoding.default
     }
 
-    public func asURLRequest() throws -> URLRequest {
+    func asURLRequest() throws -> URLRequest {
         // swiftlint:disable:next force_unwrapping
         var request = URLRequest(url: URL(unsafeString: baseURL.appendingPathComponent(path).absoluteString.removingPercentEncoding!))
         request.httpMethod = method.rawValue

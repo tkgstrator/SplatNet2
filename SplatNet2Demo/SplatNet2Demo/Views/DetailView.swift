@@ -1,15 +1,15 @@
 //
-//  SwiftUIView.swift
-//  
+//  DetailView.swift
+//  SplatNet2Demo
 //
 //  Created by tkgstrator on 2021/09/13.
-//  
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
 import SplatNet2
 import SwiftUI
 
-struct DetailView: View {
+internal struct DetailView: View {
     @State var signInState: SplatNet2.SignInState?
     @State var currentValue: Int = 0
     @State var maxValue: Int = 0
@@ -63,11 +63,15 @@ struct DetailView: View {
         }
         .navigationTitle("DetailView")
         .onReceive(NotificationCenter.default.publisher(for: SplatNet2.signIn), perform: { notification in
-            guard let state = notification.object as? SplatNet2.SignInState else { return }
+            guard let state = notification.object as? SplatNet2.SignInState else {
+                return
+            }
             signInState = state
         })
         .onReceive(NotificationCenter.default.publisher(for: SplatNet2.download), perform: { notification in
-            guard let progress = notification.object as? SplatNet2.Progress else { return }
+            guard let progress = notification.object as? SplatNet2.Progress else {
+                return
+            }
             maxValue = progress.maxValue
             currentValue = progress.currentValue
         })

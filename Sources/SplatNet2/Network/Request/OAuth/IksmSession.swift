@@ -5,7 +5,6 @@
 //  Created by tkgstrator on 2021/07/13.
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
-//  swiftlint:disable discouraged_optional_collection
 
 import Alamofire
 import Foundation
@@ -17,6 +16,7 @@ internal class IksmSession: RequestType {
     var baseURL = URL(unsafeString: "https://app.splatoon2.nintendo.net/")
     var path: String = ""
     var parameters: Parameters?
+    //  swiftlint:disable:next discouraged_optional_collection
     var headers: [String: String]?
 
     init(accessToken: String) {

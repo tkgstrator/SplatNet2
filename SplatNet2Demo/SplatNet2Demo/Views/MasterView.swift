@@ -1,20 +1,21 @@
 //
-//  SwiftUIView.swift
-//  
+//  MasterView.swift
+//  SplatNet2
 //
 //  Created by tkgstrator on 2021/09/13.
-//  
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
 import Combine
 import SplatNet2
 import SwiftUI
 
-struct MasterView: View {
+internal struct MasterView: View {
     @State var task = Set<AnyCancellable>()
     @State var isPresented = false
     @State var environment = false
     @State var sp2Error: SP2Error?
+    @State var allowMoveInList = false
 
     var body: some View {
         Form {
@@ -65,7 +66,11 @@ struct MasterView: View {
                 NavigationLink(destination: DetailView(), label: {
                     Text("ACCOUNT")
                 })
+                Toggle(isOn: $allowMoveInList, label: {
+                    Text("ALLOW MOVE IN LIST")
+                })
                 AccountView(manager: manager)
+                    .environment(\.allowMoveInList, $allowMoveInList)
             }, header: {
                 Text("Account")
             })
@@ -87,6 +92,7 @@ struct MasterView: View {
 extension String {
     static var fakeNsaId: String {
         let randomString: [String] = "0123456789abcdef".map({ String($0) })
+        // swiftlint:disable:next force_unwrapping
         return Range(0 ... 15).map({ _ in randomString.randomElement()! }).joined()
     }
 }

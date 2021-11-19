@@ -3,6 +3,7 @@
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/07/13.
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
 import Alamofire
@@ -15,6 +16,7 @@ public class Result: RequestType {
     public var method: HTTPMethod = .get
     public var path: String
     public var parameters: Parameters?
+    //  swiftlint:disable:next discouraged_optional_collection
     public var headers: [String: String]?
 
     init(jobId: Int) {
@@ -26,6 +28,7 @@ public class Result: RequestType {
         let jobScore: Int
         let playerType: PlayerType
         let grade: GradeType
+        //  swiftlint:disable:next discouraged_optional_collection
         let otherResults: [PlayerResult]?
         let schedule: Schedule
         let kumaPoint: Int

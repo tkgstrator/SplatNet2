@@ -4,6 +4,7 @@
 //
 //  Created by tkgstrator on 2021/07/13.
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
+//
 
 import Alamofire
 import Foundation
@@ -15,6 +16,7 @@ internal class FlapgToken: RequestType {
     var baseURL = URL(unsafeString: "https://flapg.com/")
     var path: String = "ika2/api/login"
     var parameters: Parameters?
+    //  swiftlint:disable:next discouraged_optional_collection
     var headers: [String: String]?
 
     init(accessToken: String, timestamp: Int, hash: String, type: FlapgType) {

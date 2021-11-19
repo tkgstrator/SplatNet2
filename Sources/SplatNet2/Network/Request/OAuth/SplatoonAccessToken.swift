@@ -5,7 +5,6 @@
 //  Created by tkgstrator on 2021/07/13.
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
-//  swiftlint:disable discouraged_optional_collection
 
 import Alamofire
 import Foundation
@@ -17,6 +16,7 @@ internal class SplatoonAccessToken: RequestType {
     var baseURL = URL(unsafeString: "https://api-lp1.znc.srv.nintendo.net/")
     var path: String = "v2/Game/GetWebServiceToken"
     var parameters: Parameters?
+    //  swiftlint:disable:next discouraged_optional_collection
     var headers: [String: String]?
 
     init(from result: FlapgToken.Response, splatoonToken: String, version: String) {

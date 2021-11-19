@@ -5,7 +5,6 @@
 //  Created by tkgstrator on 2021/07/13.
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
-//  swiftlint:disable discouraged_optional_collection
 
 import Alamofire
 import Foundation
@@ -18,6 +17,7 @@ internal class S2SHash: RequestType {
     var path: String = "gen2"
     var encoding: ParameterEncoding = URLEncoding.default
     var parameters: Parameters?
+    //  swiftlint:disable:next discouraged_optional_collection
     var headers: [String: String]?
 
     init(accessToken: String, timestamp: Int, userAgent: String) {

@@ -1,31 +1,34 @@
 //
-//  AccountPicker.swift
+//  AccountView.swift
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/07/03.
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
 import KeychainAccess
 import SwiftUI
 
 public struct AccountView: View {
+    @Environment(\.allowMoveInList) var allowMoveInList
     let manager: SplatNet2
-    @State var isPresented = false
 
     public init(manager: SplatNet2) {
         self.manager = manager
     }
 
     public var body: some View {
-        NavigationLink(destination: AccountListView(manager: manager), label: {
-            Text("ACCOUNT_CHANGER".localized)
-        })
-            .disabled(manager.accounts.isEmpty)
+        NavigationLink(
+            destination: AccountListView(manager: manager).environment(\.allowMoveInList, allowMoveInList),
+            label: {
+                Text("ACCOUNT_CHANGER".localized)
+            }
+        )
     }
 }
 
 private struct AccountListView: View {
-    let manager: SplatNet2
+    @Environment(\.allowMoveInList) var allowMoveInList
     @State var accounts: [UserInfo] {
         willSet {
         }
@@ -40,6 +43,7 @@ private struct AccountListView: View {
             try? manager.keychain.setValue(accounts)
         }
     }
+    let manager: SplatNet2
 
     init(manager: SplatNet2) {
         self.manager = manager
@@ -47,23 +51,52 @@ private struct AccountListView: View {
     }
 
     var body: some View {
-        List(content: {
-            ForEach(accounts) { account in
-                HStack(content: {
-                    URLImage(url: account.imageUri)
-                    Spacer()
-                    Text(account.nickname)
-                })
-            }
-            .onMove(perform: move)
-            .onDelete(perform: delete)
-        })
-            .toolbar(content: {
-                EditButton()
+        if allowMoveInList.wrappedValue {
+            List(content: {
+                ForEach(accounts) { account in
+                    HStack(content: {
+                        URLImage(url: account.imageUri)
+                        Spacer()
+                        Text(account.nickname)
+                    })
+                }
+                .onMove(perform: move)
+                .onDelete(perform: delete)
             })
-            .onDisappear(perform: sync)
-            .onAppear(perform: sync)
-            .navigationTitle("ACCOUNTS".localized)
+                .toolbar(content: {
+                    ToolbarItem(placement: .navigationBarTrailing, content: {
+                        EditButton()
+                    })
+                    ToolbarItem(placement: .navigationBarLeading, content: {
+                        AddButton(manager: manager)
+                    })
+                })
+                .onDisappear(perform: sync)
+                .onAppear(perform: sync)
+                .navigationTitle("ACCOUNTS".localized)
+        } else {
+            List(content: {
+                ForEach(accounts) { account in
+                    HStack(content: {
+                        URLImage(url: account.imageUri)
+                        Spacer()
+                        Text(account.nickname)
+                    })
+                }
+                .onDelete(perform: delete)
+            })
+                .toolbar(content: {
+                    ToolbarItem(placement: .navigationBarTrailing, content: {
+                        EditButton()
+                    })
+                    ToolbarItem(placement: .navigationBarLeading, content: {
+                        AddButton(manager: manager)
+                    })
+                })
+                .onDisappear(perform: sync)
+                .onAppear(perform: sync)
+                .navigationTitle("ACCOUNTS".localized)
+        }
     }
 
     func sync() {
@@ -77,5 +110,37 @@ private struct AccountListView: View {
 
     func delete(at offsets: IndexSet) {
         accounts.remove(atOffsets: offsets)
+    }
+}
+
+private struct AddButton: View {
+    let manager: SplatNet2
+    @State var isPresented = false
+
+    var body: some View {
+        Button(action: {
+            isPresented.toggle()
+        }, label: {
+            Image(systemName: "plus.circle")
+        })
+            .authorize(isPresented: $isPresented, manager: manager, completion: { _ in
+            })
+    }
+}
+
+public struct AllowMoveInList: EnvironmentKey {
+    public typealias Value = Binding<Bool>
+
+    public static var defaultValue: Binding<Bool> = .constant(false)
+}
+
+public extension EnvironmentValues {
+    var allowMoveInList: Binding<Bool> {
+        get {
+            self[AllowMoveInList.self]
+        }
+        set {
+            self[AllowMoveInList.self] = newValue
+        }
     }
 }

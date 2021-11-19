@@ -3,6 +3,7 @@
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/07/03.
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
 import BetterSafariView
@@ -29,13 +30,16 @@ public struct Authorize: ViewModifier {
     public func body(content: Content) -> some View {
         content
             .webAuthenticationSession(isPresented: $isPresented) {
-                WebAuthenticationSession(url: manager.oauthURL(state: state, verifier: verifier), callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, error in
+                WebAuthenticationSession(
+                    url: manager.oauthURL(state: state, verifier: verifier),
+                    callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, error in
                     do {
                         // Domain
+                        // swiftlint:disable unused_optional_binding
                         if let _ = error { throw SP2Error.OAuth(.domain, nil) }
 
                         // Session State
-                        guard let session_state: String = callbackURL?.absoluteString.capture(pattern: "state=(.*)&session", group: 1) else {
+                        guard let _: String = callbackURL?.absoluteString.capture(pattern: "state=(.*)&session", group: 1) else {
                             throw SP2Error.OAuth(.session, nil)
                         }
 
@@ -55,26 +59,30 @@ public struct Authorize: ViewModifier {
                         manager.getCookie(code: code, verifier: verifier)
                             .sink(receiveCompletion: { completion in
                                 switch completion {
-                                    case .finished:
-                                        break
-                                    case .failure(let error):
-                                        sp2Error = error
-                                        print(error)
+                                case .finished:
+                                    break
+                                case .failure(let error):
+                                    sp2Error = error
                                 }
                             }, receiveValue: { response in
-                                print(dump(response))
                                 // 利用しているアカウントを新しいものに上書きする
                                 manager.account = response
                             })
                             .store(in: &task)
                     } catch let error as SP2Error {
-                        sp2Error = error
+                        if error.statusCode != 8_403 {
+                            sp2Error = error
+                        }
                     } catch {
                     }
                 }
             }
             .alert(item: $sp2Error, content: { error in
-                Alert(title: Text("Error \(String(format: "%04d", error.statusCode))"), message: Text(error.localizedDescription), dismissButton: .default(Text("Dismiss")))
+                Alert(
+                    title: Text("Error \(String(format: "%04d", error.statusCode))"),
+                    message: Text(error.localizedDescription),
+                    dismissButton: .default(Text("Dismiss"))
+                )
             })
     }
 }
@@ -83,6 +91,7 @@ public extension View {
     func authorize(isPresented: Binding<Bool>, manager: SplatNet2, completion: @escaping (Swift.Result<UserInfo, SP2Error>) -> Void) -> some View {
         self.modifier(Authorize(isPresented: isPresented, manager: manager) { response in
             completion(response)
-        })
+        }
+        )
     }
 }

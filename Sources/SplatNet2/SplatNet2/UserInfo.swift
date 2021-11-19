@@ -1,11 +1,38 @@
 //
 //  UserInfo.swift
-//  
+//  SplatNet2
 //
 //  Created by tkgstrator on 2021/07/03.
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
+//
 
 import Foundation
+
+open class UserAccess: Codable {
+    /// X-Product Version
+    open var version: String = "1.13.2"
+    /// Service Name
+    open var service: String = "Salmonia3/@tkgling"
+    /// Release Date(ISO8601 format)
+    open var releaseDate: String = "2021-10-01T:00:00:00Z"
+    /// SplatNet2 Account
+    public var accounts: [UserInfo]
+
+    internal init(accounts: [UserInfo]) {
+        self.accounts = accounts
+    }
+
+    internal init(version: String, accounts: [UserInfo]) {
+        self.version = version
+        self.accounts = accounts
+    }
+
+    internal init(version: String, releaseDate: String, accounts: [UserInfo]) {
+        self.version = version
+        self.releaseDate = releaseDate
+        self.accounts = accounts
+    }
+}
 
 public class UserInfo: Codable {
     /// イカスミトークン
@@ -29,6 +56,7 @@ public class UserInfo: Codable {
         self.nsaid = nsaid
         self.nickname = nickname
         self.membership = false
+        //  swiftlint:disable:next force_unwrapping
         self.imageUri = Bundle.module.url(forResource: "icon", withExtension: "png")!
         self.coop = CoopInfo()
     }
@@ -64,32 +92,6 @@ public class UserInfo: Codable {
             self.kumaPoint = response.summary.card.kumaPoint
             self.kumaPointTotal = response.summary.card.kumaPointTotal
         }
-    }
-}
-
-open class UserAccess: Codable {
-    /// X-Product Version
-    open var version: String = "1.13.2"
-    /// Service Name
-    open var service: String = "Salmonia3/@tkgling"
-    /// Release Date(ISO8601 format)
-    open var releaseDate: String = "2021-10-01T:00:00:00Z"
-    /// SplatNet2 Account
-    public var accounts: [UserInfo]
-
-    internal init(accounts: [UserInfo]) {
-        self.accounts = accounts
-    }
-
-    internal init(version: String, accounts: [UserInfo]) {
-        self.version = version
-        self.accounts = accounts
-    }
-
-    internal init(version: String, releaseDate: String, accounts: [UserInfo]) {
-        self.version = version
-        self.releaseDate = releaseDate
-        self.accounts = accounts
     }
 }
 

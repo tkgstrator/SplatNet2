@@ -1,6 +1,6 @@
 //
-//  SwiftUIView.swift
-//  
+//  SignInView.swift
+//  SplatNet2
 //
 //  Created by tkgstrator on 2021/09/13.
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
@@ -10,11 +10,10 @@ import Combine
 import SplatNet2
 import SwiftUI
 
-struct SignInView: View {
+internal struct SignInView: View {
     @State var task = Set<AnyCancellable>()
     @State var isPresented = false
     @State var environment = false
-    @State var apiError: APIError?
 
     var body: some View {
         Form {
@@ -25,12 +24,6 @@ struct SignInView: View {
                     Text("SIGN IN")
                 })
                     .authorize(isPresented: $isPresented, manager: manager) { _ in
-//                    switch completion {
-//                    case .success(let value):
-//                        print(value)
-//                    case .failure(let error):
-//                        apiError = error
-//                    }
                     }
                 Button(action: {
                     manager.getCoopSummary()

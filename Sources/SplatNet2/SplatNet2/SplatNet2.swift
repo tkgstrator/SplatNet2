@@ -4,221 +4,143 @@
 //
 //  Created by tkgstrator on 2021/07/13.
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
+//
 
 import Alamofire
 import Combine
+import CryptoKit
 import Foundation
+import KeychainAccess
 
-public extension SplatNet2 {
-    // 変換用のクラス
-    class Coop {
-        public class Result: Codable {
-            /// バイトID
-            public var jobId: Int
-            /// ステージID
-            public var stageId: Int
-            /// バイトスコア
-            public var jobScore: Int?
-            /// バイトレート
-            public var jobRate: Int?
-            /// リザルト
-            public var jobResult: ResultJob
-            /// キケン度
-            public var dangerRate: Double
-            /// スケジュール
-            public var schedule: Schedule
-            /// 獲得クマポイント
-            public var kumaPoint: Int?
-            /// ウデマエ
-            public var grade: Int?
-            /// 評価レート
-            public var gradePoint: Int?
-            /// 評価レート増減
-            public var gradePointDelta: Int?
-            /// 時間
-            public var time: ResultTime
-            /// オオモノ出現数
-            public var bossCounts: [Int]
-            /// オオモノ討伐数
-            public var bossKillCounts: [Int]
-            /// プレイヤーリザルト
-            public var results: [ResultPlayer]
-            /// WAVE内容
-            public var waveDetails: [ResultWave]
-            /// 獲得金イクラ数
-            public var goldenEggs: Int
-            /// 獲得赤イクラ数
-            public var powerEggs: Int
+open class SplatNet2 {
+    /// アクセス用のセッション
+    internal let session: Session
+    // JSON Encoder
+    internal var encoder: JSONEncoder = {
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        return encoder
+    }()
 
-            internal init(from response: ResultCoop.Response) {
-                self.jobId = response.jobId
-                self.stageId = response.schedule.stage.stageId
-                self.jobScore = response.jobScore
-                self.jobRate = response.jobRate
-                self.jobResult = ResultJob(from: response.jobResult)
-                self.dangerRate = response.dangerRate
-                self.schedule = Schedule(from: response.schedule)
-                self.kumaPoint = response.kumaPoint
-                self.grade = Int(response.grade.id)!
-                self.gradePoint = response.gradePoint
-                self.gradePointDelta = response.gradePointDelta
-                self.time = ResultTime(from: response)
-                self.bossCounts = response.bossCounts.sorted(by: { Int($0.key)! < Int($1.key)! }).map { $0.value.count }
-                var results: [ResultCoop.Response.PlayerResult] = [response.myResult]
-                results.append(contentsOf: response.otherResults)
-                self.results = results.map { ResultPlayer(from: $0) }
-                self.waveDetails = response.waveDetails.map { ResultWave(from: $0) }
-                var tmpKillCounts = Array(repeating: 0, count: 9)
-                for result in self.results {
-                    tmpKillCounts = Array(zip(tmpKillCounts, result.bossKillCounts)).map { $0.0 + $0.1 }
-                }
-                self.bossKillCounts = tmpKillCounts
-                self.goldenEggs = response.waveDetails.map { $0.goldenIkuraNum }.reduce(0, +)
-                self.powerEggs = response.waveDetails.map { $0.ikuraNum }.reduce(0, +)
-            }
+    // JSON Decoder
+    internal let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
+
+    /// タスク管理
+    public var task = Set<AnyCancellable>()
+    /// ユーザデータを格納するKeychain
+    public private(set) var keychain = Keychain(service: .splatnet2)
+    /// 現在利用しているアカウント
+    public internal(set) var account: UserInfo {
+        willSet {
+            // アカウントを上書きするとその値をKeychainに書き込む
+            try? keychain.setValue(newValue)
         }
-
-        public class ResultTime: Codable {
-            public var playTime: Int
-            public var startTime: Int
-            public var endTime: Int
-
-            internal init(from response: ResultCoop.Response) {
-                self.startTime = response.startTime
-                self.endTime = response.endTime
-                self.playTime = response.playTime
-            }
+    }
+    /// 保存されている全てのアカウント
+    public var accounts: [UserInfo] {
+        guard let userdata = try? keychain.getValue() else {
+            return []
         }
-        public class ResultJob: Codable {
-            public var failureReason: String?
-            public var failureWave: Int?
-            public var isClear = false
-
-            internal init(from response: ResultCoop.Response.JobResult) {
-                self.failureWave = response.failureWave
-                self.failureReason = response.failureReason
-                self.isClear = response.isClear
-            }
+        return userdata.accounts.filter({ $0.nsaid != "0000000000000000" })
+    }
+    /// ユーザーエージェント
+    internal let userAgent: String
+    /// X-Product Version
+    public internal(set) var version: String {
+        willSet {
+            try? keychain.setVersion(newValue)
         }
+    }
 
-        public class Schedule: Codable {
-            public var startTime: Int
-            public var endTime: Int
-            public var weaponList: [Int]
-            public var stageId: Int
+    // イニシャライザ
+    public init(version: String = "1.13.2") {
+        session = {
+            let configuration: URLSessionConfiguration = {
+                let config = URLSessionConfiguration.default
+                config.httpMaximumConnectionsPerHost = 1
+                config.timeoutIntervalForRequest = 30
+                return config
+            }()
+            return Session(configuration: configuration, serializationQueue: DispatchQueue(label: "SplatNet2"))
+        }()
 
-            internal init(from response: ResultCoop.Response.Schedule) {
-                self.startTime = response.startTime
-                self.endTime = response.endTime
-                self.weaponList = response.weapons.compactMap { Int($0.id) }
-                self.stageId = response.stage.stageId
+        do {
+            // Keychainからバージョン情報を取得する
+            let userdata: UserAccess = try keychain.getValue()
+            self.version = userdata.version
+            self.userAgent = "SplatNet2/@tkgling"
+            // 保存されているアカウントから最も新しいものを選択
+            if let account = userdata.accounts.first {
+                self.account = account
+            } else {
+                // 存在しない場合は仮のデータで埋める
+                self.account = UserInfo(nsaid: "0000000000000000", nickname: "Unregistered")
             }
+        } catch {
+            // アカウント情報が得られないとき
+            self.version = version
+            self.userAgent = "SplatNet2/@tkgling"
+            self.account = UserInfo(nsaid: "0000000000000000", nickname: "Unregistered")
         }
+    }
 
-        public class ResultPlayer: Codable {
-            public var bossKillCounts: [Int]
-            public var helpCount: Int
-            public var deadCount: Int
-            public var ikuraNum: Int
-            public var goldenIkuraNum: Int
-            public var pid: String
-            public var name: String?
-            public var playerType: PlayerType
-            public var specialId: Int
-            public var specialCounts: [Int]
-            public var weaponList: [Int]
+    internal var iksmSession: String {
+        #if DEBUG
+        return account.iksmSession
+        #else
+        return account.iksmSession
+        #endif
+    }
 
-            internal init(from response: ResultCoop.Response.PlayerResult) {
-                // swiftlint:disable:next force_unwrapping
-                self.bossKillCounts = response.bossKillCounts.sorted(by: { Int($0.key)! < Int($1.key)! }).map { $0.value.count }
-                self.helpCount = response.helpCount
-                self.deadCount = response.deadCount
-                self.ikuraNum = response.ikuraNum
-                self.goldenIkuraNum = response.goldenIkuraNum
-                self.pid = response.pid
-                self.name = response.name
-                self.playerType = PlayerType(from: response.playerType)
-                // swiftlint:disable:next force_unwrapping
-                self.specialId = Int(response.special.id)!
-                self.specialCounts = response.specialCounts
-                self.weaponList = response.weaponList.compactMap { Int($0.id) }
-            }
-        }
+    internal var sessionToken: String {
+        account.sessionToken
+    }
 
-        public class PlayerType: Codable {
-            public var species: String
-            public var style: String
-
-            internal init(from response: ResultCoop.Response.PlayerType) {
-                self.species = response.species
-                self.style = response.style
-            }
-        }
-
-        public class ResultWave: Codable {
-            public var eventType: EventType
-            public var waterLevel: WaterLevel
-            public var ikuraNum: Int
-            public var goldenIkuraNum: Int
-            public var goldenIkuraPopNum: Int
-            public var quotaNum: Int
-
-            internal init(from response: ResultCoop.Response.WaveResult) {
-                // swiftlint:disable:next force_unwrapping
-                self.eventType = EventType(rawValue: response.eventType.key)!
-                // swiftlint:disable:next force_unwrapping
-                self.waterLevel = WaterLevel(rawValue: response.waterLevel.key)!
-                self.ikuraNum = response.ikuraNum
-                self.goldenIkuraNum = response.goldenIkuraNum
-                self.goldenIkuraPopNum = response.goldenIkuraPopNum
-                self.quotaNum = response.quotaNum
-            }
-        }
+    internal func oauthURL(state: String, verifier: String) -> URL {
+        let parameters: [String: String] = [
+            "state": state,
+            "redirect_uri": "npf71b963c1b7b6d119://auth",
+            "client_id": "71b963c1b7b6d119",
+            "scope": "openid+user+user.birthday+user.mii+user.screenName",
+            "response_type": "session_token_code",
+            "session_token_code_challenge": verifier.codeChallenge,
+            "session_token_code_challenge_method": "S256",
+            "theme": "login_form",
+        ]
+        return URL(unsafeString: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")
     }
 }
 
-public enum EventType: String, CaseIterable, Codable {
-    case noevent = "water-levels"
-    case rush = "rush"
-    case goldie = "goldie-seeking"
-    case griller = "griller"
-    case mothership = "the-mothership"
-    case fog = "fog"
-    case cohock = "cohock-charge"
+extension String {
+    public static var randomString: String {
+        let letters: String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        // swiftlint:disable:next force_unwrapping
+        return String((0 ..< 128).map({ _ in letters.randomElement()! }))
+    }
 
-    var eventType: Int {
-        switch self {
-        case .noevent:
-            return 0
-        case .rush:
-            return 1
-        case .goldie:
-            return 2
-        case .griller:
-            return 3
-        case .mothership:
-            return 4
-        case .fog:
-            return 5
-        case .cohock:
-            return 6
-        }
+    var base64EncodedString: String {
+        // swiftlint:disable:next force_unwrapping
+        self.data(using: .utf8)!
+            .base64EncodedString()
+            .replacingOccurrences(of: "=", with: "")
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+    }
+
+    var codeChallenge: String {
+        Data(SHA256.hash(data: Data(self.utf8))).base64EncodedString()
+            .replacingOccurrences(of: "=", with: "")
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
     }
 }
 
-public enum WaterLevel: String, CaseIterable, Codable {
-    case low
-    case normal
-    case high
-
-    var waterLevel: Int {
-        switch self {
-        case .low:
-            return 0
-        case .normal:
-            return 1
-        case .high:
-            return 2
-        }
+extension Dictionary where Key == String, Value == String {
+    var queryString: String {
+        self.map { "\($0.key)=\($0.value)" }.joined(separator: "&")
     }
 }

@@ -9,7 +9,7 @@
 import SplatNet2
 import SwiftUI
 
-let manager = SplatNet2()
+public let manager = SplatNet2()
 
 @main
 internal struct SplatNet2DemoApp: App {
