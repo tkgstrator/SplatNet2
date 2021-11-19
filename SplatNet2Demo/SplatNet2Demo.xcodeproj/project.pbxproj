@@ -39,7 +39,6 @@
 /* Begin PBXFileReference section */
 		100D8C3626EF3D2E00286036 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		100D8C3A26EF3D7100286036 /* MasterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterView.swift; sourceTree = "<group>"; };
-		108B490C27437734007C6E4F /* Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
 		1090C671263DA84F000DD54C /* SplatNet2Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SplatNet2Demo.entitlements; sourceTree = "<group>"; };
 		10F010B1263D7ADF002C40DA /* SplatNet2Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplatNet2Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplatNet2DemoApp.swift; sourceTree = "<group>"; };
@@ -124,7 +123,6 @@
 				10F010B8263D7AE3002C40DA /* Assets.xcassets */,
 				10F010BD263D7AE3002C40DA /* Info.plist */,
 				10F010BA263D7AE3002C40DA /* Preview Content */,
-				108B490C27437734007C6E4F /* Manager.swift */,
 			);
 			path = SplatNet2Demo;
 			sourceTree = "<group>";

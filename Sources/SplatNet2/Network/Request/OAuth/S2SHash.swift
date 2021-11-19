@@ -21,9 +21,6 @@ internal class S2SHash: RequestType {
     var headers: [String: String]?
 
     init(accessToken: String, timestamp: Int, userAgent: String) {
-        self.headers = [
-            "User-Agent": userAgent,
-        ]
         self.parameters = [
             "naIdToken": accessToken,
             "timestamp": String(timestamp),
@@ -39,7 +36,6 @@ internal class S2SHash: RequestType {
             self.timestamp = timestamp
             self.accessToken = accessToken
             self.hash = getIkaHash(timestamp: timestamp, idToken: accessToken)
-            print(hash)
         }
     }
 }

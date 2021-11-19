@@ -30,14 +30,13 @@ extension SplatNet2: RequestInterceptor {
     }
 
     public func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
-        if request.retryCount < 1 {
+        if request.retryCount == 0 {
         getCookie(sessionToken: sessionToken)
             .sink(receiveCompletion: { result in
                 switch result {
                 case .finished:
                     break
                 case .failure(let error):
-                    print(error)
                     completion(.doNotRetry)
                 }
             }, receiveValue: { response in
