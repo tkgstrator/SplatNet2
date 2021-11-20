@@ -22,7 +22,7 @@ extension SplatNet2 {
     /// Download a specific coop result selected by result id from SplatNet2
     public func getCoopResult(resultId: Int)
     -> AnyPublisher<Result.Response, SP2Error> {
-        let request = Result(jobId: resultId)
+        let request = Result(resultId: resultId)
         return publish(request)
     }
 
@@ -39,7 +39,7 @@ extension SplatNet2 {
         Future { [self] promise in
             getCoopSummary()
                 .flatMap({ Range((resultId + 1) ... $0.summary.card.jobNum).publisher })
-                .flatMap({ publish(Result(jobId: $0)) })
+                .flatMap({ publish(Result(resultId: $0)) })
                 .collect()
                 .sink(receiveCompletion: { completion in
                     switch completion {

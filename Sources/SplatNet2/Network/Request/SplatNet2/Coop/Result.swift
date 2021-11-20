@@ -20,8 +20,8 @@ public class Result: RequestType {
     //  swiftlint:disable:next discouraged_optional_collection
     public var headers: [String: String]?
 
-    init(jobId: Int) {
-        self.path = "coop_results/\(jobId)"
+    init(resultId: Int) {
+        self.path = "coop_results/\(resultId)"
     }
 
     // MARK: - Result

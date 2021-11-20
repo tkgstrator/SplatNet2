@@ -71,7 +71,7 @@ extension SplatNet2 {
                                 return
                             }
                             #if DEBUG
-                            print(try? JSON(data: data))
+//                            print(try? JSON(data: data))
                             #endif
                             do {
                                 let response = try decoder.decode(T.ResponseType.self, from: data)
