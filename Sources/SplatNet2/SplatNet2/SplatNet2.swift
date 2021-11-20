@@ -88,12 +88,8 @@ open class SplatNet2: RequestInterceptor {
         }
     }
 
-    internal var iksmSession: String {
-        #if DEBUG
-        return account.iksmSession
-        #else
-        return account.iksmSession
-        #endif
+    public var iksmSession: String {
+        account.iksmSession
     }
 
     internal var sessionToken: String {
