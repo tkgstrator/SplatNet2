@@ -65,6 +65,9 @@ internal struct MasterView: View {
                         })
                         .store(in: &task)
                 }, label: { Text("GET ALL RESULTS") })
+                Button(action: {
+                    print(manager.schedule)
+                }, label: { Text("GET ALL SCHEDULE") })
             })
             Section(content: {
                 NavigationLink(destination: DetailView(), label: {

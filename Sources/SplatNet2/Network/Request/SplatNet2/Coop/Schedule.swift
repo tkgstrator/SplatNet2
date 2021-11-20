@@ -14,7 +14,7 @@ public class Schedule: Codable {
     public struct Response: Codable {
         public var startTime: Int
         public var stageId: Int
-        public var rareWeapon: Int
+        public var rareWeapon: Int?
         public var endTime: Int
         public var weaponList: [Int]
     }

@@ -33,6 +33,20 @@ extension SplatNet2 {
         return publish(request)
     }
 
+    public var schedule: [Schedule.Response] {
+        let decoder: JSONDecoder = {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            return decoder
+        }()
+        guard let url = Bundle.module.url(forResource: "coop", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let schedule = try? decoder.decode([Schedule.Response].self, from: data) else {
+            return []
+        }
+        return schedule
+    }
+
     /// Download all gettable coop results from SplatNet2
     open func getCoopResults(resultId: Int)
     -> AnyPublisher<[Result.Response], SP2Error> {

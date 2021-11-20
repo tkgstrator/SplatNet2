@@ -19,7 +19,7 @@ public struct NullCodable<T>: Codable where T: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         switch wrappedValue {
-            case .some(_):
+            case .some:
                 self.wrappedValue = try container.decode(T.self)
             case .none:
                 self.wrappedValue = nil
