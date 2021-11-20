@@ -15,7 +15,7 @@ public enum SP2Error: Error {
     /// 認証時のエラー
     case OAuth(Token, Error?)
     /// 共通エラー
-    case Common(Http, AFError)
+    case Common(Http, AFError?)
     /// 共通エラー
     case Data(Decode, Error?)
 
@@ -100,7 +100,7 @@ extension SP2Error: LocalizedError {
         case .Session(_, let response, _):
             return [response?.errorDescription, response?.errorMessage].compactMap({ $0 }).first
         case .Common(_, let error):
-            return error.localizedDescription
+            return error?.localizedDescription
         case .OAuth(let error, _):
             switch error {
             case .domain:
