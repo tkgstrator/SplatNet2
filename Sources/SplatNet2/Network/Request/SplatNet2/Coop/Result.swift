@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import CodableDictionary
 import Foundation
 
 public class Result: RequestType {
@@ -39,11 +40,11 @@ public class Result: RequestType {
         public let gradePointDelta: Int?
         public let jobRate: Int?
         public let startTime, playTime, endTime: Int
-        public let bossCounts: [String: BossCount]
+        public let bossCounts: CodableDictionary<BossId, BossCount>
         public let gradePoint: Int?
         public let dangerRate: Double
 
-        public init(jobScore: Int?, playerType: Result.PlayerType?, grade: Result.GradeType?, otherResults: [Result.PlayerResult]?, schedule: Result.Schedule, kumaPoint: Int?, waveDetails: [Result.WaveDetail], jobResult: Result.JobResult, jobId: Int?, myResult: Result.PlayerResult, gradePointDelta: Int?, jobRate: Int?, startTime: Int, playTime: Int, endTime: Int, bossCounts: [String: Result.BossCount], gradePoint: Int?, dangerRate: Double) {
+        public init(jobScore: Int?, playerType: Result.PlayerType?, grade: Result.GradeType?, otherResults: [Result.PlayerResult]?, schedule: Result.Schedule, kumaPoint: Int?, waveDetails: [Result.WaveDetail], jobResult: Result.JobResult, jobId: Int?, myResult: Result.PlayerResult, gradePointDelta: Int?, jobRate: Int?, startTime: Int, playTime: Int, endTime: Int, bossCounts: CodableDictionary<BossId, BossCount>, gradePoint: Int?, dangerRate: Double) {
             self.jobScore = jobScore
             self.playerType = playerType
             self.grade = grade
@@ -87,6 +88,18 @@ public class Result: RequestType {
         }
     }
 
+    public enum BossId: String, Codable, CaseIterable, CodableDictionaryKey {
+        case goldie = "3"
+        case steelhead = "6"
+        case flyfish = "9"
+        case scrapper = "12"
+        case steelEel = "13"
+        case stinger = "14"
+        case maws = "15"
+        case griller = "16"
+        case drizzler = "21"
+    }
+
     public struct EventType: Codable {
         public let name: EventName
         public let key: EventKey
@@ -108,25 +121,25 @@ public class Result: RequestType {
     }
 
     public enum BossKey: String, Codable, CaseIterable {
-        case sakediver = "sakediver"
-        case sakedozer = "sakedozer"
+        case sakelienGolden = "sakelien-golden"
         case sakelienBomber = "sakelien-bomber"
         case sakelienCupTwins = "sakelien-cup-twins"
-        case sakelienGolden = "sakelien-golden"
         case sakelienShield = "sakelien-shield"
         case sakelienSnake = "sakelien-snake"
         case sakelienTower = "sakelien-tower"
+        case sakedozer = "sakedozer"
+        case sakediver = "sakediver"
         case sakerocket = "sakerocket"
     }
 
     public enum EventKey: String, Codable, CaseIterable {
-        case cohockCharge = "cohock-charge"
-        case fog = "fog"
+        case waterLevels = "water-levels"
+        case rush = "rush"
         case goldieSeeking = "goldie-seeking"
         case griller = "griller"
-        case rush = "rush"
+        case fog = "fog"
         case theMothership = "the-mothership"
-        case waterLevels = "water-levels"
+        case cohockCharge = "cohock-charge"
     }
 
     public enum WaterKey: String, Codable, CaseIterable {
@@ -136,15 +149,15 @@ public class Result: RequestType {
     }
 
     public enum BossName: String, Codable, CaseIterable {
-        case drizzler = "Drizzler"
-        case flyfish = "Flyfish"
         case goldie = "Goldie"
-        case maws = "Maws"
+        case steelhead = "Steelhead"
+        case flyfish = "Flyfish"
         case scrapper = "Scrapper"
         case steelEel = "Steel Eel"
-        case steelhead = "Steelhead"
-        case griller = "Griller"
         case stinger = "Stinger"
+        case maws = "Maws"
+        case griller = "Griller"
+        case drizzler = "Drizzler"
     }
 
     public enum EventName: String, Codable, CaseIterable {
@@ -210,7 +223,7 @@ public class Result: RequestType {
         public let pid: String
         public let specialCounts: [Int]
         public let goldenIkuraNum: Int
-        public let bossKillCounts: [String: BossCount]
+        public let bossKillCounts: CodableDictionary<BossId, BossCount>
         public let special: SpecialType
         public let deadCount: Int
         public let name: String
@@ -218,6 +231,20 @@ public class Result: RequestType {
         public let playerType: PlayerType
         public let helpCount: Int
         public let weaponList: [WeaponList]
+
+        public init(pid: String, specialCounts: [Int], goldenIkuraNum: Int, bossKillCounts: CodableDictionary<BossId, BossCount>, special: Result.SpecialType, deadCount: Int, name: String, ikuraNum: Int, playerType: Result.PlayerType, helpCount: Int, weaponList: [Result.WeaponList]) {
+            self.pid = pid
+            self.specialCounts = specialCounts
+            self.goldenIkuraNum = goldenIkuraNum
+            self.bossKillCounts = bossKillCounts
+            self.special = special
+            self.deadCount = deadCount
+            self.name = name
+            self.ikuraNum = ikuraNum
+            self.playerType = playerType
+            self.helpCount = helpCount
+            self.weaponList = weaponList
+        }
     }
 
     // MARK: - PlayerType
