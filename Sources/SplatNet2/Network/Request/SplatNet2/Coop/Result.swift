@@ -268,9 +268,9 @@ public class Result: RequestType {
         public let imageA: ImageA
         public let imageB: ImageB
         public let name: SpecialName
-        public let id: String
+        public let id: SpecialId
 
-        public init(imageA: Result.ImageA, imageB: Result.ImageB, name: Result.SpecialName, id: String) {
+        public init(imageA: Result.ImageA, imageB: Result.ImageB, name: Result.SpecialName, id: SpecialId) {
             self.imageA = imageA
             self.imageB = imageB
             self.name = name
@@ -297,6 +297,13 @@ public class Result: RequestType {
         case splashdown = "Splashdown"
         case splatBombLauncher = "Splat-Bomb Launcher"
         case stingRay = "Sting Ray"
+    }
+
+    public enum SpecialId: String, Codable, CaseIterable {
+        case splatBombLauncher = "2"
+        case stingRay = "7"
+        case inkjet = "8"
+        case splashdown = "9"
     }
 
     // MARK: - WeaponListElement
