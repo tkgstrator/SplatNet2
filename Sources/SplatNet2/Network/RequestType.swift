@@ -22,14 +22,14 @@ public protocol RequestType: URLRequestConvertible {
 }
 
 extension SplatNet2: RequestInterceptor {
-    public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
+    open func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
         var urlRequest = urlRequest
         urlRequest.headers.add(.userAgent("Salmonia3/tkgling"))
         urlRequest.headers.add(HTTPHeader(name: "cookie", value: "iksm_session=\(iksmSession)"))
         completion(.success(urlRequest))
     }
 
-    public func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+    open func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
         if request.retryCount == 0 {
         getCookie(sessionToken: sessionToken)
             .sink(receiveCompletion: { result in
