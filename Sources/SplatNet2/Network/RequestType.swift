@@ -21,33 +21,6 @@ public protocol RequestType: URLRequestConvertible {
     var encoding: ParameterEncoding { get }
 }
 
-extension SplatNet2: RequestInterceptor {
-    open func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
-        var urlRequest = urlRequest
-        urlRequest.headers.add(.userAgent("Salmonia3/tkgling"))
-        urlRequest.headers.add(HTTPHeader(name: "cookie", value: "iksm_session=\(iksmSession)"))
-        completion(.success(urlRequest))
-    }
-
-    open func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
-        if request.retryCount == 0 {
-        getCookie(sessionToken: sessionToken)
-            .sink(receiveCompletion: { result in
-                switch result {
-                case .finished:
-                    break
-                case .failure(let error):
-                    completion(.doNotRetry)
-                }
-            }, receiveValue: { response in
-                self.account = response
-                completion(.doNotRetry)
-            })
-            .store(in: &task)
-        }
-    }
-}
-
 public extension RequestType {
     var encoding: ParameterEncoding {
         JSONEncoding.default
