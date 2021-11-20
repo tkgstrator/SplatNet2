@@ -12,7 +12,7 @@ import CryptoKit
 import Foundation
 import KeychainAccess
 
-open class SplatNet2 {
+open class SplatNet2: RequestInterceptor {
     /// アクセス用のセッション
     internal let session: Session
     // JSON Encoder
@@ -112,6 +112,31 @@ open class SplatNet2 {
             "theme": "login_form",
         ]
         return URL(unsafeString: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")
+    }
+
+    open func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
+        var urlRequest = urlRequest
+        urlRequest.headers.add(.userAgent("Salmonia3/tkgling"))
+        urlRequest.headers.add(HTTPHeader(name: "cookie", value: "iksm_session=\(iksmSession)"))
+        completion(.success(urlRequest))
+    }
+
+    open func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+        if request.retryCount == 0 {
+        getCookie(sessionToken: sessionToken)
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .finished:
+                    break
+                case .failure(let error):
+                    completion(.doNotRetry)
+                }
+            }, receiveValue: { response in
+                self.account = response
+                completion(.doNotRetry)
+            })
+            .store(in: &task)
+        }
     }
 }
 
