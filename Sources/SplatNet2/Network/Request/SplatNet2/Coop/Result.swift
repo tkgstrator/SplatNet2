@@ -226,13 +226,13 @@ public class Result: RequestType {
         public let bossKillCounts: CodableDictionary<BossId, BossCount>
         public let special: SpecialType
         public let deadCount: Int
-        public let name: String
+        public let name: String?
         public let ikuraNum: Int
         public let playerType: PlayerType
         public let helpCount: Int
         public let weaponList: [WeaponList]
 
-        public init(pid: String, specialCounts: [Int], goldenIkuraNum: Int, bossKillCounts: CodableDictionary<BossId, BossCount>, special: Result.SpecialType, deadCount: Int, name: String, ikuraNum: Int, playerType: Result.PlayerType, helpCount: Int, weaponList: [Result.WeaponList]) {
+        public init(pid: String, specialCounts: [Int], goldenIkuraNum: Int, bossKillCounts: CodableDictionary<BossId, BossCount>, special: Result.SpecialType, deadCount: Int, name: String?, ikuraNum: Int, playerType: Result.PlayerType, helpCount: Int, weaponList: [Result.WeaponList]) {
             self.pid = pid
             self.specialCounts = specialCounts
             self.goldenIkuraNum = goldenIkuraNum
