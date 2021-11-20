@@ -31,8 +31,15 @@ public class Results: RequestType {
         struct RewardGear: Codable {
             let kind, thumbnail, image, id: String
             let name: String
-            let brand: Result.Brand
+            let brand: Brand
             let rarity: Int
+        }
+
+        // MARK: - Brand
+        public struct Brand: Codable {
+            public let id: String
+            public let image: String
+            public let name: String
         }
 
         // MARK: - Summary

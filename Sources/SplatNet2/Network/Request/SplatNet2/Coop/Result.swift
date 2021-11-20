@@ -79,10 +79,10 @@ public class Result: RequestType {
 
     // MARK: - Boss
     public struct Boss: Codable {
-        public let name: BossName
+        public let name: String
         public let key: BossKey
 
-        public init(name: Result.BossName, key: Result.BossKey) {
+        public init(name: String, key: Result.BossKey) {
             self.name = name
             self.key = key
         }
@@ -101,20 +101,20 @@ public class Result: RequestType {
     }
 
     public struct EventType: Codable {
-        public let name: EventName
+        public let name: String
         public let key: EventKey
 
-        public init(name: Result.EventName, key: Result.EventKey) {
+        public init(name: String, key: Result.EventKey) {
             self.name = name
             self.key = key
         }
     }
 
     public struct WaterLevel: Codable {
-        public let name: WaterName
+        public let name: String
         public let key: WaterKey
 
-        public init(name: Result.WaterName, key: Result.WaterKey) {
+        public init(name: String, key: Result.WaterKey) {
             self.name = name
             self.key = key
         }
@@ -148,34 +148,6 @@ public class Result: RequestType {
         case normal
     }
 
-    public enum BossName: String, Codable, CaseIterable {
-        case goldie = "Goldie"
-        case steelhead = "Steelhead"
-        case flyfish = "Flyfish"
-        case scrapper = "Scrapper"
-        case steelEel = "Steel Eel"
-        case stinger = "Stinger"
-        case maws = "Maws"
-        case griller = "Griller"
-        case drizzler = "Drizzler"
-    }
-
-    public enum EventName: String, Codable, CaseIterable {
-        case rush = "Rush"
-        case cohockCharge = "Cohock Charge"
-        case waterLevels = "-"
-        case goldieSeeking = "Goldie Seeking"
-        case theGriller = "The Griller"
-        case theMothership = "The Mothership"
-        case fog = "Fog"
-    }
-
-    public enum WaterName: String, Codable, CaseIterable {
-        case highTide = "High tide"
-        case lowTide = "Low tide"
-        case normal = "Normal"
-    }
-
     public enum FailureReason: String, Codable, CaseIterable {
         case wipeOut = "wipe_out"
         case timeLimit = "time_limit"
@@ -183,12 +155,12 @@ public class Result: RequestType {
 
     // MARK: - Grade
     public struct GradeType: Codable {
-        public let longName: GradeName?
-        public let id: String
-        public let shortName: GradeName?
-        public let name: GradeName
+        public let longName: String?
+        public let id: GradeId
+        public let shortName: String?
+        public let name: String
 
-        public init(longName: Result.GradeName?, id: String, shortName: Result.GradeName?, name: Result.GradeName) {
+        public init(longName: String?, id: GradeId, shortName: String?, name: String) {
             self.longName = longName
             self.id = id
             self.shortName = shortName
@@ -196,13 +168,13 @@ public class Result: RequestType {
         }
     }
 
-    public enum GradeName: String, Codable, CaseIterable {
-        case profreshional = "Profreshional"
-        case overachiver = "Over achiver"
-        case gogetter = "Go getter"
-        case parttimer = "Part timer"
-        case apparentice = "Apparentice"
-        case intern = "Intern"
+    public enum GradeId: String, Codable, CaseIterable {
+        case profreshional = "5"
+        case overachiver = "4"
+        case gogetter = "3"
+        case parttimer = "2"
+        case apparentice = "1"
+        case intern = "0"
     }
 
     // MARK: - JobResult
@@ -267,10 +239,10 @@ public class Result: RequestType {
     public struct SpecialType: Codable {
         public let imageA: ImageA
         public let imageB: ImageB
-        public let name: SpecialName
+        public let name: String
         public let id: SpecialId
 
-        public init(imageA: Result.ImageA, imageB: Result.ImageB, name: Result.SpecialName, id: SpecialId) {
+        public init(imageA: Result.ImageA, imageB: Result.ImageB, name: String, id: SpecialId) {
             self.imageA = imageA
             self.imageB = imageB
             self.name = name
@@ -292,13 +264,6 @@ public class Result: RequestType {
         case stingRay = "/images/special/9e89e1d67803c3021203182ecc7f38bc2c0f5400.png"
     }
 
-    public enum SpecialName: String, Codable, CaseIterable {
-        case inkjet = "Inkjet"
-        case splashdown = "Splashdown"
-        case splatBombLauncher = "Splat-Bomb Launcher"
-        case stingRay = "Sting Ray"
-    }
-
     public enum SpecialId: String, Codable, CaseIterable {
         case splatBombLauncher = "2"
         case stingRay = "7"
@@ -306,13 +271,13 @@ public class Result: RequestType {
         case splashdown = "9"
     }
 
-    // MARK: - WeaponListElement
+    // MARK: - WeaponList
     public struct WeaponList: Codable {
-        public let id: String
+        public let id: WeaponType.WeaponId
         public let weapon: Brand?
         public let coopSpecialWeapon: Brand?
 
-        public init(id: String, weapon: Result.Brand?, coopSpecialWeapon: Result.Brand?) {
+        public init(id: WeaponType.WeaponId, weapon: Result.Brand?, coopSpecialWeapon: Result.Brand?) {
             self.id = id
             self.weapon = weapon
             self.coopSpecialWeapon = coopSpecialWeapon
@@ -321,10 +286,12 @@ public class Result: RequestType {
 
     // MARK: - Brand
     public struct Brand: Codable {
-        public let id, thumbnail: String?
-        public let image, name: String
+        public let id: WeaponType.WeaponId?
+        public let thumbnail: String?
+        public let image: WeaponType.Image
+        public let name: String
 
-        public init(id: String?, thumbnail: String?, image: String, name: String) {
+        public init(id: WeaponType.WeaponId?, thumbnail: String?, image: WeaponType.Image, name: String) {
             self.id = id
             self.thumbnail = thumbnail
             self.image = image
@@ -348,21 +315,23 @@ public class Result: RequestType {
 
     // MARK: - Stage
     public struct Stage: Codable {
-        public let name: StageName
-        public let image: String
+        public let name: String
+        public let image: StageType.Image
 
-        public init(name: Result.StageName, image: String) {
+        public init(name: String, image: StageType.Image) {
             self.name = name
             self.image = image
         }
     }
 
-    public enum StageName: String, Codable, CaseIterable {
-        case shakeship = "Marooner's Bay"
-        case shakeride = "Ruins of Ark Polaris"
-        case shakelift = "Salmonid Smokeyard"
-        case shakeup = "Spawning Grounds"
-        case shakehouse = "Lost Outpost"
+    public enum StageType {
+        public enum Image: String, Codable, CaseIterable {
+            case shakeup = "/images/coop_stage/65c68c6f0641cc5654434b78a6f10b0ad32ccdee.png"
+            case shakeship = "/images/coop_stage/e07d73b7d9f0c64e552b34a2e6c29b8564c63388.png"
+            case shakehouse = "/images/coop_stage/6d68f5baa75f3a94e5e9bfb89b82e7377e3ecd2c.png"
+            case shakelift = "/images/coop_stage/e9f7c7b35e6d46778cd3cbc0d89bd7e1bc3be493.png"
+            case shakeride = "/images/coop_stage/50064ec6e97aac91e70df5fc2cfecf61ad8615fd.png"
+        }
     }
 
     // MARK: - WaveDetail
