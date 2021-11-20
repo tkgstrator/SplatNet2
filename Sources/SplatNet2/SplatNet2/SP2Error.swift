@@ -67,7 +67,7 @@ public enum SP2Error: Error {
     }
 
     /// ステータスコード
-    var statusCode: Int {
+    public var statusCode: Int {
         switch self {
         case .Session(let value, let response, _):
             guard let status = response?.status else {
@@ -85,11 +85,11 @@ public enum SP2Error: Error {
 
     /// 
     public struct Failure: Codable {
-        let errorDescription: String?
-        let error: String?
-        let errorMessage: String?
-        let status: Int?
-        let correlationId: String?
+        public let errorDescription: String?
+        public let error: String?
+        public let errorMessage: String?
+        public let status: Int?
+        public let correlationId: String?
     }
 }
 
