@@ -33,7 +33,7 @@ extension SplatNet2 {
         return publish(request)
     }
 
-    public var schedule: [Schedule.Response] {
+    public static let schedule: [Schedule.Response] = {
         let decoder: JSONDecoder = {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -45,7 +45,7 @@ extension SplatNet2 {
             return []
         }
         return schedule
-    }
+    }()
 
     /// Download all gettable coop results from SplatNet2
     open func getCoopResults(resultId: Int)

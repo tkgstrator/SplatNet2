@@ -66,7 +66,7 @@ internal struct MasterView: View {
                         .store(in: &task)
                 }, label: { Text("GET ALL RESULTS") })
                 Button(action: {
-                    print(manager.schedule)
+                    print(SplatNet2.schedule)
                 }, label: { Text("GET ALL SCHEDULE") })
             })
             Section(content: {
