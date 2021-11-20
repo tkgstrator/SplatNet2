@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  URLImage.swift
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/11/17.

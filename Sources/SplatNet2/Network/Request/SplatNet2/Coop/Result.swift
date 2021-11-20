@@ -207,9 +207,9 @@ public class Result: RequestType {
 
     // MARK: - JobResult
     public struct JobResult: Codable {
-        public let failureWave: Int?
+        @NullCodable public var failureWave: Int?
         public let isClear: Bool
-        public let failureReason: FailureReason?
+        @NullCodable public var failureReason: FailureReason?
 
         public init(failureWave: Int?, isClear: Bool, failureReason: FailureReason?) {
             self.failureWave = failureWave
