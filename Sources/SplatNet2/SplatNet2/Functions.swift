@@ -11,7 +11,7 @@ import Combine
 import Foundation
 import KeychainAccess
 
-extension Array {
+public extension Array {
     /// Arrayを指定した件数ごとに分割する
     func chunked(by chunkSize: Int) -> [[Element]] {
         stride(from: 0, to: self.count, by: chunkSize).map {
