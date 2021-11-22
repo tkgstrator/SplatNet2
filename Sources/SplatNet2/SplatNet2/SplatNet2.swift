@@ -34,7 +34,7 @@ open class SplatNet2: RequestInterceptor {
     /// ユーザデータを格納するKeychain
     public private(set) var keychain = Keychain(service: .splatnet2)
     /// 現在利用しているアカウント
-    public internal(set) var account: UserInfo {
+    public var account: UserInfo {
         willSet {
             // アカウントを上書きするとその値をKeychainに書き込む
             try? keychain.setValue(newValue)
