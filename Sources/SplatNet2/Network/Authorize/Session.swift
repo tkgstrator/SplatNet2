@@ -53,7 +53,7 @@ extension SplatNet2 {
         Future { [self] promise in
             getCoopSummary()
                 .flatMap({ Range((resultId + 1) ... $0.summary.card.jobNum).publisher })
-                .flatMap({ publish(Result(resultId: $0)) })
+                .flatMap(maxPublishers: .max(1), { publish(Result(resultId: $0)) })
                 .collect()
                 .sink(receiveCompletion: { completion in
                     switch completion {
