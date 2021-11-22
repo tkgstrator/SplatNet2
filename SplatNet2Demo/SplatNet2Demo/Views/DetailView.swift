@@ -42,6 +42,11 @@ internal struct DetailView: View {
                     Text(manager.version)
                         .foregroundColor(.secondary)
                 })
+                Button(action: {
+                    manager.expiredIksmSession()
+                }, label: {
+                    Text("Expired")
+                })
             }, header: {
                 Text("Account")
             })

@@ -38,6 +38,8 @@ open class SplatNet2: RequestInterceptor {
         willSet {
             // アカウントを上書きするとその値をKeychainに書き込む
             try? keychain.setValue(newValue)
+            // IksmSessionの値を上書きする
+            self.iksmSession = newValue.iksmSession
         }
     }
     /// 保存されている全てのアカウント
@@ -49,12 +51,19 @@ open class SplatNet2: RequestInterceptor {
     }
     /// ユーザーエージェント
     internal let userAgent: String
+
     /// X-Product Version
     public internal(set) var version: String {
         willSet {
             try? keychain.setVersion(newValue)
         }
     }
+
+    /// Iksm Session
+    public var iksmSession: String
+
+    /// Session Token
+    internal var sessionToken: String
 
     // イニシャライザ
     public init(version: String = "1.13.2") {
@@ -80,20 +89,16 @@ open class SplatNet2: RequestInterceptor {
                 // 存在しない場合は仮のデータで埋める
                 self.account = UserInfo(nsaid: "0000000000000000", nickname: "Unregistered")
             }
+            self.iksmSession = account.iksmSession
+            self.sessionToken = account.sessionToken
         } catch {
             // アカウント情報が得られないとき
             self.version = version
             self.userAgent = "SplatNet2/@tkgling"
             self.account = UserInfo(nsaid: "0000000000000000", nickname: "Unregistered")
+            self.iksmSession = account.iksmSession
+            self.sessionToken = account.sessionToken
         }
-    }
-
-    public var iksmSession: String {
-        account.iksmSession
-    }
-
-    internal var sessionToken: String {
-        account.sessionToken
     }
 
     internal func oauthURL(state: String, verifier: String) -> URL {
@@ -129,10 +134,14 @@ open class SplatNet2: RequestInterceptor {
                 }
             }, receiveValue: { response in
                 self.account = response
-                completion(.doNotRetry)
+                completion(.retry)
             })
             .store(in: &task)
         }
+    }
+
+    public func expiredIksmSession() {
+        self.iksmSession = String(String.randomString.prefix(32))
     }
 }
 
