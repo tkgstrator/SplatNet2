@@ -60,10 +60,10 @@ open class SplatNet2: RequestInterceptor {
     }
 
     /// Iksm Session
-    public var iksmSession: String
+    public private(set) var iksmSession: String
 
     /// Session Token
-    internal var sessionToken: String
+    public private(set) var sessionToken: String
 
     // イニシャライザ
     public init(version: String = "1.13.2") {

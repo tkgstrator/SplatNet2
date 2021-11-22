@@ -63,7 +63,7 @@ extension SplatNet2 {
         generate(accessToken: splatoonAccessToken)
     }
 
-    internal func getCookie(sessionToken: String)
+    public func getCookie(sessionToken: String)
     -> AnyPublisher<UserInfo, SP2Error> {
         var splatoonToken: String = ""
         var thumbnailURL: String = ""
