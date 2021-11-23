@@ -26,7 +26,7 @@ extension SplatNet2 {
                             promise(.failure(error))
                     }
                 }, receiveValue: { response in
-                    if response.summary.card.jobNum == resultId {
+                    if response.summary.card.jobNum <= resultId {
                         promise(.failure(SP2Error.Common(.nonewresults, nil)))
                     }
                     promise(.success(response))
