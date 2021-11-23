@@ -52,7 +52,7 @@ extension SplatNet2 {
     -> AnyPublisher<[Result.Response], SP2Error> {
         Future { [self] promise in
             getCoopSummary()
-                .flatMap({ Range((resultId + 1) ... $0.summary.card.jobNum).publisher })
+                .flatMap({ Range(min(resultId + 1, $0.summary.card.jobNum) ... $0.summary.card.jobNum).publisher })
                 .flatMap(maxPublishers: .max(1), { publish(Result(resultId: $0)) })
                 .collect()
                 .sink(receiveCompletion: { completion in

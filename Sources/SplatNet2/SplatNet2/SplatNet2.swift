@@ -34,12 +34,13 @@ open class SplatNet2: RequestInterceptor {
     /// ユーザデータを格納するKeychain
     public private(set) var keychain = Keychain(service: .splatnet2)
     /// 現在利用しているアカウント
-    public var account: UserInfo {
+    @Published public var account: UserInfo {
         willSet {
             // アカウントを上書きするとその値をKeychainに書き込む
             try? keychain.setValue(newValue)
             // IksmSessionの値を上書きする
             self.iksmSession = newValue.iksmSession
+            self.sessionToken = newValue.sessionToken
         }
     }
     /// 保存されている全てのアカウント
@@ -53,17 +54,17 @@ open class SplatNet2: RequestInterceptor {
     internal let userAgent: String
 
     /// X-Product Version
-    public internal(set) var version: String {
+    @Published public internal(set) var version: String {
         willSet {
             try? keychain.setVersion(newValue)
         }
     }
 
     /// Iksm Session
-    public private(set) var iksmSession: String
+    @Published public private(set) var iksmSession: String = ""
 
     /// Session Token
-    public private(set) var sessionToken: String
+    @Published public private(set) var sessionToken: String = ""
 
     // イニシャライザ
     public init(version: String = "1.13.2") {
