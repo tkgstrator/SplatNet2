@@ -88,6 +88,14 @@ public extension Keychain {
         }
     }
 
+    func getAccounts() -> [UserInfo] {
+        guard let userdata = try? getValue() else {
+            return [UserInfo(nsaid: "0000000000000000", nickname: "SplatNet2")]
+        }
+        return userdata.accounts.filter({ $0.nsaid != "0000000000000000" })
+    }
+
+    /// データ取得
     func getValue() throws -> UserAccess {
         let decoder = JSONDecoder()
         guard let account = try getData() else {

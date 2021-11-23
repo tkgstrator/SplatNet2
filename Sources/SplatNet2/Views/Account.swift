@@ -19,7 +19,9 @@ public struct AccountView: View {
 
     public var body: some View {
         NavigationLink(
-            destination: AccountListView(manager: manager).environment(\.allowMoveInList, allowMoveInList),
+            destination: AccountListView()
+                .environment(\.allowMoveInList, allowMoveInList)
+                .environmentObject(manager),
             label: {
                 Text("ACCOUNT_CHANGER".localized)
             }
@@ -28,32 +30,13 @@ public struct AccountView: View {
 }
 
 private struct AccountListView: View {
+    @EnvironmentObject var manager: SplatNet2
     @Environment(\.allowMoveInList) var allowMoveInList
-    @State var accounts: [UserInfo] {
-        willSet {
-        }
-
-        didSet {
-            // 並び替えが終わったときにその値の先頭のアカウント情報を取る
-            guard let account = accounts.first else {
-                return
-            }
-            manager.account = account
-            // Keychainの中身を書き換えるのは最後
-            try? manager.keychain.setValue(accounts)
-        }
-    }
-    let manager: SplatNet2
-
-    init(manager: SplatNet2) {
-        self.manager = manager
-        self._accounts = State(initialValue: manager.accounts)
-    }
 
     var body: some View {
         if allowMoveInList.wrappedValue {
             List(content: {
-                ForEach(accounts) { account in
+                ForEach(manager.accounts) { account in
                     HStack(content: {
                         URLImage(url: account.imageUri)
                         Spacer()
@@ -71,12 +54,12 @@ private struct AccountListView: View {
                         AddButton(manager: manager)
                     })
                 })
-                .onDisappear(perform: sync)
-                .onAppear(perform: sync)
+//                .onDisappear(perform: sync)
+//                .onAppear(perform: sync)
                 .navigationTitle("ACCOUNTS".localized)
         } else {
             List(content: {
-                ForEach(accounts) { account in
+                ForEach(manager.accounts) { account in
                     HStack(content: {
                         URLImage(url: account.imageUri)
                         Spacer()
@@ -93,23 +76,25 @@ private struct AccountListView: View {
                         AddButton(manager: manager)
                     })
                 })
-                .onDisappear(perform: sync)
-                .onAppear(perform: sync)
+//                .onDisappear(perform: sync)
+//                .onAppear(perform: sync)
                 .navigationTitle("ACCOUNTS".localized)
         }
     }
 
     func sync() {
         // 最新のデータを更新
-        accounts = manager.accounts
+//        accounts = manager.accounts
     }
 
     func move(from source: IndexSet, to destination: Int) {
-        accounts.move(fromOffsets: source, toOffset: destination)
+        manager.accounts.move(fromOffsets: source, toOffset: destination)
     }
 
     func delete(at offsets: IndexSet) {
-        accounts.remove(atOffsets: offsets)
+        print(manager.accounts.count)
+        manager.accounts.remove(atOffsets: offsets)
+        print(manager.accounts.count)
     }
 }
 

@@ -41,7 +41,7 @@ internal struct MasterView: View {
                         .store(in: &task)
                 }, label: { Text("GET X-PRODUCT VERSION") })
                 Button(action: {
-                    manager.getCoopSummary()
+                    manager.getCoopSummary(resultId: 3_500)
                         .sink(receiveCompletion: { completion in
                             print(completion)
                         }, receiveValue: { response in
@@ -84,8 +84,7 @@ internal struct MasterView: View {
             })
             Section(header: Text("Content"), content: {
                 Button(action: {
-                    let user = UserInfo(nsaid: String.fakeNsaId, nickname: "DUMMY \(manager.accounts.count)")
-                    try? manager.keychain.setValue(user)
+                    manager.addDummyAccount()
                 }, label: { Text("ADD DUMMY ACCOUNT") })
             })
             Section(header: Text("Auhtorize"), content: {

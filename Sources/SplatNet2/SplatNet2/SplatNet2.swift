@@ -12,7 +12,7 @@ import CryptoKit
 import Foundation
 import KeychainAccess
 
-open class SplatNet2: RequestInterceptor {
+open class SplatNet2: RequestInterceptor, ObservableObject {
     /// アクセス用のセッション
     internal let session: Session
     // JSON Encoder
@@ -31,8 +31,10 @@ open class SplatNet2: RequestInterceptor {
 
     /// タスク管理
     public var task = Set<AnyCancellable>()
+
     /// ユーザデータを格納するKeychain
     public private(set) var keychain = Keychain(service: .splatnet2)
+
     /// 現在利用しているアカウント
     @Published public var account: UserInfo {
         willSet {
@@ -41,15 +43,22 @@ open class SplatNet2: RequestInterceptor {
             // IksmSessionの値を上書きする
             self.iksmSession = newValue.iksmSession
             self.sessionToken = newValue.sessionToken
+
+            // アカウント一覧を更新する
+            guard let userdata = try? keychain.getValue() else {
+                return
+            }
+            self.accounts = userdata.accounts.filter({ $0.nsaid != "0000000000000000" })
         }
     }
+    
     /// 保存されている全てのアカウント
-    public var accounts: [UserInfo] {
-        guard let userdata = try? keychain.getValue() else {
-            return []
+    @Published public internal(set) var accounts: [UserInfo] {
+        willSet {
+            try? keychain.setValue(newValue)
         }
-        return userdata.accounts.filter({ $0.nsaid != "0000000000000000" })
     }
+    
     /// ユーザーエージェント
     internal let userAgent: String
 
@@ -90,6 +99,7 @@ open class SplatNet2: RequestInterceptor {
                 // 存在しない場合は仮のデータで埋める
                 self.account = UserInfo(nsaid: "0000000000000000", nickname: "Unregistered")
             }
+            self.accounts = keychain.getAccounts()
             self.iksmSession = account.iksmSession
             self.sessionToken = account.sessionToken
         } catch {
@@ -97,6 +107,7 @@ open class SplatNet2: RequestInterceptor {
             self.version = version
             self.userAgent = "SplatNet2/@tkgling"
             self.account = UserInfo(nsaid: "0000000000000000", nickname: "Unregistered")
+            self.accounts = keychain.getAccounts()
             self.iksmSession = account.iksmSession
             self.sessionToken = account.sessionToken
         }
@@ -114,6 +125,10 @@ open class SplatNet2: RequestInterceptor {
             "theme": "login_form",
         ]
         return URL(unsafeString: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")
+    }
+
+    public func addDummyAccount() {
+        self.accounts.append(UserInfo(nsaid: "0000000000000000", nickname: "DUMMY"))
     }
 
     open func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
