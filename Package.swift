@@ -23,14 +23,20 @@ let package = Package(
         .package(url: "https://github.com/stleamist/BetterSafariView.git", from: "2.4.0"),
         .package(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", from: "5.0.0"),
         .package(url: "https://github.com/realm/SwiftLint.git", from: "0.45.0"),
-        .package(url: "https://github.com/YOCKOW/SwiftCodableDictionary.git", from: "1.0.1")
+        .package(name: "CodableDictionary", url: "https://github.com/YOCKOW/SwiftCodableDictionary.git", from: "1.0.1")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "SplatNet2",
-            dependencies: ["Alamofire", "KeychainAccess", "BetterSafariView", "SwiftyJSON", "SwiftCodableDictionary"],
+            dependencies: [
+                "Alamofire",
+                "KeychainAccess",
+                "BetterSafariView",
+                "SwiftyJSON",
+                .product(name: "SwiftCodableDictionary", package: "CodableDictionary")
+            ],
             resources: [.copy("Resources/coop.json"), .copy("Resources/icon.png")]
         ),
         .testTarget(

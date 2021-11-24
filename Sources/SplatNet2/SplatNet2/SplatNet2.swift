@@ -51,14 +51,14 @@ open class SplatNet2: RequestInterceptor, ObservableObject {
             self.accounts = userdata.accounts.filter({ $0.nsaid != "0000000000000000" })
         }
     }
-    
+
     /// 保存されている全てのアカウント
     @Published public internal(set) var accounts: [UserInfo] {
         willSet {
             try? keychain.setValue(newValue)
         }
     }
-    
+
     /// ユーザーエージェント
     internal let userAgent: String
 
