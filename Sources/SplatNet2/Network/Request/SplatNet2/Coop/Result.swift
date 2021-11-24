@@ -40,11 +40,11 @@ public class Result: RequestType {
         public let gradePointDelta: Int?
         public let jobRate: Int?
         public let startTime, playTime, endTime: Int
-        public let bossCounts: CodableDictionary<BossId, BossCount>
+        public let bossCounts: CodableDictionary<BossType, BossCount>
         public let gradePoint: Int?
         public let dangerRate: Double
 
-        public init(jobScore: Int?, playerType: Result.PlayerType?, grade: Result.GradeType?, otherResults: [Result.PlayerResult]?, schedule: Result.Schedule, kumaPoint: Int?, waveDetails: [Result.WaveDetail], jobResult: Result.JobResult, jobId: Int?, myResult: Result.PlayerResult, gradePointDelta: Int?, jobRate: Int?, startTime: Int, playTime: Int, endTime: Int, bossCounts: CodableDictionary<BossId, BossCount>, gradePoint: Int?, dangerRate: Double) {
+        public init(jobScore: Int?, playerType: Result.PlayerType?, grade: Result.GradeType?, otherResults: [Result.PlayerResult]?, schedule: Result.Schedule, kumaPoint: Int?, waveDetails: [Result.WaveDetail], jobResult: Result.JobResult, jobId: Int?, myResult: Result.PlayerResult, gradePointDelta: Int?, jobRate: Int?, startTime: Int, playTime: Int, endTime: Int, bossCounts: CodableDictionary<BossType, BossCount>, gradePoint: Int?, dangerRate: Double) {
             self.jobScore = jobScore
             self.playerType = playerType
             self.grade = grade
@@ -88,7 +88,7 @@ public class Result: RequestType {
         }
     }
 
-    public enum BossId: String, Codable, CaseIterable, CodableDictionaryKey {
+    public enum BossType: String, Codable, CaseIterable, CodableDictionaryKey {
         case goldie = "3"
         case steelhead = "6"
         case flyfish = "9"
@@ -127,8 +127,8 @@ public class Result: RequestType {
         case sakelienShield = "sakelien-shield"
         case sakelienSnake = "sakelien-snake"
         case sakelienTower = "sakelien-tower"
-        case sakedozer = "sakedozer"
         case sakediver = "sakediver"
+        case sakedozer = "sakedozer"
         case sakerocket = "sakerocket"
     }
 
@@ -195,7 +195,7 @@ public class Result: RequestType {
         public let pid: String
         public let specialCounts: [Int]
         public let goldenIkuraNum: Int
-        public let bossKillCounts: CodableDictionary<BossId, BossCount>
+        public let bossKillCounts: CodableDictionary<BossType, BossCount>
         public let special: SpecialType
         public let deadCount: Int
         public let name: String?
@@ -204,7 +204,7 @@ public class Result: RequestType {
         public let helpCount: Int
         public let weaponList: [WeaponList]
 
-        public init(pid: String, specialCounts: [Int], goldenIkuraNum: Int, bossKillCounts: CodableDictionary<BossId, BossCount>, special: Result.SpecialType, deadCount: Int, name: String?, ikuraNum: Int, playerType: Result.PlayerType?, helpCount: Int, weaponList: [Result.WeaponList]) {
+        public init(pid: String, specialCounts: [Int], goldenIkuraNum: Int, bossKillCounts: CodableDictionary<BossType, BossCount>, special: Result.SpecialType, deadCount: Int, name: String?, ikuraNum: Int, playerType: Result.PlayerType?, helpCount: Int, weaponList: [Result.WeaponList]) {
             self.pid = pid
             self.specialCounts = specialCounts
             self.goldenIkuraNum = goldenIkuraNum

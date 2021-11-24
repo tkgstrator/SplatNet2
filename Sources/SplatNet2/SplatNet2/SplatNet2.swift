@@ -19,6 +19,7 @@ open class SplatNet2: RequestInterceptor, ObservableObject {
     internal var encoder: JSONEncoder = {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
+        encoder.outputFormatting = .sortedKeys
         return encoder
     }()
 
