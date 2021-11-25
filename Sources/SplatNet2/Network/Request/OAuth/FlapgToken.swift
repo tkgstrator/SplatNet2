@@ -8,6 +8,7 @@
 
 import Alamofire
 import Foundation
+import SwiftyJSON
 
 internal class FlapgToken: RequestType {
     typealias ResponseType = FlapgToken.Response

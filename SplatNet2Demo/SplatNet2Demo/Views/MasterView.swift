@@ -41,7 +41,7 @@ internal struct MasterView: View {
                         .store(in: &task)
                 }, label: { Text("GET X-PRODUCT VERSION") })
                 Button(action: {
-                    manager.getCoopSummary(resultId: 3_500)
+                    manager.getCoopSummary()
                         .sink(receiveCompletion: { completion in
                             print(completion)
                         }, receiveValue: { response in
@@ -79,6 +79,11 @@ internal struct MasterView: View {
                 })
                 AccountView(manager: manager)
                     .environment(\.allowMoveInList, $allowMoveInList)
+                Button(action: {
+                    manager.expiredIksmSession()
+                }, label: {
+                    Text("EXPIRED")
+                })
             }, header: {
                 Text("Account")
             })

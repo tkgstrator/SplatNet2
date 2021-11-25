@@ -28,6 +28,7 @@ internal class SessionToken: RequestType {
     }
 
     internal struct Response: Codable {
-        var sessionToken: String
+        let code: String
+        let sessionToken: String
     }
 }

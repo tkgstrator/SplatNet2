@@ -24,6 +24,20 @@ public class Result: RequestType {
         self.path = "coop_results/\(resultId)"
     }
 
+    public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
+        var urlRequest = urlRequest
+        urlRequest.headers.add(name: "cookie", value: "iksm_session=")
+        completion(.success(urlRequest))
+    }
+
+    public func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+        print(request.retryCount)
+        if request.retryCount <= 2 {
+            completion(.retry)
+        }
+        completion(.doNotRetry)
+    }
+
     // MARK: - Result
     public struct Response: Codable {
         public let jobScore: Int?

@@ -90,7 +90,7 @@ public extension Keychain {
 
     func getAccounts() -> [UserInfo] {
         guard let userdata = try? getValue() else {
-            return [UserInfo(nsaid: "0000000000000000", nickname: "SplatNet2")]
+            return []
         }
         return userdata.accounts.filter({ $0.nsaid != "0000000000000000" })
     }
@@ -99,7 +99,7 @@ public extension Keychain {
     func getValue() throws -> UserAccess {
         let decoder = JSONDecoder()
         guard let account = try getData() else {
-            throw SP2Error.OAuth(.response, nil)
+            throw SP2Error.dataDecodingFailed
         }
         return try decoder.decode(UserAccess.self, from: account)
     }

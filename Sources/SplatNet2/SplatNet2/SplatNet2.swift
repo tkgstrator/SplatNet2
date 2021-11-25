@@ -11,8 +11,9 @@ import Combine
 import CryptoKit
 import Foundation
 import KeychainAccess
+import SwiftyJSON
 
-open class SplatNet2: RequestInterceptor, ObservableObject {
+open class SplatNet2: ObservableObject {
     /// アクセス用のセッション
     internal let session: Session
     // JSON Encoder
@@ -49,7 +50,7 @@ open class SplatNet2: RequestInterceptor, ObservableObject {
             guard let userdata = try? keychain.getValue() else {
                 return
             }
-            self.accounts = userdata.accounts.filter({ $0.nsaid != "0000000000000000" })
+            self.accounts = userdata.accounts
         }
     }
 
@@ -71,10 +72,10 @@ open class SplatNet2: RequestInterceptor, ObservableObject {
     }
 
     /// Iksm Session
-    @Published public private(set) var iksmSession: String = ""
+    @Published public private(set) var iksmSession: String?
 
     /// Session Token
-    @Published public private(set) var sessionToken: String = ""
+    @Published public private(set) var sessionToken: String?
 
     // イニシャライザ
     public init(version: String = "1.13.2") {
@@ -91,7 +92,7 @@ open class SplatNet2: RequestInterceptor, ObservableObject {
         do {
             // Keychainからバージョン情報を取得する
             let userdata: UserAccess = try keychain.getValue()
-            self.version = userdata.version
+            self.version = version
             self.userAgent = "SplatNet2/@tkgling"
             // 保存されているアカウントから最も新しいものを選択
             if let account = userdata.accounts.first {
@@ -132,33 +133,86 @@ open class SplatNet2: RequestInterceptor, ObservableObject {
         self.accounts.append(UserInfo(nsaid: "0000000000000000", nickname: "DUMMY"))
     }
 
+    public func expiredIksmSession() {
+        self.iksmSession = String(String.randomString.prefix(32))
+    }
+}
+
+extension SplatNet2: DataPreprocessor {
+    public func preprocess(_ data: Data) throws -> Data {
+        // APPエラーを返す
+        if let failure = try? decoder.decode(SP2Error.Failure.APP.self, from: data) {
+            throw SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: .upgradeRequired), failure: failure)
+        }
+        return data
+    }
+}
+
+extension SplatNet2: RequestInterceptor {
     open func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
         var urlRequest = urlRequest
         urlRequest.headers.add(.userAgent("Salmonia3/tkgling"))
-        urlRequest.headers.add(HTTPHeader(name: "cookie", value: "iksm_session=\(iksmSession)"))
+        /// APIにアクセスするときはiksmSessionを設定する
+        if let url = urlRequest.url?.absoluteString, url.contains("app.splatoon2.nintendo.net") {
+            guard let iksmSession = iksmSession else {
+                completion(.failure(AFError.sessionInvalidated(error: nil)))
+                return
+            }
+            urlRequest.headers.add(HTTPHeader(name: "cookie", value: "iksm_session=\(iksmSession)"))
+        }
         completion(.success(urlRequest))
     }
 
     open func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
-        if request.retryCount == 0 {
-        getCookie(sessionToken: sessionToken)
-            .sink(receiveCompletion: { result in
-                switch result {
-                case .finished:
+//        print(request.retryCount, request.cURLDescription(), error)
+        if let error = error.asAFError {
+            switch error {
+            case .responseSerializationFailed(reason: let reason):
+                switch reason {
+                case .decodingFailed(let error):
+                    if let error = error as? DecodingError {
+                        print(error)
+                    }
+                default:
                     break
-                case .failure(let error):
-                    completion(.doNotRetry)
                 }
-            }, receiveValue: { response in
-                self.account = response
-                completion(.retry)
-            })
-            .store(in: &task)
+                print("REASON", reason)
+            default:
+                break
+            }
         }
-    }
 
-    public func expiredIksmSession() {
-        self.iksmSession = String(String.randomString.prefix(32))
+        if request.retryCount >= 1 {
+            completion(.doNotRetry)
+            return
+        }
+
+        // セッショントークンが切れているのは403だけ
+        if let statusCode = request.response?.statusCode {
+            switch statusCode {
+            case 403:
+                guard let sessionToken = sessionToken else {
+                    completion(.doNotRetry)
+                    return
+                }
+                getCookie(sessionToken: sessionToken)
+                    .sink(receiveCompletion: { result in
+                        switch result {
+                        case .finished:
+                            break
+                        case .failure(let error):
+                            completion(.doNotRetryWithError(error))
+                        }
+                    }, receiveValue: { response in
+                        // アカウント情報を更新
+                        self.account = response
+                        completion(.retry)
+                    })
+                    .store(in: &task)
+            default:
+                completion(.doNotRetry)
+            }
+        }
     }
 }
 

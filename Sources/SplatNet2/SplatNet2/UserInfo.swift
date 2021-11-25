@@ -36,7 +36,7 @@ open class UserAccess: Codable {
 
 public class UserInfo: Codable {
     /// イカスミトークン
-    public var iksmSession: String
+    public var iksmSession: String?
     /// プレイヤーID
     public var nsaid: String
     /// ニックネーム
@@ -46,13 +46,11 @@ public class UserInfo: Codable {
     /// アイコンURL
     public var imageUri: URL
     /// セッショントークン
-    public var sessionToken: String
+    public var sessionToken: String?
     /// バイト情報
     public var coop: CoopInfo
 
     public init(nsaid: String, nickname: String) {
-        self.sessionToken = ""
-        self.iksmSession = ""
         self.nsaid = nsaid
         self.nickname = nickname
         self.membership = false

@@ -14,13 +14,13 @@ import KeychainAccess
 
 extension SplatNet2 {
     internal func getSessionToken(sessionTokenCode: String, verifier: String)
-    -> AnyPublisher<SessionToken.Response, SP2Error> {
+    -> AnyPublisher<SessionToken.Response, AFError> {
         let request = SessionToken(code: sessionTokenCode, verifier: verifier)
         return publish(request)
     }
 
     internal func getAccessToken(sessionToken: String)
-    -> AnyPublisher<AccessToken.Response, SP2Error> {
+    -> AnyPublisher<AccessToken.Response, AFError> {
         let request = AccessToken(sessionToken: sessionToken)
         return publish(request)
     }
@@ -32,7 +32,7 @@ extension SplatNet2 {
 //    }
 
     internal func getS2SHash(accessToken: String)
-    -> AnyPublisher<S2SHash.Response, SP2Error> {
+    -> AnyPublisher<S2SHash.Response, AFError> {
         let timestamp = Int(Date().timeIntervalSince1970)
         return Future { promise in
             promise(.success(S2SHash.Response(accessToken: accessToken, timestamp: timestamp)))
@@ -41,25 +41,25 @@ extension SplatNet2 {
     }
 
     internal func getFlapgToken(response: S2SHash.Response, type: FlapgToken.FlapgType)
-    -> AnyPublisher<FlapgToken.Response, SP2Error> {
+    -> AnyPublisher<FlapgToken.Response, AFError> {
         let request = FlapgToken(accessToken: response.accessToken, timestamp: response.timestamp, hash: response.hash, type: type)
         return publish(request)
     }
 
     internal func getSplatoonToken(response: FlapgToken.Response)
-    -> AnyPublisher<SplatoonToken.Response, SP2Error> {
+    -> AnyPublisher<SplatoonToken.Response, AFError> {
         let request = SplatoonToken(from: response, version: version)
         return publish(request)
     }
 
     internal func getSplatoonAccessToken(splatoonToken: String, response: FlapgToken.Response)
-    -> AnyPublisher<SplatoonAccessToken.Response, SP2Error> {
+    -> AnyPublisher<SplatoonAccessToken.Response, AFError> {
         let request = SplatoonAccessToken(from: response, splatoonToken: splatoonToken, version: version)
         return publish(request)
     }
 
     internal func getIksmSession(splatoonAccessToken: String)
-    -> AnyPublisher<IksmSession.Response, SP2Error> {
+    -> AnyPublisher<IksmSession.Response, AFError> {
         generate(accessToken: splatoonAccessToken)
     }
 
@@ -81,7 +81,7 @@ extension SplatNet2 {
                 .flatMap({
                     self.getSplatoonToken(response: $0)
                 })
-                .flatMap({ response -> AnyPublisher<S2SHash.Response, SP2Error> in
+                .flatMap({ response -> AnyPublisher<S2SHash.Response, AFError> in
                     splatoonToken = response.result.webApiServerCredential.accessToken
                     nickname = response.result.user.name
                     thumbnailURL = response.result.user.imageUri
@@ -97,6 +97,9 @@ extension SplatNet2 {
                 .flatMap({
                     self.getIksmSession(splatoonAccessToken: $0.result.accessToken)
                 })
+                .mapError({ _ in
+                    SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: .notFound), failure: nil)
+                })
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .finished:
@@ -107,8 +110,8 @@ extension SplatNet2 {
                 }, receiveValue: { response in
                     promise(
                         .success(
-                        UserInfo(sessionToken: sessionToken, response: response, nickname: nickname, membership: membership, imageUri: thumbnailURL)
-                    )
+                            UserInfo(sessionToken: sessionToken, response: response, nickname: nickname, membership: membership, imageUri: thumbnailURL)
+                        )
                     )
                 })
                 .store(in: &self.task)
@@ -120,6 +123,9 @@ extension SplatNet2 {
     -> AnyPublisher<UserInfo, SP2Error> {
         Future { promise in
             self.getSessionToken(sessionTokenCode: sessionTokenCode, verifier: verifier)
+                .mapError({ _ in
+                    SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: .notFound), failure: nil)
+                })
                 .flatMap({
                     self.getCookie(sessionToken: $0.sessionToken)
                 })

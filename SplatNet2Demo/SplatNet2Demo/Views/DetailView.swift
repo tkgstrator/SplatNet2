@@ -32,7 +32,7 @@ internal struct DetailView: View {
                 HStack(content: {
                     Text("iksm_session")
                     Spacer()
-                    Text(manager.account.iksmSession)
+                    Text(manager.account.iksmSession ?? "")
                         .lineLimit(1)
                         .foregroundColor(.secondary)
                 })

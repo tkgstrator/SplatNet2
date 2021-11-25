@@ -6,6 +6,7 @@
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
+import Alamofire
 import BetterSafariView
 import Combine
 import SwiftUI
@@ -36,26 +37,29 @@ public struct Authorize: ViewModifier {
                     do {
                         // Domain
                         // swiftlint:disable unused_optional_binding
-                        if let _ = error { throw SP2Error.OAuth(.domain, nil) }
+                        if let _ = error {
+                            throw SP2Error.oauthValidationFailed(reason: .userCancelled)
+                        }
 
                         // Session State
                         guard let _: String = callbackURL?.absoluteString.capture(pattern: "state=(.*)&session", group: 1) else {
-                            throw SP2Error.OAuth(.session, nil)
+                            throw SP2Error.oauthValidationFailed(reason: .invalidSessionState)
                         }
 
                         // State
                         guard let state: String = callbackURL?.absoluteString.capture(pattern: "&state=(.*)", group: 1) else {
-                            throw SP2Error.OAuth(.state, nil)
+                            throw SP2Error.oauthValidationFailed(reason: .invalidState)
                         }
 
                         if state != self.state {
-                            throw SP2Error.OAuth(.state, nil)
+                            throw SP2Error.oauthValidationFailed(reason: .stateMatchFailed)
                         }
 
                         // Session Token Code
                         guard let code: String = callbackURL?.absoluteString.capture(pattern: "de=(.*)&", group: 1) else {
-                            throw SP2Error.OAuth(.code, nil)
+                            throw SP2Error.oauthValidationFailed(reason: .invalidSessionTokenCode)
                         }
+
                         manager.getCookie(code: code, verifier: verifier)
                             .sink(receiveCompletion: { completion in
                                 switch completion {
@@ -70,16 +74,14 @@ public struct Authorize: ViewModifier {
                             })
                             .store(in: &task)
                     } catch let error as SP2Error {
-                        if error.statusCode != 8_403 {
-                            sp2Error = error
-                        }
+                        sp2Error = error
                     } catch {
                     }
                 }
             }
             .alert(item: $sp2Error, content: { error in
                 Alert(
-                    title: Text("Error \(String(format: "%04d", error.statusCode))"),
+                    title: Text("Error \(String(format: "%04d", error.errorCode))"),
                     message: Text(error.localizedDescription),
                     dismissButton: .default(Text("Dismiss"))
                 )
