@@ -153,7 +153,7 @@ open class SplatNet2: ObservableObject, RequestInterceptor {
     }
 
     open func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
-        print(request.cURLDescription())
+        print(request.cURLDescription(), error.asAFError)
         // リトライ回数は一回のみ
         if request.retryCount >= 1 {
             completion(.doNotRetryWithError(error))

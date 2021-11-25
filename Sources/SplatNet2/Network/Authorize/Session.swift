@@ -70,7 +70,8 @@ extension SplatNet2 {
         Future { [self] promise in
             getCoopSummary()
                 .flatMap({ summary -> Publishers.Sequence<Range<Int>, Never> in
-                    print(account.coop.jobNum, summary.summary.card.jobNum)
+                    let range = Range(max(account.coop.jobNum + 1, summary.summary.card.jobNum - 49) ... summary.summary.card.jobNum)
+                    print(account.coop.jobNum, summary.summary.card.jobNum, range, range.count)
                     return Range(max(account.coop.jobNum + 1, summary.summary.card.jobNum - 49) ... summary.summary.card.jobNum).publisher
                 })
                 .flatMap(maxPublishers: .max(1), { publish(Result(resultId: $0)) })

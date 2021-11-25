@@ -241,7 +241,7 @@ public class Result: RequestType {
 
     public enum Species: String, Codable, CaseIterable {
         case inklings
-        case octlings
+        case octolings
     }
 
     public enum Style: String, Codable, CaseIterable {
