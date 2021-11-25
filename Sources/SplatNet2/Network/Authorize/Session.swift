@@ -20,10 +20,10 @@ extension SplatNet2 {
             publish(request)
                 .sink(receiveCompletion: { completion in
                     switch completion {
-                        case .finished:
-                            break
-                        case .failure(let error):
-                            promise(.failure(error))
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        promise(.failure(error))
                     }
                 }, receiveValue: { response in
                     if response.summary.card.jobNum <= resultId {
@@ -35,21 +35,21 @@ extension SplatNet2 {
         }
         .eraseToAnyPublisher()
     }
-
+    
     /// Download a specific coop result selected by result id from SplatNet2
     public func getCoopResult(resultId: Int)
     -> AnyPublisher<Result.Response, SP2Error> {
         let request = Result(resultId: resultId)
         return publish(request)
     }
-
+    
     /// Get latest X-Product version from App Store
     public func getVersion()
     -> AnyPublisher<XVersion.Response, SP2Error> {
         let request = XVersion()
         return publish(request)
     }
-
+    
     public static let schedule: [Schedule.Response] = {
         let decoder: JSONDecoder = {
             let decoder = JSONDecoder()
@@ -59,11 +59,11 @@ extension SplatNet2 {
         guard let url = Bundle.module.url(forResource: "coop", withExtension: "json"),
               let data = try? Data(contentsOf: url),
               let schedule = try? decoder.decode([Schedule.Response].self, from: data) else {
-            return []
-        }
+                  return []
+              }
         return schedule
     }()
-
+    
     /// Download all gettable coop results from SplatNet2
     open func getCoopResults(resultId: Int)
     -> AnyPublisher<[Result.Response], SP2Error> {
@@ -74,10 +74,10 @@ extension SplatNet2 {
                 .collect()
                 .sink(receiveCompletion: { completion in
                     switch completion {
-                        case .finished:
-                            print("FINISHED")
-                        case .failure(let error):
-                            print("ERROR", error)
+                    case .finished:
+                        print("FINISHED")
+                    case .failure(let error):
+                        promise(.failure(error))
                     }
                 }, receiveValue: { response in
                     promise(.success(response))
