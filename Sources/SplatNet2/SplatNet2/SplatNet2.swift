@@ -136,8 +136,9 @@ open class SplatNet2: ObservableObject, RequestInterceptor {
     public func expiredIksmSession() {
         self.iksmSession = String(String.randomString.prefix(32))
     }
-    
+
     open func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
+        print(urlRequest.url?.absoluteString)
         var urlRequest = urlRequest
         urlRequest.headers.add(.userAgent("Salmonia3/tkgling"))
         /// APIにアクセスするときはiksmSessionを設定する

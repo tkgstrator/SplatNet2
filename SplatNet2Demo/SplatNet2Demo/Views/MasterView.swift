@@ -59,7 +59,7 @@ internal struct MasterView: View {
                         .store(in: &task)
                 }, label: { Text("GET RESULT") })
                 Button(action: {
-                    manager.getCoopResults(resultId: 3_580)
+                    manager.getCoopResults()
                         .sink(receiveCompletion: { _ in }, receiveValue: { response in
                             print(response)
                         })

@@ -37,6 +37,12 @@ internal struct DetailView: View {
                         .foregroundColor(.secondary)
                 })
                 HStack(content: {
+                    Text("Job num")
+                    Spacer()
+                    Text("\(manager.account.coop.jobNum)")
+                        .foregroundColor(.secondary)
+                })
+                HStack(content: {
                     Text("X-Product Version")
                     Spacer()
                     Text(manager.version)
