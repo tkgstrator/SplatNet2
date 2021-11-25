@@ -26,12 +26,12 @@ internal struct MasterView: View {
                     Text("SIGN IN")
                 })
                     .authorize(isPresented: $isPresented, manager: manager) { completion in
-                    switch completion {
-                    case .success(let value):
-                        print(value)
-                    case .failure(let error):
-                        sp2Error = error
-                    }
+                        switch completion {
+                        case .success(let value):
+                            print(value)
+                        case .failure(let error):
+                            sp2Error = error
+                        }
                     }
                 Button(action: {
                     manager.getVersion()

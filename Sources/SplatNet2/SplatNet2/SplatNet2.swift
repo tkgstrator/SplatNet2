@@ -13,7 +13,7 @@ import Foundation
 import KeychainAccess
 import SwiftyJSON
 
-open class SplatNet2: ObservableObject {
+open class SplatNet2: ObservableObject, RequestInterceptor {
     /// アクセス用のセッション
     internal let session: Session
     // JSON Encoder
@@ -136,19 +136,7 @@ open class SplatNet2: ObservableObject {
     public func expiredIksmSession() {
         self.iksmSession = String(String.randomString.prefix(32))
     }
-}
-
-extension SplatNet2: DataPreprocessor {
-    public func preprocess(_ data: Data) throws -> Data {
-        // APPエラーを返す
-        if let failure = try? decoder.decode(SP2Error.Failure.APP.self, from: data) {
-            throw SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: .upgradeRequired), failure: failure)
-        }
-        return data
-    }
-}
-
-extension SplatNet2: RequestInterceptor {
+    
     open func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
         var urlRequest = urlRequest
         urlRequest.headers.add(.userAgent("Salmonia3/tkgling"))
@@ -164,6 +152,7 @@ extension SplatNet2: RequestInterceptor {
     }
 
     open func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+        print(request.cURLDescription())
         // リトライ回数は一回のみ
         if request.retryCount >= 1 {
             completion(.doNotRetryWithError(error))
@@ -190,6 +179,16 @@ extension SplatNet2: RequestInterceptor {
             completion(.doNotRetry)
             return
         }
+    }
+}
+
+extension SplatNet2: DataPreprocessor {
+    public func preprocess(_ data: Data) throws -> Data {
+        // APPエラーを返す
+        if let failure = try? decoder.decode(SP2Error.Failure.APP.self, from: data) {
+            throw SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: .upgradeRequired), failure: failure)
+        }
+        return data
     }
 }
 
