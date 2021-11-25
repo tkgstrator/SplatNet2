@@ -14,7 +14,7 @@ import Foundation
 extension SplatNet2 {
     /// Download coop results summary from SplatNet2
     public func getCoopSummary(resultId: Int = 0)
-    -> AnyPublisher<Results.Response, AFError> {
+    -> AnyPublisher<Results.Response, SP2Error> {
         let request = Results()
         return Future { [self] promise in
             publish(request)
@@ -27,7 +27,7 @@ extension SplatNet2 {
                     }
                 }, receiveValue: { response in
                     if response.summary.card.jobNum <= resultId {
-                        promise(.failure(AFError.explicitlyCancelled))
+                        promise(.failure(SP2Error.noNewResults))
                     }
                     promise(.success(response))
                 })
@@ -38,14 +38,14 @@ extension SplatNet2 {
 
     /// Download a specific coop result selected by result id from SplatNet2
     public func getCoopResult(resultId: Int)
-    -> AnyPublisher<Result.Response, AFError> {
+    -> AnyPublisher<Result.Response, SP2Error> {
         let request = Result(resultId: resultId)
         return publish(request)
     }
 
     /// Get latest X-Product version from App Store
     public func getVersion()
-    -> AnyPublisher<XVersion.Response, AFError> {
+    -> AnyPublisher<XVersion.Response, SP2Error> {
         let request = XVersion()
         return publish(request)
     }
@@ -72,9 +72,6 @@ extension SplatNet2 {
                 .flatMap({ Range(min(resultId + 1, $0.summary.card.jobNum) ... $0.summary.card.jobNum).publisher })
                 .flatMap(maxPublishers: .max(1), { publish(Result(resultId: $0)) })
                 .collect()
-                .mapError({ _ in
-                    SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: .notFound), failure: nil)
-                })
                 .sink(receiveCompletion: { completion in
                     switch completion {
                         case .finished:

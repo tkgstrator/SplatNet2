@@ -164,54 +164,31 @@ extension SplatNet2: RequestInterceptor {
     }
 
     open func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
-//        print(request.retryCount, request.cURLDescription(), error)
-        if let error = error.asAFError {
-            switch error {
-            case .responseSerializationFailed(reason: let reason):
-                switch reason {
-                case .decodingFailed(let error):
-                    if let error = error as? DecodingError {
-                        print(error)
-                    }
-                default:
-                    break
-                }
-                print("REASON", reason)
-            default:
-                break
-            }
-        }
-
+        // リトライ回数は一回のみ
         if request.retryCount >= 1 {
-            completion(.doNotRetry)
+            completion(.doNotRetryWithError(error))
             return
         }
 
         // セッショントークンが切れているのは403だけ
-        if let statusCode = request.response?.statusCode {
-            switch statusCode {
-            case 403:
-                guard let sessionToken = sessionToken else {
-                    completion(.doNotRetry)
-                    return
-                }
-                getCookie(sessionToken: sessionToken)
-                    .sink(receiveCompletion: { result in
-                        switch result {
-                        case .finished:
-                            break
-                        case .failure(let error):
-                            completion(.doNotRetryWithError(error))
-                        }
-                    }, receiveValue: { response in
-                        // アカウント情報を更新
-                        self.account = response
-                        completion(.retry)
-                    })
-                    .store(in: &task)
-            default:
-                completion(.doNotRetry)
-            }
+        if let statusCode = request.response?.statusCode, statusCode == 403, let sessionToken = sessionToken {
+            getCookie(sessionToken: sessionToken)
+                .sink(receiveCompletion: { result in
+                    switch result {
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        completion(.doNotRetryWithError(error))
+                    }
+                }, receiveValue: { response in
+                    // アカウント情報を更新
+                    self.account = response
+                    completion(.retry)
+                })
+                .store(in: &task)
+        } else {
+            completion(.doNotRetry)
+            return
         }
     }
 }

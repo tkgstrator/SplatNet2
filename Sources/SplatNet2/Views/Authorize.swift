@@ -38,7 +38,7 @@ public struct Authorize: ViewModifier {
                         // Domain
                         // swiftlint:disable unused_optional_binding
                         if let _ = error {
-                            throw SP2Error.oauthValidationFailed(reason: .userCancelled)
+                            throw SP2Error.userCancelled
                         }
 
                         // Session State
@@ -74,8 +74,10 @@ public struct Authorize: ViewModifier {
                             })
                             .store(in: &task)
                     } catch let error as SP2Error {
+                        print(error)
                         sp2Error = error
                     } catch {
+                        print(error)
                     }
                 }
             }
