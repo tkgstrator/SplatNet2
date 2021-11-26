@@ -53,8 +53,6 @@ extension SplatNet2 {
             .value()
             .mapError({ error -> SP2Error in
                 switch error {
-//                case .requestRetryFailed(retryError: _, originalError: let error):
-
                 case .responseValidationFailed(reason: let reason):
                     switch reason {
                     case .unacceptableStatusCode(code: let code):
@@ -77,6 +75,15 @@ extension SplatNet2 {
                     return SP2Error.responseSerializationFailed
                 }
             })
+            .catch({ error -> AnyPublisher<T.ResponseType, SP2Error> in
+                if error.errorCode == 404 {
+                    return Empty(outputType: T.ResponseType.self, failureType: SP2Error.self)
+                        .eraseToAnyPublisher()
+                } else {
+                    return Fail(outputType: T.ResponseType.self, failure: error)
+                        .eraseToAnyPublisher()
+                }
+            })
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -90,19 +97,5 @@ extension SplatNet2 {
             .store(in: &task)
         }
         .eraseToAnyPublisher()
-    }
-
-    func execute<T: RequestType>(_ request: T) {
-        session.request(request)
-            .validate()
-            .responseJSON(completionHandler: { response in
-                switch response.result {
-                case .success(let value):
-                    print(value)
-                case .failure(let error):
-                    print(error)
-                }
-            })
-            .resume()
     }
 }

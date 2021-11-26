@@ -129,6 +129,11 @@ open class SplatNet2: ObservableObject, RequestInterceptor {
         return URL(unsafeString: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")
     }
 
+    internal func update(coop response: Results.Response) {
+        account.coop = CoopInfo(from: response)
+        try? keychain.setValue(account)
+    }
+
     public func addDummyAccount() {
         self.accounts.append(UserInfo(nsaid: "0000000000000000", nickname: "DUMMY"))
     }

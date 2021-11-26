@@ -13,7 +13,7 @@ import Foundation
 
 extension SplatNet2 {
     /// Download coop results summary from SplatNet2
-    public func getCoopSummary()
+    public func getCoopSummary(resultId: Int = 0)
     -> AnyPublisher<Results.Response, SP2Error> {
         let request = Results()
         return Future { [self] promise in
@@ -26,9 +26,10 @@ extension SplatNet2 {
                         promise(.failure(error))
                     }
                 }, receiveValue: { response in
-                    if response.summary.card.jobNum <= account.coop.jobNum {
+                    if response.summary.card.jobNum <= resultId {
                         promise(.failure(SP2Error.noNewResults))
                     }
+                    update(coop: response)
                     promise(.success(response))
                 })
                 .store(in: &task)
@@ -65,21 +66,20 @@ extension SplatNet2 {
     }()
 
     /// Download all gettable coop results from SplatNet2
-    open func getCoopResults()
+    open func getCoopResults(resultId: Int = 0)
     -> AnyPublisher<[Result.Response], SP2Error> {
-        Future { [self] promise in
-            getCoopSummary()
-                .flatMap({ summary -> Publishers.Sequence<Range<Int>, Never> in
-                    let range = Range(max(account.coop.jobNum + 1, summary.summary.card.jobNum - 49) ... summary.summary.card.jobNum)
-                    print(account.coop.jobNum, summary.summary.card.jobNum, range, range.count)
-                    return Range(max(account.coop.jobNum + 1, summary.summary.card.jobNum - 49) ... summary.summary.card.jobNum).publisher
+        let resultId: Int = account.coop.jobNum
+        return Future { [self] promise in
+            getCoopSummary(resultId: resultId)
+                .flatMap({
+                    Range(max(resultId + 1, $0.summary.card.jobNum - 49) ... $0.summary.card.jobNum).publisher
                 })
                 .flatMap(maxPublishers: .max(1), { publish(Result(resultId: $0)) })
                 .collect()
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .finished:
-                        print("FINISHED")
+                        break
                     case .failure(let error):
                         promise(.failure(error))
                     }
