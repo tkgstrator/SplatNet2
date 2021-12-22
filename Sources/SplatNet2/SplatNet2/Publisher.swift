@@ -8,11 +8,13 @@
 //
 
 import Alamofire
+import CocoaLumberjack
+import CocoaLumberjackSwift
 import Combine
 import Foundation
-import SwiftyJSON
 
 extension SplatNet2 {
+    /// リクエストを実行(IksmSessionを取得)
     func generate(accessToken: String) -> AnyPublisher<IksmSession.Response, SP2Error> {
         Future { [self] promise in
             session.request(IksmSession(accessToken: accessToken))
@@ -23,79 +25,72 @@ extension SplatNet2 {
                     case .success(let value):
                         do {
                             guard let nsaid = value.capture(pattern: "data-nsa-id=([/0-f/]{16})", group: 1) else {
-                                throw SP2Error.dataDecodingFailed
+                                throw SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: 404), failure: nil)
                             }
                             guard let header = response.response?.allHeaderFields as? [String: String], let url = response.response?.url else {
-                                throw SP2Error.dataDecodingFailed
+                                throw SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: 404), failure: nil)
                             }
                             guard let iksmSession = HTTPCookie.cookies(withResponseHeaderFields: header, for: url).first?.value else {
-                                throw SP2Error.dataDecodingFailed
+                                throw SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: 404), failure: nil)
                             }
                             promise(.success(IksmSession.Response(iksmSession: iksmSession, nsaid: nsaid)))
                         } catch {
-                            promise(.failure(SP2Error.dataDecodingFailed))
+                            promise(.failure(SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: 404), failure: nil)))
                         }
                     case .failure:
-                        promise(.failure(SP2Error.dataDecodingFailed))
+                        promise(.failure(SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: 404), failure: nil)))
                     }
                 }
         }
         .eraseToAnyPublisher()
     }
 
-    // リクエストを実行
-    public func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
-        Future { [self] promise in
-            session.request(request, interceptor: self)
-            .validate()
-            .validate(contentType: ["application/json", "text/javascript"])
-            .publishDecodable(type: T.ResponseType.self, queue: DispatchQueue(label: "SplatNet2"), preprocessor: self, decoder: decoder)
+    /// リクエストを実行(エラー9427がでたらX-ProductVersionを自動でアップデート)
+    internal func authorize<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
+        session
+            .request(request, interceptor: self)
+            .cURLDescription { request in
+                DDLogInfo(request)
+            }
+            .validationWithSP2Error(decoder: decoder)
+            .publishDecodable(type: T.ResponseType.self, decoder: decoder)
             .value()
             .mapError({ error -> SP2Error in
-                switch error {
-                case .responseValidationFailed(reason: let reason):
-                    switch reason {
-                    case .unacceptableStatusCode(code: let code):
-                        if let statusCode = SP2Error.HTTPError(rawValue: code) {
-                            return SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: statusCode), failure: nil)
-                        } else {
-                            return SP2Error.responseSerializationFailed
-                        }
-                    default:
-                        return SP2Error.responseValidationFailed(reason: .customValidationFailed, failure: nil)
-                    }
-                case .responseSerializationFailed(reason: let reason):
-                    switch reason {
-                    case .customSerializationFailed(error: let error as SP2Error):
-                        return error
-                    default:
-                        return SP2Error.responseValidationFailed(reason: .customValidationFailed, failure: nil)
-                    }
-                default:
-                    return SP2Error.responseSerializationFailed
+                DDLogError(error)
+                guard let sp2Error = error.asSP2Error else {
+                    return SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: error.responseCode ?? 999), failure: nil)
                 }
+                return sp2Error
             })
-            .catch({ error -> AnyPublisher<T.ResponseType, SP2Error> in
-                if error.errorCode == 404 {
-                    return Empty(outputType: T.ResponseType.self, failureType: SP2Error.self)
-                        .eraseToAnyPublisher()
-                } else {
-                    return Fail(outputType: T.ResponseType.self, failure: error)
-                        .eraseToAnyPublisher()
-                }
-            })
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    promise(.failure(error))
-                }
-            }, receiveValue: { response in
-                promise(.success(response))
-            })
-            .store(in: &task)
+            .eraseToAnyPublisher()
+    }
+
+    /// リクエストを実行(トークンが切れていたら再生成する)
+    public func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
+        guard let credential = account?.credential else {
+            return Future { promise in
+                promise(.failure(SP2Error.credentialFailed))
+            }
+            .eraseToAnyPublisher()
         }
-        .eraseToAnyPublisher()
+
+        let interceptor = AuthenticationInterceptor(authenticator: self, credential: credential)
+
+        return session
+            .request(request, interceptor: interceptor)
+            .cURLDescription { request in
+                DDLogInfo(request)
+            }
+            .validationWithSP2Error(decoder: decoder)
+            .publishDecodable(type: T.ResponseType.self, decoder: decoder)
+            .value()
+            .mapError({ error -> SP2Error in
+                DDLogError(error)
+                guard let sp2Error = error.asSP2Error else {
+                    return SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: error.responseCode ?? 999), failure: nil)
+                }
+                return sp2Error
+            })
+            .eraseToAnyPublisher()
     }
 }

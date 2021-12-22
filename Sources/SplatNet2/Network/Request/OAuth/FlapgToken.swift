@@ -8,7 +8,6 @@
 
 import Alamofire
 import Foundation
-import SwiftyJSON
 
 internal class FlapgToken: RequestType {
     typealias ResponseType = FlapgToken.Response
@@ -26,6 +25,17 @@ internal class FlapgToken: RequestType {
             "x-time": String(timestamp),
             "x-guid": "037239ef-1914-43dc-815d-178aae7d8934",
             "x-hash": hash,
+            "x-ver": "3",
+            "x-iid": type.rawValue,
+        ]
+    }
+
+    init(response: IkaHash.Response, type: FlapgType) {
+        self.headers = [
+            "x-token": response.accessToken,
+            "x-time": String(response.timestamp),
+            "x-guid": "037239ef-1914-43dc-815d-178aae7d8934",
+            "x-hash": response.hash,
             "x-ver": "3",
             "x-iid": type.rawValue,
         ]

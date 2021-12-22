@@ -1,0 +1,212 @@
+//
+//  SplatNet2+Cookie.swift
+//  SplatNet2
+//
+//  Created by tkgstrator on 2021/07/04.
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
+//
+
+import Alamofire
+import Combine
+import Foundation
+import KeychainAccess
+
+extension SplatNet2 {
+    internal func getSessionToken(sessionTokenCode: String, verifier: String)
+    -> AnyPublisher<SessionToken.Response, SP2Error> {
+        let request = SessionToken(code: sessionTokenCode, verifier: verifier)
+        return authorize(request)
+    }
+
+    internal func getAccessToken(sessionToken: String)
+    -> AnyPublisher<AccessToken.Response, SP2Error> {
+        let request = AccessToken(sessionToken: sessionToken)
+        return authorize(request)
+    }
+
+    internal func getS2SHash(accessToken: String, timestamp: Int) -> AnyPublisher<S2SHash.Response, SP2Error> {
+        let request = S2SHash(accessToken: accessToken, timestamp: timestamp)
+        return authorize(request)
+    }
+
+    // With IkaHash.swift
+    internal func getIkaHash(accessToken: String)
+    -> AnyPublisher<IkaHash.Response, SP2Error> {
+        let timestamp = Int(Date().timeIntervalSince1970)
+        return Future { promise in
+            promise(.success(IkaHash.Response(accessToken: accessToken)))
+        }
+        .eraseToAnyPublisher()
+    }
+
+    // With IkaHash.swift
+    internal func getFlapgToken(response: IkaHash.Response, type: FlapgToken.FlapgType)
+    -> AnyPublisher<FlapgToken.Response, SP2Error> {
+        let request = FlapgToken(accessToken: response.accessToken, timestamp: response.timestamp, hash: response.hash, type: type)
+        return authorize(request)
+    }
+
+    // Without IkaHash.swift
+    internal func getFlapgToken(accessToken: String, timestamp: Int, response: S2SHash.Response, type: FlapgToken.FlapgType)
+    -> AnyPublisher<FlapgToken.Response, SP2Error> {
+        let request = FlapgToken(accessToken: accessToken, timestamp: timestamp, hash: response.hash, type: type)
+        return authorize(request)
+    }
+
+    internal func getSplatoonToken(response: FlapgToken.Response)
+    -> AnyPublisher<SplatoonToken.Response, SP2Error> {
+        let request = SplatoonToken(from: response, version: version)
+        return authorize(request)
+    }
+
+    internal func getSplatoonAccessToken(splatoonToken: String, response: FlapgToken.Response)
+    -> AnyPublisher<SplatoonAccessToken.Response, SP2Error> {
+        let request = SplatoonAccessToken(from: response, splatoonToken: splatoonToken, version: version)
+        return authorize(request)
+    }
+
+    internal func getIksmSession(splatoonAccessToken: String)
+    -> AnyPublisher<IksmSession.Response, SP2Error> {
+        generate(accessToken: splatoonAccessToken)
+    }
+
+    public func getVersion()
+    -> AnyPublisher<XVersion.Response, SP2Error> {
+        let request = XVersion()
+        return authorize(request)
+    }
+
+    #if DEBUG
+    // swiftlint:disable function_body_length
+    public func getCookie(sessionToken: String)
+    -> AnyPublisher<UserInfo, SP2Error> {
+        var splatoonToken: String = ""
+        var thumbnailURL: String = ""
+        var nickname: String = ""
+        var membership = false
+
+        return Future { promise in
+            self.getAccessToken(sessionToken: sessionToken)
+                .flatMap({
+                    self.getIkaHash(accessToken: $0.accessToken)
+                })
+                .flatMap({
+                    self.getFlapgToken(response: $0, type: .nso)
+                })
+                .flatMap({
+                    self.getSplatoonToken(response: $0)
+                })
+                .flatMap({ response -> AnyPublisher<IkaHash.Response, SP2Error> in
+                    splatoonToken = response.result.webApiServerCredential.accessToken
+                    nickname = response.result.user.name
+                    thumbnailURL = response.result.user.imageUri
+                    membership = response.result.user.membership.active
+                    return self.getIkaHash(accessToken: splatoonToken)
+                })
+                .flatMap({
+                    self.getFlapgToken(response: $0, type: .app)
+                })
+                .flatMap({
+                    self.getSplatoonAccessToken(splatoonToken: splatoonToken, response: $0)
+                })
+                .flatMap({
+                    self.getIksmSession(splatoonAccessToken: $0.result.accessToken)
+                })
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                        case .finished:
+                            break
+                        case .failure(let error):
+                            promise(.failure(error))
+                    }
+                }, receiveValue: { response in
+                    promise(
+                        .success(
+                            UserInfo(
+                                sessionToken: sessionToken,
+                                response: response,
+                                nickname: nickname,
+                                membership: membership,
+                                imageUri: thumbnailURL
+                            )
+                        )
+                    )
+                })
+                .store(in: &self.task)
+        }
+        .eraseToAnyPublisher()
+    }
+    #else
+    public func getCookie(sessionToken: String)
+    -> AnyPublisher<UserInfo, SP2Error> {
+        var splatoonToken: String = ""
+        var accessToken: String = ""
+        var thumbnailURL: String = ""
+        var nickname: String = ""
+        var membership = false
+        let timestamp = Int(Date().timeIntervalSince1970)
+
+        return Future { promise in
+            self.getAccessToken(sessionToken: sessionToken)
+                .flatMap({ response -> AnyPublisher<S2SHash.Response, SP2Error> in
+                    accessToken = response.accessToken
+                    return self.getS2SHash(accessToken: response.accessToken, timestamp: timestamp)
+                })
+                .flatMap({
+                    self.getFlapgToken(accessToken: accessToken, timestamp: timestamp, response: $0, type: .nso)
+                })
+                .flatMap({
+                    self.getSplatoonToken(response: $0)
+                })
+                .flatMap({ response -> AnyPublisher<S2SHash.Response, SP2Error> in
+                    splatoonToken = response.result.webApiServerCredential.accessToken
+                    nickname = response.result.user.name
+                    thumbnailURL = response.result.user.imageUri
+                    membership = response.result.user.membership.active
+                    return self.getS2SHash(accessToken: splatoonToken, timestamp: timestamp)
+                })
+                .flatMap({
+                    self.getFlapgToken(accessToken: splatoonToken, timestamp: timestamp, response: $0, type: .app)
+                })
+                .flatMap({
+                    self.getSplatoonAccessToken(splatoonToken: splatoonToken, response: $0)
+                })
+                .flatMap({
+                    self.getIksmSession(splatoonAccessToken: $0.result.accessToken)
+                })
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                        case .finished:
+                            break
+                        case .failure(let error):
+                            promise(.failure(error))
+                    }
+                }, receiveValue: { response in
+                    promise(
+                        .success(
+                            UserInfo(
+                                sessionToken: sessionToken,
+                                response: response,
+                                nickname: nickname,
+                                membership: membership,
+                                imageUri: thumbnailURL
+                            )
+                        )
+                    )
+                })
+                .store(in: &self.task)
+        }
+        .eraseToAnyPublisher()
+    }
+    // swiftlint:enable function_body_length
+    #endif
+
+    internal func getCookie(code sessionTokenCode: String, verifier: String)
+    -> AnyPublisher<UserInfo, SP2Error> {
+        getSessionToken(sessionTokenCode: sessionTokenCode, verifier: verifier)
+            .flatMap({
+                self.getCookie(sessionToken: $0.sessionToken)
+            })
+            .eraseToAnyPublisher()
+    }
+}

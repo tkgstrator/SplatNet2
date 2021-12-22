@@ -6,96 +6,102 @@
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
+import CocoaLumberjackSwift
 import Combine
 import SplatNet2
 import SwiftUI
 
 internal struct MasterView: View {
+    @EnvironmentObject var manager: SplatNet2
     @State var task = Set<AnyCancellable>()
     @State var isPresented = false
     @State var environment = false
     @State var sp2Error: SP2Error?
     @State var allowMoveInList = false
 
-    var body: some View {
-        Form {
-            Section(header: Text("OAuth"), content: {
-                Button(action: {
-                    isPresented.toggle()
-                }, label: {
-                    Text("SIGN IN")
-                })
-                    .authorize(isPresented: $isPresented, manager: manager) { completion in
+    var SectionSignIn: some View {
+        Section(header: Text("OAuth"), content: {
+            Button(action: {
+                isPresented.toggle()
+            }, label: {
+                Text("SIGN IN")
+            })
+            Button(action: {
+                manager.getVersion()
+                    .sink(receiveCompletion: { _ in }, receiveValue: { response in
+                        DDLogInfo(response)
+                    })
+                    .store(in: &task)
+            }, label: { Text("GET X-PRODUCT VERSION") })
+            Button(action: {
+                manager.getCoopSummary()
+                    .sink(receiveCompletion: { completion in
                         switch completion {
-                        case .success(let value):
-                            print(value)
-                        case .failure(let error):
-                            sp2Error = error
+                            case .finished:
+                                break
+                            case .failure(let error):
+                                DDLogError(error)
                         }
-                    }
-                Button(action: {
-                    manager.getVersion()
-                        .sink(receiveCompletion: { _ in }, receiveValue: { response in
-                            print(response)
-                        })
-                        .store(in: &task)
-                }, label: { Text("GET X-PRODUCT VERSION") })
-                Button(action: {
-                    manager.getCoopSummary()
-                        .sink(receiveCompletion: { completion in
-                            print(completion)
-                        }, receiveValue: { response in
-                            print(response)
-                        })
-                        .store(in: &task)
-                }, label: { Text("GET COOP RESULTS") })
-                Button(action: {
-                    manager.getCoopResult(resultId: 3_590)
-                        .sink(receiveCompletion: { completion in
-                            print(completion)
-                        }, receiveValue: { response in
-                            print(response)
-                        })
-                        .store(in: &task)
-                }, label: { Text("GET RESULT") })
-                Button(action: {
-                    manager.getCoopResults()
-                        .sink(receiveCompletion: { _ in }, receiveValue: { _ in
-                        })
-                        .store(in: &task)
-                }, label: { Text("GET ALL RESULTS") })
-                Button(action: {
-                    print(SplatNet2.schedule)
-                }, label: { Text("GET ALL SCHEDULE") })
+                    }, receiveValue: { response in
+                        DDLogInfo(response)
+                    })
+                    .store(in: &task)
+            }, label: { Text("GET COOP RESULTS") })
+            Button(action: {
+                manager.getCoopResult(resultId: 3_590)
+                    .sink(receiveCompletion: { completion in
+                        switch completion {
+                            case .finished:
+                                break
+                            case .failure(let error):
+                                DDLogError(error)
+                        }
+                    }, receiveValue: { response in
+                        DDLogInfo(response)
+                    })
+                    .store(in: &task)
+            }, label: { Text("GET RESULT") })
+            Button(action: {
+                manager.getCoopResults()
+                    .sink(receiveCompletion: { _ in }, receiveValue: { _ in
+                    })
+                    .store(in: &task)
+            }, label: { Text("GET ALL RESULTS") })
+            Button(action: {
+                DDLogInfo(SplatNet2.schedule)
+            }, label: { Text("GET ALL SCHEDULE") })
+        })
+    }
+
+    var SectionAccount: some View {
+        Section(content: {
+            NavigationLink(destination: DetailView(), label: {
+                Text("ACCOUNT")
             })
-            Section(content: {
-                NavigationLink(destination: DetailView(), label: {
-                    Text("ACCOUNT")
-                })
-                Toggle(isOn: $allowMoveInList, label: {
-                    Text("ALLOW MOVE IN LIST")
-                })
-                AccountView(manager: manager)
-                    .environment(\.allowMoveInList, $allowMoveInList)
-                Button(action: {
-                    manager.expiredIksmSession()
-                }, label: {
-                    Text("EXPIRED")
-                })
-            }, header: {
-                Text("Account")
+            Toggle(isOn: $allowMoveInList, label: {
+                Text("ALLOW MOVE IN LIST")
             })
-            Section(header: Text("Content"), content: {
-                Button(action: {
-                    manager.addDummyAccount()
-                }, label: { Text("ADD DUMMY ACCOUNT") })
-            })
-            Section(header: Text("Auhtorize"), content: {
-                Button(action: {
-                }, label: { Text("GET ALL ACCOUNTS") })
-            })
-        }
-        .navigationTitle("SplatNet2 Demo")
+            AccountView(manager: manager)
+                .environment(\.allowMoveInList, $allowMoveInList)
+        }, header: {
+            Text("Account")
+        })
+    }
+
+    var body: some View {
+        Form(content: {
+            SectionSignIn
+            SectionAccount
+        })
+            .authorize(isPresented: $isPresented, manager: manager) { completion in
+                switch completion {
+                    case .success(let value):
+                        DDLogInfo(value)
+                    case .failure(let error):
+                        sp2Error = error
+                }
+            }
+            .navigationTitle("SplatNet2 Demo")
     }
 }
 

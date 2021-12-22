@@ -8,6 +8,7 @@
 
 import Alamofire
 import BetterSafariView
+import CocoaLumberjackSwift
 import Combine
 import SwiftUI
 
@@ -35,12 +36,6 @@ public struct Authorize: ViewModifier {
                     url: manager.oauthURL(state: state, verifier: verifier),
                     callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, error in
                     do {
-                        // Domain
-                        // swiftlint:disable unused_optional_binding
-                        if let _ = error {
-                            throw SP2Error.userCancelled
-                        }
-
                         // Session State
                         guard let _: String = callbackURL?.absoluteString.capture(pattern: "state=(.*)&session", group: 1) else {
                             throw SP2Error.oauthValidationFailed(reason: .invalidSessionState)
@@ -69,15 +64,15 @@ public struct Authorize: ViewModifier {
                                     sp2Error = error
                                 }
                             }, receiveValue: { response in
-                                // 利用しているアカウントを新しいものに上書きする
-                                manager.account = response
+                                // アカウントを追加する
+                                manager.accounts = manager.accounts.filter({ $0.credential.nsaid != response.credential.nsaid }) + [response]
                             })
                             .store(in: &task)
                     } catch let error as SP2Error {
-                        print(error)
+                        DDLogError(error)
                         sp2Error = error
                     } catch {
-                        print(error)
+                        DDLogError(error)
                     }
                 }
             }

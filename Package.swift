@@ -7,7 +7,7 @@ let package = Package(
     name: "SplatNet2",
     defaultLocalization: "en",
     platforms: [
-        .iOS("15.0"), .macOS(.v10_15),
+        .iOS(.v14), .macOS(.v10_15),
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -18,11 +18,10 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.4.3"),
-        .package(url: "https://github.com/groue/CombineExpectations.git", from: "0.7.0"),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", from: "4.2.2"),
         .package(url: "https://github.com/stleamist/BetterSafariView.git", from: "2.4.0"),
-        .package(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", from: "5.0.0"),
         .package(url: "https://github.com/realm/SwiftLint.git", from: "0.45.0"),
+        .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", from: "3.7.4"),
         .package(name: "CodableDictionary", url: "https://github.com/YOCKOW/SwiftCodableDictionary.git", from: "1.0.1")
     ],
     targets: [
@@ -34,14 +33,14 @@ let package = Package(
                 "Alamofire",
                 "KeychainAccess",
                 "BetterSafariView",
-                "SwiftyJSON",
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                 .product(name: "SwiftCodableDictionary", package: "CodableDictionary")
             ],
             resources: [.copy("Resources/coop.json"), .copy("Resources/icon.png")]
         ),
         .testTarget(
             name: "SplatNet2Tests",
-            dependencies: ["SplatNet2", "CombineExpectations", "KeychainAccess"],
+            dependencies: ["SplatNet2", "KeychainAccess"],
             resources: [.copy("Resources/config.json")]
         ),
     ]

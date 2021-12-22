@@ -20,7 +20,7 @@ internal class S2SHash: RequestType {
     //  swiftlint:disable:next discouraged_optional_collection
     var headers: [String: String]?
 
-    init(accessToken: String, timestamp: Int, userAgent: String) {
+    init(accessToken: String, timestamp: Int) {
         self.parameters = [
             "naIdToken": accessToken,
             "timestamp": String(timestamp),
@@ -29,13 +29,5 @@ internal class S2SHash: RequestType {
 
     internal struct Response: Codable {
         let hash: String
-        let accessToken: String
-        let timestamp: Int
-
-        init(accessToken: String, timestamp: Int) {
-            self.timestamp = timestamp
-            self.accessToken = accessToken
-            self.hash = getIkaHash(timestamp: timestamp, idToken: accessToken)
-        }
     }
 }

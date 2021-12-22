@@ -1,5 +1,4 @@
 import Combine
-import CombineExpectations
 import Foundation
 import KeychainAccess
 @testable import SplatNet2
@@ -43,7 +42,6 @@ internal final class SplatNet2Tests: XCTestCase {
             let request = AccessToken(sessionToken: sessionToken)
             let recorder = manager.publish(request).record()
             let elements = try wait(for: recorder.elements, timeout: 5)
-            print(elements.first)
         } else {
         }
     }

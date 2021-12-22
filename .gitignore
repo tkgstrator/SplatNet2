@@ -2,6 +2,6 @@
 /.build
 /Packages
 xcuserdata/
-ikaHash.swift
+IkaHash.swift
 .swiftpm/*
 Package.resolved

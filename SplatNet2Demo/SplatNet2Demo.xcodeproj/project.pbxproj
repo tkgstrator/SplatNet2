@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		100D8C3726EF3D2E00286036 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3626EF3D2E00286036 /* DetailView.swift */; };
 		100D8C3B26EF3D7100286036 /* MasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3A26EF3D7100286036 /* MasterView.swift */; };
-		1090C67A263DC7BB000DD54C /* BetterSafariView in Frameworks */ = {isa = PBXBuildFile; productRef = 1090C679263DC7BB000DD54C /* BetterSafariView */; };
 		10F010B5263D7ADF002C40DA /* SplatNet2DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */; };
 		10F010B7263D7ADF002C40DA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010B6263D7ADF002C40DA /* ContentView.swift */; };
 		10F010B9263D7AE3002C40DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 10F010B8263D7AE3002C40DA /* Assets.xcassets */; };
@@ -61,7 +60,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				10F010E8263D7C2B002C40DA /* SplatNet2 in Frameworks */,
-				1090C67A263DC7BB000DD54C /* BetterSafariView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,7 +177,6 @@
 			name = SplatNet2Demo;
 			packageProductDependencies = (
 				10F010E7263D7C2B002C40DA /* SplatNet2 */,
-				1090C679263DC7BB000DD54C /* BetterSafariView */,
 			);
 			productName = SplatNet2Demo;
 			productReference = 10F010B1263D7ADF002C40DA /* SplatNet2Demo.app */;
@@ -255,7 +252,6 @@
 			);
 			mainGroup = 10F010A8263D7ADF002C40DA;
 			packageReferences = (
-				1090C678263DC7BB000DD54C /* XCRemoteSwiftPackageReference "BetterSafariView" */,
 			);
 			productRefGroup = 10F010B2263D7ADF002C40DA /* Products */;
 			projectDirPath = "";
@@ -411,7 +407,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -468,7 +464,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -490,7 +486,7 @@
 				DEVELOPMENT_TEAM = D9HU6JZF2Q;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SplatNet2Demo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -513,7 +509,7 @@
 				DEVELOPMENT_TEAM = D9HU6JZF2Q;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SplatNet2Demo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -650,23 +646,7 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		1090C678263DC7BB000DD54C /* XCRemoteSwiftPackageReference "BetterSafariView" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/stleamist/BetterSafariView";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.3.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		1090C679263DC7BB000DD54C /* BetterSafariView */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1090C678263DC7BB000DD54C /* XCRemoteSwiftPackageReference "BetterSafariView" */;
-			productName = BetterSafariView;
-		};
 		10F010E7263D7C2B002C40DA /* SplatNet2 */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SplatNet2;

@@ -10,6 +10,7 @@ import Alamofire
 import CodableDictionary
 import Foundation
 
+//  swiftlint:disable type_body_length
 public class Result: RequestType {
     public typealias ResponseType = Result.Response
 
@@ -22,20 +23,6 @@ public class Result: RequestType {
 
     init(resultId: Int) {
         self.path = "coop_results/\(resultId)"
-    }
-
-    public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
-        var urlRequest = urlRequest
-        urlRequest.headers.add(name: "cookie", value: "iksm_session=")
-        completion(.success(urlRequest))
-    }
-
-    public func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
-        print(request.retryCount)
-        if request.retryCount <= 2 {
-            completion(.retry)
-        }
-        completion(.doNotRetry)
     }
 
     // MARK: - Result
@@ -58,7 +45,27 @@ public class Result: RequestType {
         public let gradePoint: Int?
         public let dangerRate: Double
 
-        public init(jobScore: Int?, playerType: Result.PlayerType?, grade: Result.GradeType?, otherResults: [Result.PlayerResult]?, schedule: Result.Schedule, kumaPoint: Int?, waveDetails: [Result.WaveDetail], jobResult: Result.JobResult, jobId: Int?, myResult: Result.PlayerResult, gradePointDelta: Int?, jobRate: Int?, startTime: Int, playTime: Int, endTime: Int, bossCounts: CodableDictionary<BossType, BossCount>, gradePoint: Int?, dangerRate: Double) {
+        public init(
+            jobScore: Int?,
+            playerType: Result.PlayerType?,
+            grade: Result.GradeType?,
+            //  swiftlint:disable:next discouraged_optional_collection
+            otherResults: [Result.PlayerResult]?,
+            schedule: Result.Schedule,
+            kumaPoint: Int?,
+            waveDetails: [Result.WaveDetail],
+            jobResult: Result.JobResult,
+            jobId: Int?,
+            myResult: Result.PlayerResult,
+            gradePointDelta: Int?,
+            jobRate: Int?,
+            startTime: Int,
+            playTime: Int,
+            endTime: Int,
+            bossCounts: CodableDictionary<BossType, BossCount>,
+            gradePoint: Int?,
+            dangerRate: Double
+        ) {
             self.jobScore = jobScore
             self.playerType = playerType
             self.grade = grade
@@ -218,7 +225,19 @@ public class Result: RequestType {
         public let helpCount: Int
         public let weaponList: [WeaponList]
 
-        public init(pid: String, specialCounts: [Int], goldenIkuraNum: Int, bossKillCounts: CodableDictionary<BossType, BossCount>, special: Result.SpecialType, deadCount: Int, name: String?, ikuraNum: Int, playerType: Result.PlayerType?, helpCount: Int, weaponList: [Result.WeaponList]) {
+        public init(
+            pid: String,
+            specialCounts: [Int],
+            goldenIkuraNum: Int,
+            bossKillCounts: CodableDictionary<BossType, BossCount>,
+            special: Result.SpecialType,
+            deadCount: Int,
+            name: String?,
+            ikuraNum: Int,
+            playerType: Result.PlayerType?,
+            helpCount: Int,
+            weaponList: [Result.WeaponList]
+        ) {
             self.pid = pid
             self.specialCounts = specialCounts
             self.goldenIkuraNum = goldenIkuraNum
@@ -355,7 +374,14 @@ public class Result: RequestType {
         public let ikuraNum, goldenIkuraNum: Int
         public let eventType: EventType
 
-        public init(quotaNum: Int, goldenIkuraPopNum: Int, waterLevel: Result.WaterLevel, ikuraNum: Int, goldenIkuraNum: Int, eventType: Result.EventType) {
+        public init(
+            quotaNum: Int,
+            goldenIkuraPopNum: Int,
+            waterLevel: Result.WaterLevel,
+            ikuraNum: Int,
+            goldenIkuraNum: Int,
+            eventType: Result.EventType
+        ) {
             self.quotaNum = quotaNum
             self.goldenIkuraPopNum = goldenIkuraPopNum
             self.waterLevel = waterLevel
@@ -365,3 +391,4 @@ public class Result: RequestType {
         }
     }
 }
+//  swiftlint:enable type_body_length

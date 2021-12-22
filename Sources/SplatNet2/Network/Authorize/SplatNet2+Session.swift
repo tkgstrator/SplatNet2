@@ -1,6 +1,5 @@
-//  swiftlint:disable:this file_name
 //
-//  Session.swift
+//  SplatNet2+Session.swift
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/06/27.
@@ -29,7 +28,7 @@ extension SplatNet2 {
                     if response.summary.card.jobNum <= resultId {
                         promise(.failure(SP2Error.noNewResults))
                     }
-                    update(coop: response)
+//                    update(coop: response)
                     promise(.success(response))
                 })
                 .store(in: &task)
@@ -41,13 +40,6 @@ extension SplatNet2 {
     public func getCoopResult(resultId: Int)
     -> AnyPublisher<Result.Response, SP2Error> {
         let request = Result(resultId: resultId)
-        return publish(request)
-    }
-
-    /// Get latest X-Product version from App Store
-    public func getVersion()
-    -> AnyPublisher<XVersion.Response, SP2Error> {
-        let request = XVersion()
         return publish(request)
     }
 
@@ -68,7 +60,12 @@ extension SplatNet2 {
     /// Download all gettable coop results from SplatNet2
     open func getCoopResults(resultId: Int = 0)
     -> AnyPublisher<[Result.Response], SP2Error> {
-        let resultId: Int = account.coop.jobNum
+        guard let resultId = account?.coop.jobNum else {
+            return Future { promise in
+                promise(.failure(SP2Error.credentialFailed))
+            }
+            .eraseToAnyPublisher()
+        }
         return Future { [self] promise in
             getCoopSummary(resultId: resultId)
                 .flatMap({

@@ -10,6 +10,7 @@ import SplatNet2
 import SwiftUI
 
 internal struct DetailView: View {
+    @EnvironmentObject var manager: SplatNet2
     @State var signInState: SplatNet2.SignInState?
     @State var currentValue: Int = 0
     @State var maxValue: Int = 0
@@ -20,26 +21,26 @@ internal struct DetailView: View {
                 HStack(content: {
                     Text("nsaid")
                     Spacer()
-                    Text(manager.account.nsaid)
+                    Text(manager.account?.credential.nsaid ?? "")
                         .foregroundColor(.secondary)
                 })
                 HStack(content: {
                     Text("nickname")
                     Spacer()
-                    Text(manager.account.nickname)
+                    Text(manager.account?.nickname ?? "")
                         .foregroundColor(.secondary)
                 })
                 HStack(content: {
                     Text("iksm_session")
                     Spacer()
-                    Text(manager.account.iksmSession ?? "")
+                    Text(manager.account?.credential.iksmSession ?? "")
                         .lineLimit(1)
                         .foregroundColor(.secondary)
                 })
                 HStack(content: {
                     Text("Job num")
                     Spacer()
-                    Text("\(manager.account.coop.jobNum)")
+                    Text("\(manager.account?.coop.jobNum ?? 0)")
                         .foregroundColor(.secondary)
                 })
                 HStack(content: {
@@ -47,11 +48,6 @@ internal struct DetailView: View {
                     Spacer()
                     Text(manager.version)
                         .foregroundColor(.secondary)
-                })
-                Button(action: {
-                    manager.expiredIksmSession()
-                }, label: {
-                    Text("Expired")
                 })
             }, header: {
                 Text("Account")
