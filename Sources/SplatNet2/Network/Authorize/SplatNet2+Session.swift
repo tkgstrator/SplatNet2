@@ -25,9 +25,14 @@ extension SplatNet2 {
                         promise(.failure(error))
                     }
                 }, receiveValue: { response in
+                    // No new results
                     if response.summary.card.jobNum <= resultId {
                         promise(.failure(SP2Error.noNewResults))
                     }
+                    account?.coop = CoopInfo(from: response)
+//                    if let coop = account?.coop {
+//                        coop = CoopInfo(from: response)
+//                    }
 //                    update(coop: response)
                     promise(.success(response))
                 })

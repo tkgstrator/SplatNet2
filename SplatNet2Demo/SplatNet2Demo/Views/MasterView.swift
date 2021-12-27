@@ -42,8 +42,8 @@ internal struct MasterView: View {
                             case .failure(let error):
                                 DDLogError(error)
                         }
-                    }, receiveValue: { response in
-                        DDLogInfo(response)
+                    }, receiveValue: { _ in
+//                        DDLogInfo(response)
                     })
                     .store(in: &task)
             }, label: { Text("GET COOP RESULTS") })

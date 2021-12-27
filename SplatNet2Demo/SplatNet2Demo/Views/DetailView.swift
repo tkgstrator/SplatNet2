@@ -49,6 +49,11 @@ internal struct DetailView: View {
                     Text(manager.version)
                         .foregroundColor(.secondary)
                 })
+                Button(action: {
+                    print(manager.account)
+                }, label: {
+                    Text("Credential")
+                })
             }, header: {
                 Text("Account")
             })

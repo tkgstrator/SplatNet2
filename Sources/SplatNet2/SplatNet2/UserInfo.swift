@@ -8,14 +8,14 @@
 
 import Foundation
 
-public class UserInfo: Codable {
+public struct UserInfo: Codable {
     /// ニックネーム
     public var nickname: String
     /// Nintendo Switch Online加入済みかどうか
     public var membership: Bool
     /// アイコンURL
     //  swiftlint:disable:next force_unwrapping
-    public var imageUri: URL = Bundle.module.url(forResource: "icon", withExtension: "png")!
+    public var thumbnailURL: URL = Bundle.module.url(forResource: "icon", withExtension: "png")!
     /// 認証用のパラメータなど
     public var credential: OAuthCredential
     /// バイト情報
@@ -33,7 +33,7 @@ public class UserInfo: Codable {
         self.coop = CoopInfo()
     }
 
-    init(sessionToken: String, response: IksmSession.Response, nickname: String, membership: Bool, imageUri: String) {
+    init(sessionToken: String, response: IksmSession.Response, nickname: String, membership: Bool, thumbnailURL: String) {
         self.credential = OAuthCredential(
             iksmSession: response.iksmSession,
             sessionToken: sessionToken,
@@ -42,7 +42,7 @@ public class UserInfo: Codable {
         )
         self.nickname = nickname
         self.membership = membership
-        self.imageUri = URL(unsafeString: imageUri)
+        self.thumbnailURL = URL(unsafeString: thumbnailURL)
         self.coop = CoopInfo()
     }
 }

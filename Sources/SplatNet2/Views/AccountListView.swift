@@ -18,7 +18,7 @@ internal struct AccountListView: View {
             List(content: {
                 ForEach(manager.accounts) { account in
                     HStack(content: {
-                        URLImage(url: account.imageUri)
+                        URLImage(url: account.thumbnailURL)
                         Spacer()
                         Text(account.nickname)
                     })
@@ -39,7 +39,7 @@ internal struct AccountListView: View {
             List(content: {
                 ForEach(manager.accounts) { account in
                     HStack(content: {
-                        URLImage(url: account.imageUri)
+                        URLImage(url: account.thumbnailURL)
                         Spacer()
                         Text(account.nickname)
                     })

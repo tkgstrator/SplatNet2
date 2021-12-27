@@ -8,17 +8,17 @@
 
 import Foundation
 
-public class CoopInfo: Codable {
+public struct CoopInfo: Codable {
     /// バイト回数
-    public var jobNum: Int = 0
+    public var jobNum: Int?
     /// 総金イクラ数
-    public var goldenIkuraTotal: Int = 0
+    public var goldenIkuraTotal: Int?
     /// 総赤イクラ数
-    public var ikuraTotal: Int = 0
+    public var ikuraTotal: Int?
     /// クマサンポイント
-    public var kumaPoint: Int = 0
+    public var kumaPoint: Int?
     /// 総クマポイント
-    public var kumaPointTotal: Int = 0
+    public var kumaPointTotal: Int?
 
     init() {}
 

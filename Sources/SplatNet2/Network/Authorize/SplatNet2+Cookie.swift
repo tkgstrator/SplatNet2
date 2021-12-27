@@ -111,7 +111,7 @@ extension SplatNet2 {
                                 response: response,
                                 nickname: nickname,
                                 membership: membership,
-                                imageUri: thumbnailURL
+                                thumbnailURL: thumbnailURL
                             )
                         )
                     )
