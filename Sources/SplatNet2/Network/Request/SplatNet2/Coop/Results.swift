@@ -12,7 +12,6 @@ import Foundation
 public class Results: RequestType {
     public typealias ResponseType = Results.Response
 
-    public var baseURL = URL(unsafeString: "https://app.splatoon2.nintendo.net/api/")
     public var method: HTTPMethod = .get
     public var path: String = "coop_results"
     public var parameters: Parameters?
@@ -50,20 +49,31 @@ public class Results: RequestType {
 
         // MARK: - Card
         struct Card: Codable {
-            let ikuraTotal, kumaPointTotal, kumaPoint, goldenIkuraTotal: Int
-            let jobNum, helpTotal: Int
+            let ikuraTotal: Int
+            let kumaPointTotal: Int
+            let kumaPoint: Int
+            let goldenIkuraTotal: Int
+            let jobNum: Int
+            let helpTotal: Int
         }
 
         // MARK: - Stat
         struct Stat: Codable {
             let grade: Result.GradeType
-            let myGoldenIkuraTotal, helpTotal, deadTotal, clearNum: Int
+            let myGoldenIkuraTotal: Int
+            let helpTotal: Int
+            let deadTotal: Int
+            let clearNum: Int
             let teamGoldenIkuraTotal: Int
             let failureCounts: [Int]
             let gradePoint: Int
             let schedule: Schedule
-            let endTime, startTime, myIkuraTotal, teamIkuraTotal: Int
-            let kumaPointTotal, jobNum: Int
+            let endTime: Int
+            let startTime: Int
+            let myIkuraTotal: Int
+            let teamIkuraTotal: Int
+            let kumaPointTotal: Int
+            let jobNum: Int
         }
     }
 }

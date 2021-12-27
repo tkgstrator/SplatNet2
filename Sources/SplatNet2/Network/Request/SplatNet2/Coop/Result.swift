@@ -14,7 +14,6 @@ import Foundation
 public class Result: RequestType {
     public typealias ResponseType = Result.Response
 
-    public var baseURL = URL(unsafeString: "https://app.splatoon2.nintendo.net/api/")
     public var method: HTTPMethod = .get
     public var path: String
     public var parameters: Parameters?

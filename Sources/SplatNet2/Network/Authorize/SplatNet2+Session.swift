@@ -29,7 +29,7 @@ extension SplatNet2 {
                     if response.summary.card.jobNum <= resultId {
                         promise(.failure(SP2Error.noNewResults))
                     }
-                    account?.coop = CoopInfo(from: response)
+//                    account?.coop = CoopInfo(from: response)
 //                    if let coop = account?.coop {
 //                        coop = CoopInfo(from: response)
 //                    }

@@ -26,6 +26,10 @@ public extension RequestType {
         JSONEncoding.default
     }
 
+    var baseURL: URL {
+        URL(unsafeString: "https://app.splatoon2.nintendo.net/api/")
+    }
+
     func asURLRequest() throws -> URLRequest {
         // swiftlint:disable:next force_unwrapping
         var request = URLRequest(url: URL(unsafeString: baseURL.appendingPathComponent(path).absoluteString.removingPercentEncoding!))
