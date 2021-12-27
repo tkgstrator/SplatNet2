@@ -49,7 +49,15 @@ open class SplatNet2: ObservableObject {
     public var task = Set<AnyCancellable>()
 
     /// 現在利用しているアカウント
-    @Published public var account: UserInfo?
+    @Published public var account: UserInfo? {
+        // バイト情報が更新されたらここが通知される
+        // そのときにKeychainに最新のデータを入れる
+        didSet {
+            if let account = account {
+                try? keychain.setValue(account)
+            }
+        }
+    }
 
     /// 保存されている全てのアカウント
     @Published public internal(set) var accounts: [UserInfo] {

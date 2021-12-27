@@ -15,6 +15,7 @@ public protocol FailureResponse: Codable {
 public enum SP2Error: Error {
 //    case explicitlyCancelled
     case noNewResults
+    case invalidRequestId
 //    case userCancelled
 //    case requestAdaptationFailed
 //    case requestRetryFailed
@@ -57,6 +58,8 @@ public enum SP2Error: Error {
         switch self {
         case .noNewResults:
             return 0
+        case .invalidRequestId:
+            return 1
         case .responseValidationFailed(reason: let reason, _):
             switch reason {
             case .unacceptableStatusCode(code: let code):

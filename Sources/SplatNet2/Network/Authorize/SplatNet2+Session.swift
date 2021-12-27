@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import CocoaLumberjackSwift
 import Combine
 import Foundation
 
@@ -25,15 +26,16 @@ extension SplatNet2 {
                         promise(.failure(error))
                     }
                 }, receiveValue: { response in
+                    DDLogInfo("Summary: \(resultId) -> \(response.summary.card.jobNum)")
                     // No new results
-                    if response.summary.card.jobNum <= resultId {
+                    if response.summary.card.jobNum == resultId {
                         promise(.failure(SP2Error.noNewResults))
                     }
-//                    account?.coop = CoopInfo(from: response)
-//                    if let coop = account?.coop {
-//                        coop = CoopInfo(from: response)
-//                    }
-//                    update(coop: response)
+                    // Invalid RequestId
+                    if response.summary.card.jobNum < resultId {
+                        promise(.failure(SP2Error.invalidRequestId))
+                    }
+                    account?.coop = CoopInfo(from: response)
                     promise(.success(response))
                 })
                 .store(in: &task)
@@ -63,14 +65,25 @@ extension SplatNet2 {
     }()
 
     /// Download all gettable coop results from SplatNet2
-    open func getCoopResults(resultId: Int = 0)
+    open func getCoopResults(resultId: Int? = nil)
     -> AnyPublisher<[Result.Response], SP2Error> {
-        guard let resultId = account?.coop.jobNum else {
-            return Future { promise in
-                promise(.failure(SP2Error.credentialFailed))
-            }
-            .eraseToAnyPublisher()
+        guard let account = account else {
+            return Fail(outputType: [Result.Response].self, failure: SP2Error.credentialFailed)
+                .eraseToAnyPublisher()
         }
+        // 取得するバイトIDを決定する
+        let resultId: Int = {
+            // 一度もバイトしたことがないアカウントは0として扱う
+            guard let jobNum = account.coop.jobNum else {
+                return 0
+            }
+            guard let resultId = resultId else {
+                return jobNum
+            }
+            return resultId
+        }()
+        print(resultId)
+
         return Future { [self] promise in
             getCoopSummary(resultId: resultId)
                 .flatMap({
