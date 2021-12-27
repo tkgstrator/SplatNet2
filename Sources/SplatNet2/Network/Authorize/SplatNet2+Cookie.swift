@@ -29,24 +29,6 @@ extension SplatNet2 {
         return authorize(request)
     }
 
-    // With IkaHash.swift
-    internal func getIkaHash(accessToken: String)
-    -> AnyPublisher<IkaHash.Response, SP2Error> {
-        let timestamp = Int(Date().timeIntervalSince1970)
-        return Future { promise in
-            promise(.success(IkaHash.Response(accessToken: accessToken)))
-        }
-        .eraseToAnyPublisher()
-    }
-
-    // With IkaHash.swift
-    internal func getFlapgToken(response: IkaHash.Response, type: FlapgToken.FlapgType)
-    -> AnyPublisher<FlapgToken.Response, SP2Error> {
-        let request = FlapgToken(accessToken: response.accessToken, timestamp: response.timestamp, hash: response.hash, type: type)
-        return authorize(request)
-    }
-
-    // Without IkaHash.swift
     internal func getFlapgToken(accessToken: String, timestamp: Int, response: S2SHash.Response, type: FlapgToken.FlapgType)
     -> AnyPublisher<FlapgToken.Response, SP2Error> {
         let request = FlapgToken(accessToken: accessToken, timestamp: timestamp, hash: response.hash, type: type)
@@ -76,67 +58,7 @@ extension SplatNet2 {
         return authorize(request)
     }
 
-    #if DEBUG
     // swiftlint:disable function_body_length
-    public func getCookie(sessionToken: String)
-    -> AnyPublisher<UserInfo, SP2Error> {
-        var splatoonToken: String = ""
-        var thumbnailURL: String = ""
-        var nickname: String = ""
-        var membership = false
-
-        return Future { promise in
-            self.getAccessToken(sessionToken: sessionToken)
-                .flatMap({
-                    self.getIkaHash(accessToken: $0.accessToken)
-                })
-                .flatMap({
-                    self.getFlapgToken(response: $0, type: .nso)
-                })
-                .flatMap({
-                    self.getSplatoonToken(response: $0)
-                })
-                .flatMap({ response -> AnyPublisher<IkaHash.Response, SP2Error> in
-                    splatoonToken = response.result.webApiServerCredential.accessToken
-                    nickname = response.result.user.name
-                    thumbnailURL = response.result.user.imageUri
-                    membership = response.result.user.membership.active
-                    return self.getIkaHash(accessToken: splatoonToken)
-                })
-                .flatMap({
-                    self.getFlapgToken(response: $0, type: .app)
-                })
-                .flatMap({
-                    self.getSplatoonAccessToken(splatoonToken: splatoonToken, response: $0)
-                })
-                .flatMap({
-                    self.getIksmSession(splatoonAccessToken: $0.result.accessToken)
-                })
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                        case .finished:
-                            break
-                        case .failure(let error):
-                            promise(.failure(error))
-                    }
-                }, receiveValue: { response in
-                    promise(
-                        .success(
-                            UserInfo(
-                                sessionToken: sessionToken,
-                                response: response,
-                                nickname: nickname,
-                                membership: membership,
-                                imageUri: thumbnailURL
-                            )
-                        )
-                    )
-                })
-                .store(in: &self.task)
-        }
-        .eraseToAnyPublisher()
-    }
-    #else
     public func getCookie(sessionToken: String)
     -> AnyPublisher<UserInfo, SP2Error> {
         var splatoonToken: String = ""
@@ -199,7 +121,6 @@ extension SplatNet2 {
         .eraseToAnyPublisher()
     }
     // swiftlint:enable function_body_length
-    #endif
 
     internal func getCookie(code sessionTokenCode: String, verifier: String)
     -> AnyPublisher<UserInfo, SP2Error> {

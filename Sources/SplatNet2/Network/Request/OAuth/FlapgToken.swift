@@ -30,16 +30,16 @@ internal class FlapgToken: RequestType {
         ]
     }
 
-    init(response: IkaHash.Response, type: FlapgType) {
-        self.headers = [
-            "x-token": response.accessToken,
-            "x-time": String(response.timestamp),
-            "x-guid": "037239ef-1914-43dc-815d-178aae7d8934",
-            "x-hash": response.hash,
-            "x-ver": "3",
-            "x-iid": type.rawValue,
-        ]
-    }
+//    init(response: IkaHash.Response, type: FlapgType) {
+//        self.headers = [
+//            "x-token": response.accessToken,
+//            "x-time": String(response.timestamp),
+//            "x-guid": "037239ef-1914-43dc-815d-178aae7d8934",
+//            "x-hash": response.hash,
+//            "x-ver": "3",
+//            "x-iid": type.rawValue,
+//        ]
+//    }
 
     enum FlapgType: String, CaseIterable {
         case app
