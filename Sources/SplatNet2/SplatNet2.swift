@@ -101,6 +101,7 @@ open class SplatNet2: ObservableObject {
         }
         // ユーザーエージェントの追加
         urlRequest.headers.add(.userAgent(userAgent))
+        DDLogInfo(urlRequest.headers)
         // X-ProductVersionの追加
         if url.contains("api-lp1.znc.srv") {
             urlRequest.headers.update(name: "X-ProductVersion", value: keychain.getVersion())
