@@ -52,6 +52,10 @@ public enum SP2Error: Error {
             public let status: Int
             public let correlationId: String
         }
+        /// S2S用のエラーレスポンス
+        public struct S2S: FailureResponse {
+            public let error: String
+        }
     }
 
     public var errorCode: Int {
@@ -77,4 +81,32 @@ public enum SP2Error: Error {
 
 extension SP2Error: Identifiable {
     public var id: Int { self.errorCode }
+}
+
+extension SP2Error: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+            case .noNewResults:
+                return "No new results."
+            case .invalidRequestId:
+                return "Invalid request id."
+            case .responseValidationFailed(_, let failure):
+                if let failure = failure as? Failure.APP {
+                    return failure.errorMessage
+                }
+                if let failure = failure as? Failure.NSO {
+                    return failure.errorDescription
+                }
+                if let failure = failure as? Failure.S2S {
+                    return failure.error
+                }
+                return "Unacceptable statusCode."
+            case .oauthValidationFailed(_):
+                return "Invalid credential."
+            case .dataDecodingFailed:
+                return "Invalid response."
+            case .credentialFailed:
+                return "No credential."
+        }
+    }
 }
