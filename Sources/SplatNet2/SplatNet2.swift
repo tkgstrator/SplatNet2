@@ -69,7 +69,7 @@ open class SplatNet2: ObservableObject {
     }
 
     /// ユーザーエージェント
-    internal let userAgent: String
+    public let userAgent: String
 
     // イニシャライザ
     public init(userAgent: String) {
