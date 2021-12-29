@@ -13,25 +13,6 @@ import Foundation
 import KeychainAccess
 
 extension SplatNet2: RequestInterceptor {
-    public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
-        var urlRequest = urlRequest
-        guard let url = urlRequest.url?.absoluteString else {
-            completion(.success(urlRequest))
-            return
-        }
-        DDLogInfo(url)
-
-        // ユーザーエージェントの追加
-        urlRequest.headers.add(.userAgent(userAgent))
-
-        // X-ProductVersionの追加
-        if url.contains("api-lp1.znc.srv") {
-            urlRequest.headers.update(name: "X-ProductVersion", value: keychain.getVersion())
-        }
-        completion(.success(urlRequest))
-        return
-    }
-
     public func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
         // リトライ回数が一定以上の場合は強制終了する
         if request.retryCount >= 2, task.count >= 2 {

@@ -8,7 +8,6 @@
 //
 
 import Alamofire
-import CocoaLumberjack
 import CocoaLumberjackSwift
 import Combine
 import Foundation
@@ -49,35 +48,6 @@ extension SplatNet2 {
     internal func authorize<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
         session
             .request(request, interceptor: self)
-            .cURLDescription { request in
-                DDLogInfo(request)
-            }
-            .validationWithSP2Error(decoder: decoder)
-            .publishDecodable(type: T.ResponseType.self, decoder: decoder)
-            .value()
-            .mapError({ error -> SP2Error in
-                DDLogError(error)
-                guard let sp2Error = error.asSP2Error else {
-                    return SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: error.responseCode ?? 999), failure: nil)
-                }
-                return sp2Error
-            })
-            .eraseToAnyPublisher()
-    }
-
-    /// リクエストを実行(トークンが切れていたら再生成する)
-    public func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
-        guard let credential = account?.credential else {
-            return Future { promise in
-                promise(.failure(SP2Error.credentialFailed))
-            }
-            .eraseToAnyPublisher()
-        }
-
-        let interceptor = AuthenticationInterceptor(authenticator: self, credential: credential)
-
-        return session
-            .request(request, interceptor: interceptor)
             .cURLDescription { request in
                 DDLogInfo(request)
             }

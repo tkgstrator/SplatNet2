@@ -9,7 +9,7 @@
 import Foundation
 
 extension Error {
-    var asSP2Error: SP2Error? {
+    public var asSP2Error: SP2Error? {
         guard let error = self.asAFError else {
             return nil
         }

@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import CocoaLumberjackSwift
 import Combine
 import CryptoKit
 import Foundation
@@ -14,7 +15,7 @@ import KeychainAccess
 
 open class SplatNet2: ObservableObject {
     /// アクセス用のセッション
-    internal let session: Session = {
+    public let session: Session = {
         let configuration: URLSessionConfiguration = {
             let config = URLSessionConfiguration.default
             config.httpMaximumConnectionsPerHost = 1
@@ -39,7 +40,7 @@ open class SplatNet2: ObservableObject {
     }
 
     // JSON Decoder
-    internal let decoder: JSONDecoder = {
+    public let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
@@ -90,5 +91,48 @@ open class SplatNet2: ObservableObject {
             "theme": "login_form",
         ]
         return URL(unsafeString: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")
+    }
+
+    open func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
+        var urlRequest = urlRequest
+        guard let url = urlRequest.url?.absoluteString else {
+            completion(.success(urlRequest))
+            return
+        }
+        // ユーザーエージェントの追加
+        urlRequest.headers.add(.userAgent(userAgent))
+        // X-ProductVersionの追加
+        if url.contains("api-lp1.znc.srv") {
+            urlRequest.headers.update(name: "X-ProductVersion", value: keychain.getVersion())
+        }
+        completion(.success(urlRequest))
+        return
+    }
+
+    /// リクエストを実行(トークンが切れていたら再生成する)
+    open func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
+        guard let credential = account?.credential else {
+            return Future { promise in
+                promise(.failure(SP2Error.credentialFailed))
+            }
+            .eraseToAnyPublisher()
+        }
+        let interceptor = AuthenticationInterceptor(authenticator: self, credential: credential)
+        return session
+            .request(request, interceptor: interceptor)
+            .cURLDescription { request in
+                DDLogInfo(request)
+            }
+            .validationWithSP2Error(decoder: decoder)
+            .publishDecodable(type: T.ResponseType.self, decoder: decoder)
+            .value()
+            .mapError({ error -> SP2Error in
+                DDLogError(error)
+                guard let sp2Error = error.asSP2Error else {
+                    return SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: error.responseCode ?? 999), failure: nil)
+                }
+                return sp2Error
+            })
+            .eraseToAnyPublisher()
     }
 }

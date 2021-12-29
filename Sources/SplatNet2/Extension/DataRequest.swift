@@ -11,7 +11,7 @@ import Foundation
 
 extension DataRequest {
     @discardableResult
-    func validationWithSP2Error(decoder: JSONDecoder) -> Self {
+    public func validationWithSP2Error(decoder: JSONDecoder) -> Self {
         validate({ _, response, data in
             DataRequest.ValidationResult(catching: {
                 if let data = data {
