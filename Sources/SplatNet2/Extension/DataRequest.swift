@@ -9,9 +9,9 @@
 import Alamofire
 import Foundation
 
-extension DataRequest {
+public extension DataRequest {
     @discardableResult
-    public func validationWithSP2Error(decoder: JSONDecoder) -> Self {
+    func validationWithSP2Error(decoder: JSONDecoder) -> Self {
         validate({ _, response, data in
             DataRequest.ValidationResult(catching: {
                 if let data = data {

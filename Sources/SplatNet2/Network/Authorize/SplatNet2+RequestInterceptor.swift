@@ -25,7 +25,10 @@ extension SplatNet2: RequestInterceptor {
             completion(.doNotRetry)
             return
         }
-        DDLogError(request.request!.url!.absoluteString)
+        guard let url = request.request?.url?.absoluteString else {
+            return
+        }
+        DDLogError(url)
         DDLogError(sp2Error)
 
         // エラーコードが427のときのみX-ProductVersionのアップデートを行う

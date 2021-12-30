@@ -102,75 +102,32 @@ public class Result: RequestType {
         public let name: String
         public let key: BossKey
 
-        public init(name: String, key: Result.BossKey) {
+        public init(name: String, key: BossKey) {
             self.name = name
             self.key = key
         }
     }
 
-    public enum BossType: String, Codable, CaseIterable, CodableDictionaryKey {
-        case goldie = "3"
-        case steelhead = "6"
-        case flyfish = "9"
-        case scrapper = "12"
-        case steelEel = "13"
-        case stinger = "14"
-        case maws = "15"
-        case griller = "16"
-        case drizzler = "21"
-    }
-
+    // MARK: - EventType
     public struct EventType: Codable {
         public let name: String
         public let key: EventKey
 
-        public init(name: String, key: Result.EventKey) {
+        public init(name: String, key: EventKey) {
             self.name = name
             self.key = key
         }
     }
 
+    // MARK: - WaterLevel
     public struct WaterLevel: Codable {
         public let name: String
         public let key: WaterKey
 
-        public init(name: String, key: Result.WaterKey) {
+        public init(name: String, key: WaterKey) {
             self.name = name
             self.key = key
         }
-    }
-
-    public enum BossKey: String, Codable, CaseIterable {
-        case sakelienGolden = "sakelien-golden"
-        case sakelienBomber = "sakelien-bomber"
-        case sakelienCupTwins = "sakelien-cup-twins"
-        case sakelienShield = "sakelien-shield"
-        case sakelienSnake = "sakelien-snake"
-        case sakelienTower = "sakelien-tower"
-        case sakediver = "sakediver"
-        case sakedozer = "sakedozer"
-        case sakerocket = "sakerocket"
-    }
-
-    public enum EventKey: String, Codable, CaseIterable {
-        case waterLevels = "water-levels"
-        case rush = "rush"
-        case goldieSeeking = "goldie-seeking"
-        case griller = "griller"
-        case fog = "fog"
-        case theMothership = "the-mothership"
-        case cohockCharge = "cohock-charge"
-    }
-
-    public enum WaterKey: String, Codable, CaseIterable {
-        case high
-        case low
-        case normal
-    }
-
-    public enum FailureReason: String, Codable, CaseIterable {
-        case wipeOut = "wipe_out"
-        case timeLimit = "time_limit"
     }
 
     // MARK: - Grade
@@ -186,15 +143,6 @@ public class Result: RequestType {
             self.shortName = shortName
             self.name = name
         }
-    }
-
-    public enum GradeId: String, Codable, CaseIterable {
-        case profreshional = "5"
-        case overachiver = "4"
-        case gogetter = "3"
-        case parttimer = "2"
-        case apparentice = "1"
-        case intern = "0"
     }
 
     // MARK: - JobResult
@@ -257,16 +205,6 @@ public class Result: RequestType {
         public let species: Species
     }
 
-    public enum Species: String, Codable, CaseIterable {
-        case inklings
-        case octolings
-    }
-
-    public enum Style: String, Codable, CaseIterable {
-        case girl
-        case boy
-    }
-
     // MARK: - Special
     public struct SpecialType: Codable {
         public let imageA: ImageA
@@ -274,33 +212,12 @@ public class Result: RequestType {
         public let name: String
         public let id: SpecialId
 
-        public init(imageA: Result.ImageA, imageB: Result.ImageB, name: String, id: SpecialId) {
+        public init(imageA: ImageA, imageB: ImageB, name: String, id: SpecialId) {
             self.imageA = imageA
             self.imageB = imageB
             self.name = name
             self.id = id
         }
-    }
-
-    public enum ImageA: String, Codable, CaseIterable {
-        case inkjet = "/images/special/18990f646c551ee77c5b283ec814e371f692a553.png"
-        case splashdown = "/images/special/324d41e9582d84101152849bc8c96d6595c9b0ff.png"
-        case splatBombLauncher = "/images/special/7af300fdd872feb27b3d8e68a969457fac8b3bb7.png"
-        case stingRay = "/images/special/9871c82952ed0141be0310ace1942c9f5f66d655.png"
-    }
-
-    public enum ImageB: String, Codable, CaseIterable {
-        case inkjet = "/images/special/26e8117808ce17dadb0f23943359e5909fef4085.png"
-        case splashdown = "/images/special/485b748720bbf809d8b28f9f4ee1a505cbcb339b.png"
-        case splatBombLauncher = "/images/special/4eb81e00f5d707248879a7c7037d8475716a8045.png"
-        case stingRay = "/images/special/9e89e1d67803c3021203182ecc7f38bc2c0f5400.png"
-    }
-
-    public enum SpecialId: String, Codable, CaseIterable {
-        case splatBombLauncher = "2"
-        case stingRay = "7"
-        case inkjet = "8"
-        case splashdown = "9"
     }
 
     // MARK: - WeaponList
@@ -353,16 +270,6 @@ public class Result: RequestType {
         public init(name: String, image: StageType.Image) {
             self.name = name
             self.image = image
-        }
-    }
-
-    public enum StageType {
-        public enum Image: String, Codable, CaseIterable {
-            case shakeup = "/images/coop_stage/65c68c6f0641cc5654434b78a6f10b0ad32ccdee.png"
-            case shakeship = "/images/coop_stage/e07d73b7d9f0c64e552b34a2e6c29b8564c63388.png"
-            case shakehouse = "/images/coop_stage/6d68f5baa75f3a94e5e9bfb89b82e7377e3ecd2c.png"
-            case shakelift = "/images/coop_stage/e9f7c7b35e6d46778cd3cbc0d89bd7e1bc3be493.png"
-            case shakeride = "/images/coop_stage/50064ec6e97aac91e70df5fc2cfecf61ad8615fd.png"
         }
     }
 

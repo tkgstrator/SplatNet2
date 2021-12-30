@@ -101,7 +101,7 @@ extension SP2Error: LocalizedError {
                     return failure.error
                 }
                 return "Unacceptable statusCode."
-            case .oauthValidationFailed(_):
+            case .oauthValidationFailed:
                 return "Invalid credential."
             case .dataDecodingFailed:
                 return "Invalid response."

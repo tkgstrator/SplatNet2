@@ -10,7 +10,11 @@ import SplatNet2
 import SwiftUI
 
 internal class AppDelegate: UIResponder, UIApplicationDelegate {
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+    //  swiftlint:disable discouraged_optional_collection
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
         if let manager = LogManager.shared {
             #if DEBUG
             manager.logLevel = .debug
@@ -20,12 +24,11 @@ internal class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         return true
     }
-    // 必要に応じて処理を追加
+    //  swiftlint:enable discouraged_optional_collection
 }
 
 @main
 internal struct SplatNet2DemoApp: App {
-    //  swiftlint:disable weak_delegate
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
