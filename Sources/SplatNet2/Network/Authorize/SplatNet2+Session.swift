@@ -27,10 +27,13 @@ extension SplatNet2 {
                     }
                 }, receiveValue: { response in
                     DDLogInfo("Summary: \(resultId) -> \(response.summary.card.jobNum)")
+                    #if DEBUG
+                    #else
                     // No new results
                     if response.summary.card.jobNum == resultId {
                         promise(.failure(SP2Error.noNewResults))
                     }
+                    #endif
                     // Invalid RequestId
                     if response.summary.card.jobNum < resultId {
                         promise(.failure(SP2Error.invalidRequestId))
@@ -77,12 +80,16 @@ extension SplatNet2 {
             guard let jobNum = account.coop.jobNum else {
                 return 0
             }
+            // リザルトIDが指定されていないときはKeychainのデータを使う
             guard let resultId = resultId else {
+                #if DEBUG
+                return jobNum - 9
+                #else
                 return jobNum
+                #endif
             }
             return resultId
         }()
-        print(resultId)
 
         return Future { [self] promise in
             getCoopSummary(resultId: resultId)
