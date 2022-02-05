@@ -14,7 +14,7 @@ public enum SignInState {
     case s2sHash(LoginType)
     case flapg(LoginType)
     case iksmSession
-    
+
     var progress: Int {
         switch self {
             case .sessionToken(let value):
@@ -29,10 +29,9 @@ public enum SignInState {
                 return 7
         }
     }
-    
+
     public enum LoginType: CaseIterable {
         case nso
         case app
     }
-    
 }

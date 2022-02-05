@@ -12,12 +12,8 @@ import SplatNet2
 import SwiftUI
 
 internal struct MasterView: View {
-    @EnvironmentObject var manager: SplatNet2
-    @State var task = Set<AnyCancellable>()
+    @EnvironmentObject var service: SP2Service
     @State var isPresented = false
-    @State var environment = false
-    @State var sp2Error: SP2Error?
-    @State var allowMoveInList = false
 
     var SectionSignIn: some View {
         Section(header: Text("OAuth"), content: {
@@ -27,48 +23,16 @@ internal struct MasterView: View {
                 Text("SIGN IN")
             })
             Button(action: {
-                manager.getVersion()
-                    .sink(receiveCompletion: { _ in }, receiveValue: { response in
-                        DDLogInfo(response)
-                    })
-                    .store(in: &task)
+                service.getVersion()
             }, label: { Text("GET X-PRODUCT VERSION") })
             Button(action: {
-                manager.getCoopSummary()
-                    .sink(receiveCompletion: { completion in
-                        switch completion {
-                            case .finished:
-                                break
-                            case .failure(let error):
-                                DDLogError(error)
-                        }
-                    }, receiveValue: { _ in
-//                        DDLogInfo(response)
-                    })
-                    .store(in: &task)
+                service.getCoopSummary()
             }, label: { Text("GET COOP RESULTS") })
             Button(action: {
-                manager.getCoopResult(resultId: 3_590)
-                    .sink(receiveCompletion: { completion in
-                        switch completion {
-                            case .finished:
-                                break
-                            case .failure(let error):
-                                DDLogError(error)
-                        }
-                    }, receiveValue: { response in
-                        DDLogInfo(response)
-                    })
-                    .store(in: &task)
+                service.getResult(resultId: 1_000)
             }, label: { Text("GET RESULT") })
             Button(action: {
-                manager.getCoopResults(resultId: 1_860)
-                    .sink(receiveCompletion: { completion in
-                        print(completion)
-                    }, receiveValue: { response in
-                        DDLogInfo(response.count)
-                    })
-                    .store(in: &task)
+                service.getResults(resultId: 1_000)
             }, label: { Text("GET ALL RESULTS") })
             Button(action: {
                 DDLogInfo(SplatNet2.schedule)
@@ -76,32 +40,16 @@ internal struct MasterView: View {
         })
     }
 
-    var SectionAccount: some View {
-        Section(content: {
-            NavigationLink(destination: DetailView(), label: {
-                Text("ACCOUNT")
-            })
-            Toggle(isOn: $allowMoveInList, label: {
-                Text("ALLOW MOVE IN LIST")
-            })
-            AccountView(manager: manager)
-                .environment(\.allowMoveInList, $allowMoveInList)
-        }, header: {
-            Text("Account")
-        })
-    }
-
     var body: some View {
         Form(content: {
             SectionSignIn
-            SectionAccount
         })
-            .authorize(isPresented: $isPresented, manager: manager) { completion in
+            .authorize(isPresented: $isPresented, session: service.session) { completion in
                 switch completion {
                     case .success(let value):
                         DDLogInfo(value)
                     case .failure(let error):
-                        sp2Error = error
+                        DDLogError(error.localizedDescription)
                 }
             }
             .navigationTitle("SplatNet2 Demo")

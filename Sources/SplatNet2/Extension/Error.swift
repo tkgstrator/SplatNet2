@@ -9,6 +9,7 @@
 import Foundation
 
 public extension Error {
+    #warning("変換が適当すぎるので要修正")
     var asSP2Error: SP2Error? {
         guard let error = self.asAFError else {
             return nil

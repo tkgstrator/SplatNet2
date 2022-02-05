@@ -16,41 +16,41 @@ extension SplatNet2 {
     internal func getSessionToken(sessionTokenCode: String, verifier: String)
     -> AnyPublisher<SessionToken.Response, SP2Error> {
         let request = SessionToken(code: sessionTokenCode, verifier: verifier)
-        return authorize(request)
+        return publish(request)
     }
 
     /// AccessTokenを取得
     internal func getAccessToken(sessionToken: String)
     -> AnyPublisher<AccessToken.Response, SP2Error> {
         let request = AccessToken(sessionToken: sessionToken)
-        return authorize(request)
+        return publish(request)
     }
 
     /// S2sHashを取得
     internal func getS2SHash(accessToken: String, timestamp: Int) -> AnyPublisher<S2SHash.Response, SP2Error> {
         let request = S2SHash(accessToken: accessToken, timestamp: timestamp)
-        return authorize(request)
+        return publish(request)
     }
 
     /// FlapgTokenを取得
     internal func getFlapgToken(accessToken: String, timestamp: Int, response: S2SHash.Response, type: FlapgToken.FlapgType)
     -> AnyPublisher<FlapgToken.Response, SP2Error> {
         let request = FlapgToken(accessToken: accessToken, timestamp: timestamp, hash: response.hash, type: type)
-        return authorize(request)
+        return publish(request)
     }
 
     /// SplatonTokenを取得
     internal func getSplatoonToken(response: FlapgToken.Response)
     -> AnyPublisher<SplatoonToken.Response, SP2Error> {
         let request = SplatoonToken(from: response, version: version)
-        return authorize(request)
+        return publish(request)
     }
 
     /// SplatoonAccessTokenを取得
     internal func getSplatoonAccessToken(splatoonToken: String, response: FlapgToken.Response)
     -> AnyPublisher<SplatoonAccessToken.Response, SP2Error> {
         let request = SplatoonAccessToken(from: response, splatoonToken: splatoonToken, version: version)
-        return authorize(request)
+        return publish(request)
     }
 
     /// IksmSessionを取得
@@ -63,7 +63,7 @@ extension SplatNet2 {
     public func getVersion()
     -> AnyPublisher<XVersion.Response, SP2Error> {
         let request = XVersion()
-        return authorize(request)
+        return publish(request)
     }
 
     #warning("クソコード要修正")

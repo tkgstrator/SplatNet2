@@ -16,24 +16,24 @@ public struct Authorize: ViewModifier {
     @Binding var isPresented: Bool
     @State var task = Set<AnyCancellable>()
     @State var sp2Error: SP2Error?
-    let manager: SplatNet2
+    let session: SplatNet2
     let state = String.randomString
     let verifier = String.randomString
 
     public typealias CompletionHandler = (Swift.Result<UserInfo, SP2Error>) -> Void
     let completionHandler: CompletionHandler
 
-    public init(isPresented: Binding<Bool>, manager: SplatNet2, completionHandler: @escaping CompletionHandler) {
+    public init(isPresented: Binding<Bool>, session: SplatNet2, completionHandler: @escaping CompletionHandler) {
         self._isPresented = isPresented
         self.completionHandler = completionHandler
-        self.manager = manager
+        self.session = session
     }
 
     public func body(content: Content) -> some View {
         content
             .webAuthenticationSession(isPresented: $isPresented) {
                 WebAuthenticationSession(
-                    url: manager.oauthURL(state: state, verifier: verifier),
+                    url: session.oauthURL(state: state, verifier: verifier),
                     callbackURLScheme: "npf71b963c1b7b6d119") { callbackURL, error in
                     do {
                         // Session State
@@ -55,7 +55,7 @@ public struct Authorize: ViewModifier {
                             throw SP2Error.oauthValidationFailed(reason: .invalidSessionTokenCode)
                         }
 
-                        manager.getCookie(code: code, verifier: verifier)
+                        session.getCookie(code: code, verifier: verifier)
                             .sink(receiveCompletion: { completion in
                                 switch completion {
                                 case .finished:
@@ -65,14 +65,16 @@ public struct Authorize: ViewModifier {
                                 }
                             }, receiveValue: { response in
                                 // アカウントを追加する
-                                manager.accounts = manager.accounts.filter({ $0.credential.nsaid != response.credential.nsaid }) + [response]
+                                #warning("ここの処理をExtensionで実装します")
+                                session.accounts = session.accounts.filter({ $0.credential.nsaid != response.credential.nsaid }) + [response]
                             })
                             .store(in: &task)
-                    } catch let error as SP2Error {
-                        DDLogError(error)
-                        sp2Error = error
                     } catch {
-                        DDLogError(error)
+                        guard let error = error.asSP2Error else {
+                            DDLogError(error.localizedDescription)
+                            return
+                        }
+                        DDLogError(error.localizedDescription)
                     }
                 }
             }
@@ -87,8 +89,8 @@ public struct Authorize: ViewModifier {
 }
 
 public extension View {
-    func authorize(isPresented: Binding<Bool>, manager: SplatNet2, completion: @escaping (Swift.Result<UserInfo, SP2Error>) -> Void) -> some View {
-        self.modifier(Authorize(isPresented: isPresented, manager: manager) { response in
+    func authorize(isPresented: Binding<Bool>, session: SplatNet2, completion: @escaping (Swift.Result<UserInfo, SP2Error>) -> Void) -> some View {
+        self.modifier(Authorize(isPresented: isPresented, session: session) { response in
             completion(response)
         }
         )

@@ -21,6 +21,7 @@ public extension DataRequest {
                     if let failure = try? decoder.decode(SP2Error.Failure.APP.self, from: data) {
                         throw SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: failure.status), failure: failure)
                     }
+                    ///
                     if let failure = try? decoder.decode(SP2Error.Failure.S2S.self, from: data) {
                         throw SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: response.statusCode), failure: failure)
                     }
