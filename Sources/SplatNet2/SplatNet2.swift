@@ -48,6 +48,8 @@ open class SplatNet2: ObservableObject {
 
     /// タスク管理
     public var task = Set<AnyCancellable>()
+    /// Delegate
+    public var delegate: SplatNet2SessionDelegate?
 
     /// 現在利用しているアカウント
     @Published public var account: UserInfo? {
