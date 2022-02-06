@@ -10,10 +10,7 @@ import SplatNet2
 import SwiftUI
 
 internal struct DetailView: View {
-    @EnvironmentObject var manager: SplatNet2
-    @State var signInState: SplatNet2.SignInState?
-    @State var currentValue: Int = 0
-    @State var maxValue: Int = 0
+    @EnvironmentObject var service: SP2Service
 
     var body: some View {
         Form {
@@ -21,62 +18,52 @@ internal struct DetailView: View {
                 HStack(content: {
                     Text("nsaid")
                     Spacer()
-                    Text(manager.account?.credential.nsaid ?? "")
+                    Text(service.nsaid)
                         .foregroundColor(.secondary)
                 })
                 HStack(content: {
                     Text("nickname")
                     Spacer()
-                    Text(manager.account?.nickname ?? "")
+                    Text(service.nickname)
                         .foregroundColor(.secondary)
                 })
                 HStack(content: {
                     Text("iksm_session")
                     Spacer()
-                    Text(manager.account?.credential.iksmSession ?? "")
+                    Text(service.iksmSession)
                         .lineLimit(1)
                         .foregroundColor(.secondary)
                 })
-                HStack(content: {
-                    Text("Job num")
-                    Spacer()
-                    Text("\(manager.account?.coop.jobNum ?? 0)")
-                        .foregroundColor(.secondary)
-                })
+                if let jobNum = service.jobNum {
+                    HStack(content: {
+                        Text("Job num")
+                        Spacer()
+                        Text("\(jobNum)")
+                            .foregroundColor(.secondary)
+                    })
+                } else {
+                    HStack(content: {
+                        Text("Job num")
+                        Spacer()
+                        Text("")
+                            .foregroundColor(.secondary)
+                    })
+                }
                 HStack(content: {
                     Text("X-Product Version")
                     Spacer()
-                    Text(manager.version)
+                    Text(service.version)
                         .foregroundColor(.secondary)
                 })
                 Button(action: {
-                    print(manager.account)
+                    print(service.account)
                 }, label: {
                     Text("Credential")
                 })
             }, header: {
                 Text("Account")
             })
-            Section(content: {
-                Text("\(signInState?.rawValue ?? 0)")
-                Text("\(currentValue)/\(maxValue)")
-            }, header: {
-                Text("Progress")
-            })
         }
         .navigationTitle("DetailView")
-        .onReceive(NotificationCenter.default.publisher(for: SplatNet2.signIn), perform: { notification in
-            guard let state = notification.object as? SplatNet2.SignInState else {
-                return
-            }
-            signInState = state
-        })
-        .onReceive(NotificationCenter.default.publisher(for: SplatNet2.download), perform: { notification in
-            guard let progress = notification.object as? SplatNet2.Progress else {
-                return
-            }
-            maxValue = progress.maxValue
-            currentValue = progress.currentValue
-        })
     }
 }

@@ -12,52 +12,62 @@ import Foundation
 import KeychainAccess
 
 extension SplatNet2 {
+    /// SessionTokenを取得
     internal func getSessionToken(sessionTokenCode: String, verifier: String)
     -> AnyPublisher<SessionToken.Response, SP2Error> {
         let request = SessionToken(code: sessionTokenCode, verifier: verifier)
-        return authorize(request)
+        return publish(request)
     }
 
+    /// AccessTokenを取得
     internal func getAccessToken(sessionToken: String)
     -> AnyPublisher<AccessToken.Response, SP2Error> {
         let request = AccessToken(sessionToken: sessionToken)
-        return authorize(request)
+        return publish(request)
     }
 
+    /// S2sHashを取得
     internal func getS2SHash(accessToken: String, timestamp: Int) -> AnyPublisher<S2SHash.Response, SP2Error> {
         let request = S2SHash(accessToken: accessToken, timestamp: timestamp)
-        return authorize(request)
+        return publish(request)
     }
 
+    /// FlapgTokenを取得
     internal func getFlapgToken(accessToken: String, timestamp: Int, response: S2SHash.Response, type: FlapgToken.FlapgType)
     -> AnyPublisher<FlapgToken.Response, SP2Error> {
         let request = FlapgToken(accessToken: accessToken, timestamp: timestamp, hash: response.hash, type: type)
-        return authorize(request)
+        return publish(request)
     }
 
+    /// SplatonTokenを取得
     internal func getSplatoonToken(response: FlapgToken.Response)
     -> AnyPublisher<SplatoonToken.Response, SP2Error> {
         let request = SplatoonToken(from: response, version: version)
-        return authorize(request)
+        return publish(request)
     }
 
+    /// SplatoonAccessTokenを取得
     internal func getSplatoonAccessToken(splatoonToken: String, response: FlapgToken.Response)
     -> AnyPublisher<SplatoonAccessToken.Response, SP2Error> {
         let request = SplatoonAccessToken(from: response, splatoonToken: splatoonToken, version: version)
-        return authorize(request)
+        return publish(request)
     }
 
+    /// IksmSessionを取得
     internal func getIksmSession(splatoonAccessToken: String)
     -> AnyPublisher<IksmSession.Response, SP2Error> {
         generate(accessToken: splatoonAccessToken)
     }
 
+    /// バージョンをAppStoreから取得
     public func getVersion()
     -> AnyPublisher<XVersion.Response, SP2Error> {
         let request = XVersion()
-        return authorize(request)
+        return publish(request)
     }
 
+    #warning("クソコード要修正")
+    /// SessionTokenからIksmSessionを取得
     // swiftlint:disable function_body_length
     public func getCookie(sessionToken: String)
     -> AnyPublisher<UserInfo, SP2Error> {
@@ -122,6 +132,7 @@ extension SplatNet2 {
     }
     // swiftlint:enable function_body_length
 
+    /// IksmSessionをsessionTokenCodeから取得
     internal func getCookie(code sessionTokenCode: String, verifier: String)
     -> AnyPublisher<UserInfo, SP2Error> {
         getSessionToken(sessionTokenCode: sessionTokenCode, verifier: verifier)

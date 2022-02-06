@@ -12,13 +12,16 @@ import Combine
 import Foundation
 
 extension SplatNet2: Authenticator {
+    /// Credentialをリクエストに適用
     public func apply(
         _ credential: OAuthCredential,
         to urlRequest: inout URLRequest
     ) {
+        // IksmSessionの値をヘッダーに追記
         urlRequest.headers.add(HTTPHeader(name: "cookie", value: "iksm_session=\(credential.iksmSession)"))
     }
 
+    /// リフレッシュが必要
     public func refresh(
         _ credential: OAuthCredential,
         for session: Session,
@@ -35,7 +38,7 @@ extension SplatNet2: Authenticator {
                         return
                 }
             }, receiveValue: { [self] response in
-                // 怪しい部分なので検証が必要
+                #warning("怪しい部分なので検証が必要")
                 accounts = accounts.filter({ $0.credential.nsaid != response.credential.nsaid }) + [response]
                 completion(.success(response.credential))
                 return
@@ -43,6 +46,7 @@ extension SplatNet2: Authenticator {
             .store(in: &task)
     }
 
+    #warning("理解できてないので要修正")
     public func didRequest(
         _ urlRequest: URLRequest,
         with response: HTTPURLResponse,
@@ -51,6 +55,7 @@ extension SplatNet2: Authenticator {
         response.statusCode == 403
     }
 
+    #warning("理解できてないので要修正")
     public func isRequest(
         _ urlRequest: URLRequest,
         authenticatedWith credential: OAuthCredential

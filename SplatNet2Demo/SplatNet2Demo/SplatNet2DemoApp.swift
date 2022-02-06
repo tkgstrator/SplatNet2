@@ -34,7 +34,7 @@ internal struct SplatNet2DemoApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(SplatNet2(userAgent: "Salmonia3/@tkgling"))
+                .environmentObject(SP2Service())
         }
     }
 }

@@ -13,7 +13,7 @@ import CryptoKit
 import Foundation
 import KeychainAccess
 
-open class SplatNet2: ObservableObject {
+open class SplatNet2 {
     /// アクセス用のセッション
     public let session: Session = {
         let configuration: URLSessionConfiguration = {
@@ -48,9 +48,11 @@ open class SplatNet2: ObservableObject {
 
     /// タスク管理
     public var task = Set<AnyCancellable>()
+    /// Delegate
+    public weak var delegate: SplatNet2SessionDelegate?
 
     /// 現在利用しているアカウント
-    @Published public var account: UserInfo? {
+    public var account: UserInfo? {
         // バイト情報が更新されたらここが通知される
         // そのときにKeychainに最新のデータを入れる
         didSet {
@@ -61,22 +63,19 @@ open class SplatNet2: ObservableObject {
     }
 
     /// 保存されている全てのアカウント
-    @Published public internal(set) var accounts: [UserInfo] {
+    public internal(set) var accounts: [UserInfo] {
         willSet {
             try? keychain.setValue(newValue)
             account = newValue.first
         }
     }
 
-    /// ユーザーエージェント
-    public let userAgent: String
-
     // イニシャライザ
-    public init(userAgent: String) {
-        self.userAgent = userAgent
+    public init(delegate: SplatNet2SessionDelegate? = nil) {
         let accounts: [UserInfo] = keychain.getValue()
         self.accounts = accounts
         self.account = accounts.first
+        self.delegate = delegate
     }
 
     internal func oauthURL(state: String, verifier: String) -> URL {
@@ -93,32 +92,14 @@ open class SplatNet2: ObservableObject {
         return URL(unsafeString: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")
     }
 
-    open func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
-        var urlRequest = urlRequest
-        guard let url = urlRequest.url?.absoluteString else {
-            completion(.success(urlRequest))
-            return
-        }
-        // ユーザーエージェントの追加
-        urlRequest.headers.add(.userAgent(userAgent))
-        DDLogInfo(urlRequest.headers)
-        // X-ProductVersionの追加
-        if url.contains("api-lp1.znc.srv") {
-            urlRequest.headers.update(name: "X-ProductVersion", value: keychain.getVersion())
-        }
-        completion(.success(urlRequest))
-        return
-    }
-
-    /// リクエストを実行(トークンが切れていたら再生成する)
-    open func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
-        guard let credential = account?.credential else {
-            return Future { promise in
-                promise(.failure(SP2Error.credentialFailed))
+    /// リクエストを実行
+    internal func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
+        let interceptor: AuthenticationInterceptor<SplatNet2>? = {
+            guard let credential = account?.credential else {
+                return nil
             }
-            .eraseToAnyPublisher()
-        }
-        let interceptor = AuthenticationInterceptor(authenticator: self, credential: credential)
+            return AuthenticationInterceptor(authenticator: self, credential: credential)
+        }()
         return session
             .request(request, interceptor: interceptor)
             .cURLDescription { request in
@@ -127,6 +108,25 @@ open class SplatNet2: ObservableObject {
             .validationWithSP2Error(decoder: decoder)
             .publishDecodable(type: T.ResponseType.self, decoder: decoder)
             .value()
+            .handleEvents(receiveSubscription: { subscription in
+//                switch request {
+//                    case is SessionToken:
+//                        self.delegate?.progressSignIn(state: .sessionToken(.nso))
+//                    case is AccessToken:
+//                        self.delegate?.progressSignIn(state: .accessToken(.nso))
+//                    case is S2SHash:
+//                        self.delegate?.progressSignIn(state: )
+//                }
+                self.delegate?.willReceiveSubscription(subscribe: subscription)
+            }, receiveOutput: { output in
+                self.delegate?.willReceiveOutput(output: output)
+            }, receiveCompletion: { completion in
+                self.delegate?.willReceiveCompletion(completion: completion)
+            }, receiveCancel: {
+                self.delegate?.willReceiveCancel()
+            }, receiveRequest: { request in
+                self.delegate?.willReceiveRequest(request: request)
+            })
             .mapError({ error -> SP2Error in
                 DDLogError(error)
                 guard let sp2Error = error.asSP2Error else {

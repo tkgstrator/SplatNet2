@@ -36,9 +36,9 @@ public extension RequestType {
         request.httpMethod = method.rawValue
         request.timeoutInterval = TimeInterval(5)
         request.allHTTPHeaderFields = headers
-
+        request.headers.update(.userAgent("SplatNet2/@tkgling"))
         if let params = parameters {
-            request = try encoding.encode(request, with: params)
+            return try encoding.encode(request, with: params)
         }
         return request
     }
