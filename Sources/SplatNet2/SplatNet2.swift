@@ -134,7 +134,7 @@ open class SplatNet2 {
             .mapError({ error -> SP2Error in
                 DDLogError(error)
                 guard let sp2Error = error.asSP2Error else {
-                    return SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: error.responseCode ?? 999), failure: nil)
+                    return SP2Error.requestAdaptionFailed
                 }
                 return sp2Error
             })

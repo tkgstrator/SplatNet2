@@ -36,7 +36,7 @@ extension SplatNet2 {
                     #endif
                     // Invalid RequestId
                     if response.summary.card.jobNum < resultId {
-                        promise(.failure(SP2Error.invalidRequestId))
+                        promise(.failure(SP2Error.invalidResultId))
                     }
                     account?.coop = CoopInfo(from: response)
                     promise(.success(response))

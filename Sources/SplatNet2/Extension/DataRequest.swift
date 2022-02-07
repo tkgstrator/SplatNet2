@@ -16,17 +16,17 @@ public extension DataRequest {
             DataRequest.ValidationResult(catching: {
                 if let data = data {
                     if let failure = try? decoder.decode(SP2Error.Failure.NSO.self, from: data) {
-                        throw SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: response.statusCode), failure: failure)
+                        throw SP2Error.responseValidationFailed(failure: failure)
                     }
                     if let failure = try? decoder.decode(SP2Error.Failure.APP.self, from: data) {
-                        throw SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: failure.status), failure: failure)
+                        throw SP2Error.responseValidationFailed(failure: failure)
                     }
                     ///
                     if let failure = try? decoder.decode(SP2Error.Failure.S2S.self, from: data) {
-                        throw SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: response.statusCode), failure: failure)
+                        throw SP2Error.responseValidationFailed(failure: failure)
                     }
                     if (response.statusCode < 200) || (response.statusCode >= 400) {
-                        throw SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: response.statusCode), failure: nil)
+                        throw SP2Error.unacceptableStatusCode(statusCode: response.statusCode)
                     }
                 }
             })

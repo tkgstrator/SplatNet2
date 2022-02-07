@@ -7,14 +7,14 @@
 //
 
 import Alamofire
+import CocoaLumberjackSwift
 import Combine
 import Foundation
 import KeychainAccess
-import CocoaLumberjackSwift
 
 extension SplatNet2: RequestInterceptor {
     fileprivate func authorize<T: RequestType>(_ request: T, state: SignInState) -> AnyPublisher<T.ResponseType, SP2Error> {
-        return session
+        session
             .request(request, interceptor: self)
             .cURLDescription { request in
                 DDLogInfo(request)
@@ -38,21 +38,23 @@ extension SplatNet2: RequestInterceptor {
             .mapError({ error -> SP2Error in
                 DDLogError(error)
                 guard let sp2Error = error.asSP2Error else {
-                    return SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: error.responseCode ?? 999), failure: nil)
+                    return SP2Error.requestAdaptionFailed
                 }
                 return sp2Error
             })
             .eraseToAnyPublisher()
     }
-    
+
+    #warning("未実装")
     /// X-Product Versionをセットする
-    internal func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
+    public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
     }
-    
+
+    #warning("未実装")
     /// X-Product Versionが低いときに取得してアップデートする
-    internal func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+    public func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
     }
-    
+
     /// SessionTokenを取得
     internal func getSessionToken(sessionTokenCode: String, verifier: String)
     -> AnyPublisher<SessionToken.Response, SP2Error> {

@@ -10,33 +10,86 @@ import Alamofire
 import Foundation
 
 public protocol FailureResponse: Codable {
+    var reason: SP2Error.ResponseValidationFailureReason? { get }
 }
 
 public enum SP2Error: Error {
-//    case explicitlyCancelled
+    /// 新しいリザルトがない
     case noNewResults
-    case invalidRequestId
-//    case userCancelled
-//    case requestAdaptationFailed
-//    case requestRetryFailed
-    case responseValidationFailed(reason: ResponseValidationFailureReason, failure: FailureResponse?)
-//    case responseSerializationFailed
-//    case urlRequestValidationFailed
+    /// 指定されたリザルトIDがない
+    case invalidResultId
+    /// リクエストが誤っている
+    case requestAdaptionFailed
+    /// エラー形式のJSONに変換できた
+    case responseValidationFailed(failure: FailureResponse)
+    /// OAuthの認証でエラー発生
     case oauthValidationFailed(reason: OAuthValidationFailureReason)
+    /// データのデコードができない
     case dataDecodingFailed
+    /// 受理できないステータスコード
+    case unacceptableStatusCode(statusCode: Int)
+    /// 認証データが誤っている
     case credentialFailed
 
-    public enum OAuthValidationFailureReason: Int {
-        case stateMatchFailed = 8_000
-        case domainMatchFailed = 8_001
-        case invalidSessionState = 8_002
-        case invalidState = 8_003
-        case invalidSessionTokenCode = 8_004
+    public enum OAuthValidationFailureReason: CaseIterable {
+        case stateMatchFailed
+        case domainMatchFailed
+        case invalidSessionState
+        case invalidState
+        case invalidSessionTokenCode
+
+        public var statusCode: Int {
+            switch self {
+            case .stateMatchFailed:
+                return 8_400
+            case .domainMatchFailed:
+                return 8_401
+            case .invalidSessionState:
+                return 8_402
+            case .invalidState:
+                return 8_403
+            case .invalidSessionTokenCode:
+                return 8_404
+            }
+        }
     }
 
-    public enum ResponseValidationFailureReason {
-        case unacceptableStatusCode(code: Int)
-//        case customValidationFailed
+    public enum ResponseValidationFailureReason: String {
+        case invalidRequest     = "invalid_request"
+        case invalidGrant       = "invalid_grant"
+        case invalidClient      = "invalid_client"
+        case badrequest         = "Bad request."
+        case upgradeRequired    = "Upgrade required."
+        case invalidToken       = "Invalid token."
+        case expiredToken       = "Token expired."
+        case unauthorized       = "Unauthorized."
+        case tooManyRequests    = "Too many requests."
+        case malformedUserAgent = "Malformed user agent."
+
+        public var statusCode: Int {
+            switch self {
+            case .invalidRequest:
+                return 9_400
+            case .invalidGrant:
+                return 9_401
+            case .invalidClient:
+                return 9_402
+            case .badrequest:
+                return 9_405
+            case .upgradeRequired:
+                return 9_427
+            case .invalidToken:
+                return 9_403
+            case .expiredToken:
+                return 9_404
+            case .unauthorized:
+                return 9_406
+            case .tooManyRequests:
+                return 9_429
+            case .malformedUserAgent:
+                return 9_407
+            }
+        }
     }
 
     /// エラーレスポンス
@@ -45,16 +98,26 @@ public enum SP2Error: Error {
         public struct NSO: FailureResponse {
             public let errorDescription: String
             public let error: String
+            public var reason: SP2Error.ResponseValidationFailureReason? {
+                ResponseValidationFailureReason(rawValue: error)
+            }
         }
         /// APP用のエラーレスポンス
         public struct APP: FailureResponse {
             public let errorMessage: String
             public let status: Int
             public let correlationId: String
+            public var reason: SP2Error.ResponseValidationFailureReason? {
+                ResponseValidationFailureReason(rawValue: errorMessage)
+            }
         }
+
         /// S2S用のエラーレスポンス
         public struct S2S: FailureResponse {
             public let error: String
+            public var reason: SP2Error.ResponseValidationFailureReason? {
+                ResponseValidationFailureReason(rawValue: error)
+            }
         }
     }
 
@@ -62,19 +125,20 @@ public enum SP2Error: Error {
         switch self {
         case .noNewResults:
             return 0
-        case .invalidRequestId:
+        case .invalidResultId:
             return 1
-        case .responseValidationFailed(reason: let reason, _):
-            switch reason {
-            case .unacceptableStatusCode(code: let code):
-                return code
-            }
-        case .oauthValidationFailed(reason: let reason):
-            return reason.rawValue
+        case .requestAdaptionFailed:
+            return 5_000
+        case .responseValidationFailed(let failure):
+            return failure.reason?.statusCode ?? 9_999
+        case .oauthValidationFailed(let reason):
+            return reason.statusCode
         case .dataDecodingFailed:
-            return 1_000
+            return 6_000
+        case .unacceptableStatusCode(let statusCode):
+            return statusCode
         case .credentialFailed:
-            return 2_000
+            return 7_000
         }
     }
 }
@@ -86,27 +150,22 @@ extension SP2Error: Identifiable {
 extension SP2Error: LocalizedError {
     public var errorDescription: String? {
         switch self {
-            case .noNewResults:
-                return "No new results."
-            case .invalidRequestId:
-                return "Invalid request id."
-            case .responseValidationFailed(_, let failure):
-                if let failure = failure as? Failure.APP {
-                    return failure.errorMessage
-                }
-                if let failure = failure as? Failure.NSO {
-                    return failure.errorDescription
-                }
-                if let failure = failure as? Failure.S2S {
-                    return failure.error
-                }
-                return "Unacceptable statusCode."
-            case .oauthValidationFailed:
-                return "Invalid credential."
-            case .dataDecodingFailed:
-                return "Invalid response."
-            case .credentialFailed:
-                return "No credential."
+        case .noNewResults:
+            return "No new results."
+        case .invalidResultId:
+            return "Invalid result id."
+        case .requestAdaptionFailed:
+            return "Request adaption failed."
+        case .responseValidationFailed(let failure):
+            return failure.reason?.rawValue
+        case .oauthValidationFailed(let reason):
+            return "OAuth validation failed."
+        case .dataDecodingFailed:
+            return "Response data decoding failed."
+        case .unacceptableStatusCode(let statusCode):
+            return "Unacceptable status code \(statusCode)"
+        case .credentialFailed:
+            return "Invalid credential."
         }
     }
 }
