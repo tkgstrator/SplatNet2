@@ -67,7 +67,9 @@ extension SplatNet2: RequestInterceptor {
         case .responseValidationFailed(let failure):
             switch failure.reason {
             case .upgradeRequired:
-                break
+                self.delegate?.failedWithUnavailableVersion(version: version)
+                completion(.doNotRetryWithError(error))
+                return
             default:
                 completion(.doNotRetryWithError(error))
                 return

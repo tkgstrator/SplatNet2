@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct UserInfo: Codable {
+public class UserInfo: Codable {
     /// ニックネーム
     public var nickname: String
     /// Nintendo Switch Online加入済みかどうか
@@ -19,7 +19,7 @@ public struct UserInfo: Codable {
     /// 認証用のパラメータなど
     public var credential: OAuthCredential
     /// バイト情報
-    public var coop: CoopInfo
+    public var coop = CoopInfo()
 
     public init(nsaid: String, nickname: String) {
         self.credential = OAuthCredential(
@@ -30,7 +30,6 @@ public struct UserInfo: Codable {
         )
         self.nickname = nickname
         self.membership = false
-        self.coop = CoopInfo()
     }
 
     init(sessionToken: String, response: IksmSession.Response, nickname: String, membership: Bool, thumbnailURL: String) {
@@ -43,10 +42,19 @@ public struct UserInfo: Codable {
         self.nickname = nickname
         self.membership = membership
         self.thumbnailURL = URL(unsafeString: thumbnailURL)
-        self.coop = CoopInfo()
     }
 }
 
 extension UserInfo: Identifiable {
     public var id: String { credential.nsaid }
+}
+
+extension UserInfo: Equatable, Hashable {
+    public static func == (lhs: UserInfo, rhs: UserInfo) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }

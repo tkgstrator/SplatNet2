@@ -1,5 +1,5 @@
 //
-//  SplatNet2Service.swift
+//  SP2Service.swift
 //  SplatNet2Demo
 //
 //  Created by devonly on 2022/02/05.
@@ -39,6 +39,7 @@ public final class SP2Service: ObservableObject {
     init() {
         self.session = SplatNet2()
         self.account = session.account
+        self.session.delegate = self
     }
 
     func getVersion() {

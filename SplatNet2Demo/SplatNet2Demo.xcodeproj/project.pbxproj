@@ -9,7 +9,8 @@
 /* Begin PBXBuildFile section */
 		100D8C3726EF3D2E00286036 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3626EF3D2E00286036 /* DetailView.swift */; };
 		100D8C3B26EF3D7100286036 /* MasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3A26EF3D7100286036 /* MasterView.swift */; };
-		104808E727AEB1ED005A290F /* SplatNet2Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104808E627AEB1ED005A290F /* SplatNet2Service.swift */; };
+		104808E727AEB1ED005A290F /* SP2Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104808E627AEB1ED005A290F /* SP2Service.swift */; };
+		10A7E00627B0AF1400BB031D /* SP2Service+SplatNet2SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10A7E00527B0AF1400BB031D /* SP2Service+SplatNet2SessionDelegate.swift */; };
 		10F010B5263D7ADF002C40DA /* SplatNet2DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */; };
 		10F010B7263D7ADF002C40DA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010B6263D7ADF002C40DA /* ContentView.swift */; };
 		10F010B9263D7AE3002C40DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 10F010B8263D7AE3002C40DA /* Assets.xcassets */; };
@@ -39,8 +40,9 @@
 /* Begin PBXFileReference section */
 		100D8C3626EF3D2E00286036 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		100D8C3A26EF3D7100286036 /* MasterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterView.swift; sourceTree = "<group>"; };
-		104808E627AEB1ED005A290F /* SplatNet2Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplatNet2Service.swift; sourceTree = "<group>"; };
+		104808E627AEB1ED005A290F /* SP2Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SP2Service.swift; sourceTree = "<group>"; };
 		1090C671263DA84F000DD54C /* SplatNet2Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SplatNet2Demo.entitlements; sourceTree = "<group>"; };
+		10A7E00527B0AF1400BB031D /* SP2Service+SplatNet2SessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SP2Service+SplatNet2SessionDelegate.swift"; sourceTree = "<group>"; };
 		10F010B1263D7ADF002C40DA /* SplatNet2Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplatNet2Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplatNet2DemoApp.swift; sourceTree = "<group>"; };
 		10F010B6263D7ADF002C40DA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -119,7 +121,8 @@
 				1090C671263DA84F000DD54C /* SplatNet2Demo.entitlements */,
 				10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */,
 				10F010B6263D7ADF002C40DA /* ContentView.swift */,
-				104808E627AEB1ED005A290F /* SplatNet2Service.swift */,
+				104808E627AEB1ED005A290F /* SP2Service.swift */,
+				10A7E00527B0AF1400BB031D /* SP2Service+SplatNet2SessionDelegate.swift */,
 				108B490E27438714007C6E4F /* Views */,
 				10F010B8263D7AE3002C40DA /* Assets.xcassets */,
 				10F010BD263D7AE3002C40DA /* Info.plist */,
@@ -319,7 +322,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				104808E727AEB1ED005A290F /* SplatNet2Service.swift in Sources */,
+				104808E727AEB1ED005A290F /* SP2Service.swift in Sources */,
+				10A7E00627B0AF1400BB031D /* SP2Service+SplatNet2SessionDelegate.swift in Sources */,
 				10F010B7263D7ADF002C40DA /* ContentView.swift in Sources */,
 				100D8C3726EF3D2E00286036 /* DetailView.swift in Sources */,
 				100D8C3B26EF3D7100286036 /* MasterView.swift in Sources */,

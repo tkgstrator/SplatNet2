@@ -56,6 +56,11 @@ internal struct DetailView: View {
                         .foregroundColor(.secondary)
                 })
                 Button(action: {
+                    service.session.setXProductVersion(version: "1.13.2")
+                }, label: {
+                    Text("Set X-ProductVersion to 1.13.2")
+                })
+                Button(action: {
                     print(service.account)
                 }, label: {
                     Text("Credential")

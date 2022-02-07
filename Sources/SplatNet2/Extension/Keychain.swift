@@ -18,7 +18,7 @@ extension Keychain {
     /// JSONDecoder
     var decoder: JSONDecoder { JSONDecoder() }
 
-    // X-Product Versionを取得
+    /// X-Product Versionを取得
     func getVersion() -> String {
         guard let version = try? get(self.version) else {
             return "1.13.2"
@@ -26,6 +26,7 @@ extension Keychain {
         return version
     }
 
+    /// X-Product Versionを設定
     func setVersion(version: String?) {
         if let version = version {
             try? set(version, key: self.version)
@@ -33,36 +34,39 @@ extension Keychain {
     }
 
     /// アカウントを取得
-    func getValue() -> [UserInfo] {
+    func getAllUserInfo() -> [UserInfo] {
         guard let data = try? getData(scheme),
-              let result = try? decoder.decode([UserInfo].self, from: data)
+              let accounts = try? decoder.decode([UserInfo].self, from: data)
         else {
-            return []
+            return [UserInfo]()
         }
-        return result
+        return accounts
     }
 
-    /// アカウントを一括追加
-    func setValue(_ objects: [UserInfo]) throws {
-        try set(try encoder.encode(objects), key: scheme)
+    /// アカウントを追加
+    func setUserInfo(_ accounts: [UserInfo]) throws {
+        try set(try encoder.encode(accounts), key: scheme)
     }
 
-    /// アカウント情報をアップデート
-    func setValue(_ object: UserInfo) throws {
-        try setValue((getValue()).filter({ $0.credential.nsaid != object.credential.nsaid }) + [object])
+    /// アカウントを追加
+    func setUserInfo(_ account: UserInfo) throws {
+        // 重複したデータをアップデート
+        var accounts: Set<UserInfo> = Set(getAllUserInfo())
+        accounts.update(with: account)
+        try self.setUserInfo(Array(accounts))
     }
 
     /// アカウントの並び替え
     func move(from source: IndexSet, to destination: Int) throws {
-        var objects = getValue()
-        objects.move(fromOffsets: source, toOffset: destination)
-        try setValue(objects)
+        var accounts: [UserInfo] = getAllUserInfo()
+        accounts.move(fromOffsets: source, toOffset: destination)
+        try self.setUserInfo(accounts)
     }
 
     /// アカウントの削除
     func delete(at offsets: IndexSet) throws {
-        var objects = getValue()
-        objects.remove(atOffsets: offsets)
-        try setValue(objects)
+        var accounts: [UserInfo] = getAllUserInfo()
+        accounts.remove(atOffsets: offsets)
+        try self.setUserInfo(accounts)
     }
 }

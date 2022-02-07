@@ -39,6 +39,14 @@ open class SplatNet2 {
         }
     }
 
+    public func setXProductVersion(version: String) {
+        #if DEBUG
+        keychain.setVersion(version: version)
+        #else
+        DDLogWarn("This feature is only enabled for Debug build.")
+        #endif
+    }
+
     // JSON Decoder
     public let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
@@ -57,7 +65,7 @@ open class SplatNet2 {
         // そのときにKeychainに最新のデータを入れる
         didSet {
             if let account = account {
-                try? keychain.setValue(account)
+                try? keychain.setUserInfo(account)
             }
         }
     }
@@ -65,20 +73,19 @@ open class SplatNet2 {
     /// 保存されている全てのアカウント
     public internal(set) var accounts: [UserInfo] {
         willSet {
-            try? keychain.setValue(newValue)
+            try? keychain.setUserInfo(newValue)
             account = newValue.first
         }
     }
 
-    // イニシャライザ
     public init() {
-        let accounts: [UserInfo] = keychain.getValue()
+        let accounts: [UserInfo] = keychain.getAllUserInfo()
         self.accounts = accounts
         self.account = accounts.first
     }
 
     public init(delegate: SplatNet2SessionDelegate) {
-        let accounts: [UserInfo] = keychain.getValue()
+        let accounts: [UserInfo] = keychain.getAllUserInfo()
         self.accounts = accounts
         self.account = accounts.first
         self.delegate = delegate
