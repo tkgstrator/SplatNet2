@@ -10,7 +10,7 @@ import Alamofire
 import Combine
 import Foundation
 
-public protocol SplatNet2SessionDelegate: NSObject {
+public protocol SplatNet2SessionDelegate: AnyObject {
     /// セッション購読時の処理
     func willReceiveSubscription(subscribe: Subscription)
     /// レスポンス受信時の処理

@@ -19,7 +19,7 @@ open class SplatNet2 {
         let configuration: URLSessionConfiguration = {
             let config = URLSessionConfiguration.default
             config.httpMaximumConnectionsPerHost = 1
-            config.timeoutIntervalForRequest = 30
+            config.timeoutIntervalForRequest = 5
             return config
         }()
         return Session(configuration: configuration)
@@ -71,7 +71,13 @@ open class SplatNet2 {
     }
 
     // イニシャライザ
-    public init(delegate: SplatNet2SessionDelegate? = nil) {
+    public init() {
+        let accounts: [UserInfo] = keychain.getValue()
+        self.accounts = accounts
+        self.account = accounts.first
+    }
+
+    public init(delegate: SplatNet2SessionDelegate) {
         let accounts: [UserInfo] = keychain.getValue()
         self.accounts = accounts
         self.account = accounts.first
@@ -95,6 +101,12 @@ open class SplatNet2 {
     /// リクエストを実行
     internal func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
         let interceptor: AuthenticationInterceptor<SplatNet2>? = {
+            switch request {
+            case is XVersion:
+                return nil
+            default:
+                break
+            }
             guard let credential = account?.credential else {
                 return nil
             }
