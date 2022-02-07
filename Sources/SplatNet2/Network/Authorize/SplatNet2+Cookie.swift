@@ -10,47 +10,88 @@ import Alamofire
 import Combine
 import Foundation
 import KeychainAccess
+import CocoaLumberjackSwift
 
-extension SplatNet2 {
+extension SplatNet2: RequestInterceptor {
+    fileprivate func authorize<T: RequestType>(_ request: T, state: SignInState) -> AnyPublisher<T.ResponseType, SP2Error> {
+        return session
+            .request(request, interceptor: self)
+            .cURLDescription { request in
+                DDLogInfo(request)
+            }
+            .validationWithSP2Error(decoder: decoder)
+            .publishDecodable(type: T.ResponseType.self, decoder: decoder)
+            .value()
+            .handleEvents(receiveSubscription: { subscription in
+                // どのリクエストが実行中か返す
+                self.delegate?.progressSignIn(state: state)
+                self.delegate?.willReceiveSubscription(subscribe: subscription)
+            }, receiveOutput: { output in
+                self.delegate?.willReceiveOutput(output: output)
+            }, receiveCompletion: { completion in
+                self.delegate?.willReceiveCompletion(completion: completion)
+            }, receiveCancel: {
+                self.delegate?.willReceiveCancel()
+            }, receiveRequest: { request in
+                self.delegate?.willReceiveRequest(request: request)
+            })
+            .mapError({ error -> SP2Error in
+                DDLogError(error)
+                guard let sp2Error = error.asSP2Error else {
+                    return SP2Error.responseValidationFailed(reason: .unacceptableStatusCode(code: error.responseCode ?? 999), failure: nil)
+                }
+                return sp2Error
+            })
+            .eraseToAnyPublisher()
+    }
+    
+    /// X-Product Versionをセットする
+    internal func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
+    }
+    
+    /// X-Product Versionが低いときに取得してアップデートする
+    internal func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+    }
+    
     /// SessionTokenを取得
     internal func getSessionToken(sessionTokenCode: String, verifier: String)
     -> AnyPublisher<SessionToken.Response, SP2Error> {
         let request = SessionToken(code: sessionTokenCode, verifier: verifier)
-        return publish(request)
+        return authorize(request, state: .sessionToken(.nso))
     }
 
     /// AccessTokenを取得
     internal func getAccessToken(sessionToken: String)
     -> AnyPublisher<AccessToken.Response, SP2Error> {
         let request = AccessToken(sessionToken: sessionToken)
-        return publish(request)
+        return authorize(request, state: .accessToken(.nso))
     }
 
     /// S2sHashを取得
     internal func getS2SHash(accessToken: String, timestamp: Int) -> AnyPublisher<S2SHash.Response, SP2Error> {
         let request = S2SHash(accessToken: accessToken, timestamp: timestamp)
-        return publish(request)
+        return authorize(request, state: .s2sHash(.nso))
     }
 
     /// FlapgTokenを取得
     internal func getFlapgToken(accessToken: String, timestamp: Int, response: S2SHash.Response, type: FlapgToken.FlapgType)
     -> AnyPublisher<FlapgToken.Response, SP2Error> {
         let request = FlapgToken(accessToken: accessToken, timestamp: timestamp, hash: response.hash, type: type)
-        return publish(request)
+        return authorize(request, state: .flapg(.nso))
     }
 
     /// SplatonTokenを取得
     internal func getSplatoonToken(response: FlapgToken.Response)
     -> AnyPublisher<SplatoonToken.Response, SP2Error> {
         let request = SplatoonToken(from: response, version: version)
-        return publish(request)
+        return authorize(request, state: .sessionToken(.app))
     }
 
     /// SplatoonAccessTokenを取得
     internal func getSplatoonAccessToken(splatoonToken: String, response: FlapgToken.Response)
     -> AnyPublisher<SplatoonAccessToken.Response, SP2Error> {
         let request = SplatoonAccessToken(from: response, splatoonToken: splatoonToken, version: version)
-        return publish(request)
+        return authorize(request, state: .sessionToken(.app))
     }
 
     /// IksmSessionを取得

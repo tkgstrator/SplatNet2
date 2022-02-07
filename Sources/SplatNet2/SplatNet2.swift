@@ -121,14 +121,6 @@ open class SplatNet2 {
             .publishDecodable(type: T.ResponseType.self, decoder: decoder)
             .value()
             .handleEvents(receiveSubscription: { subscription in
-//                switch request {
-//                    case is SessionToken:
-//                        self.delegate?.progressSignIn(state: .sessionToken(.nso))
-//                    case is AccessToken:
-//                        self.delegate?.progressSignIn(state: .accessToken(.nso))
-//                    case is S2SHash:
-//                        self.delegate?.progressSignIn(state: )
-//                }
                 self.delegate?.willReceiveSubscription(subscribe: subscription)
             }, receiveOutput: { output in
                 self.delegate?.willReceiveOutput(output: output)
