@@ -8,7 +8,7 @@
 import Foundation
 import KeychainAccess
 
-extension Keychain {
+public extension Keychain {
     /// Account
     var scheme: String { "SplatNet2" }
     /// X-Product Version

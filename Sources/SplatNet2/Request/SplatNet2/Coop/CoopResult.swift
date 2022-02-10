@@ -8,11 +8,12 @@
 
 import Alamofire
 import CodableDictionary
+import Common
 import Foundation
 
 //  swiftlint:disable type_body_length
-public class Result: RequestType {
-    public typealias ResponseType = Result.Response
+public class CoopResult: RequestType {
+    public typealias ResponseType = CoopResult.Response
 
     public var method: HTTPMethod = .get
     public var path: String
@@ -46,16 +47,16 @@ public class Result: RequestType {
 
         public init(
             jobScore: Int?,
-            playerType: Result.PlayerType?,
-            grade: Result.GradeType?,
+            playerType: CoopResult.PlayerType?,
+            grade: CoopResult.GradeType?,
             //  swiftlint:disable:next discouraged_optional_collection
-            otherResults: [Result.PlayerResult]?,
-            schedule: Result.Schedule,
+            otherResults: [CoopResult.PlayerResult]?,
+            schedule: CoopResult.Schedule,
             kumaPoint: Int?,
-            waveDetails: [Result.WaveDetail],
-            jobResult: Result.JobResult,
+            waveDetails: [CoopResult.WaveDetail],
+            jobResult: CoopResult.JobResult,
             jobId: Int?,
-            myResult: Result.PlayerResult,
+            myResult: CoopResult.PlayerResult,
             gradePointDelta: Int?,
             jobRate: Int?,
             startTime: Int,
@@ -91,7 +92,7 @@ public class Result: RequestType {
         public let boss: Boss
         public let count: Int
 
-        public init(boss: Result.Boss, count: Int) {
+        public init(boss: CoopResult.Boss, count: Int) {
             self.boss = boss
             self.count = count
         }
@@ -177,13 +178,13 @@ public class Result: RequestType {
             specialCounts: [Int],
             goldenIkuraNum: Int,
             bossKillCounts: CodableDictionary<BossType, BossCount>,
-            special: Result.SpecialType,
+            special: CoopResult.SpecialType,
             deadCount: Int,
             name: String?,
             ikuraNum: Int,
-            playerType: Result.PlayerType?,
+            playerType: CoopResult.PlayerType?,
             helpCount: Int,
-            weaponList: [Result.WeaponList]
+            weaponList: [CoopResult.WeaponList]
         ) {
             self.pid = pid
             self.specialCounts = specialCounts
@@ -226,7 +227,7 @@ public class Result: RequestType {
         public let weapon: Brand?
         public let coopSpecialWeapon: Brand?
 
-        public init(id: WeaponType.WeaponId, weapon: Result.Brand?, coopSpecialWeapon: Result.Brand?) {
+        public init(id: WeaponType.WeaponId, weapon: CoopResult.Brand?, coopSpecialWeapon: CoopResult.Brand?) {
             self.id = id
             self.weapon = weapon
             self.coopSpecialWeapon = coopSpecialWeapon
@@ -254,7 +255,7 @@ public class Result: RequestType {
         public let weapons: [WeaponList]
         public let endTime, startTime: Int
 
-        public init(stage: Result.Stage, weapons: [Result.WeaponList], endTime: Int, startTime: Int) {
+        public init(stage: CoopResult.Stage, weapons: [CoopResult.WeaponList], endTime: Int, startTime: Int) {
             self.stage = stage
             self.weapons = weapons
             self.endTime = endTime
@@ -283,10 +284,10 @@ public class Result: RequestType {
         public init(
             quotaNum: Int,
             goldenIkuraPopNum: Int,
-            waterLevel: Result.WaterLevel,
+            waterLevel: CoopResult.WaterLevel,
             ikuraNum: Int,
             goldenIkuraNum: Int,
-            eventType: Result.EventType
+            eventType: CoopResult.EventType
         ) {
             self.quotaNum = quotaNum
             self.goldenIkuraPopNum = goldenIkuraPopNum

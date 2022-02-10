@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import Common
 import Foundation
 
 internal class SessionToken: RequestType {

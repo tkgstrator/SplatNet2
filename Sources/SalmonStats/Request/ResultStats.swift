@@ -6,89 +6,105 @@
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
-import Foundation
 import Alamofire
+import CodableDictionary
+import Common
+import Foundation
 import SplatNet2
 
 public class ResultStats: RequestType {
     public typealias ResponseType = ResultStats.Response
+
     public var method: HTTPMethod = .get
     public var path: String
     public var parameters: Parameters?
-    public var headers: [String : String]?
-    
+    public var headers: [String: String]?
+
     init(resultId: Int) {
         self.path = "results/\(resultId)"
     }
-    
+
+    // MARK: - Result
     public struct Response: Codable {
-        public var bossAppearanceCount: Int
-        public var bossAppearances: [Int: Int]
-        public var bossEliminationCount: Int
-        public var clearWaves: Int
-        public var createdAt: String
-        public var dangerRate: String
-        public var failReasonId: Int?
-        public var goldenEggDelivered: Int
-        public var id: Int
-        public var isEligibleForNoNightRecord: Bool
-        public var memberAccounts: [CrewMember]?
-        public var members: [String]
-        public var playerResults: [PlayerResult]
-        public var powerEggCollected: Int
-        public var schedule: ShiftRecord.Response.Schedule?
-        public var scheduleId: String
-        public var startAt: String
-        public var updatedAt: String
-        public var uploaderUserId: Int
-        public var waves: [WaveResult]
-        
-        public struct CrewMember: Codable {
-            public var id: Int?
-            public var isCustomName: Bool?
-            public var isPrimary: Int?
-            public var isRegistered: Bool?
-            public var name: String
-            public var playerId: String
-            public var twitterAvatar: String?
-            public var updatedAt: String?
-            public var userId: Int?
-        }
-        
-        public struct PlayerResult: Codable {
-            public var bossEliminationCount: Int
-            public var bossEliminations: Elimination
-            public var death: Int
-            public var goldenEggs: Int
-            public var gradePoint: Int?
-            public var playerId: String
-            public var powerEggs: Int
-            public var rescue: Int
-            public var specialId: Int
-            public var specialUses: [SpecialUsage]
-            public var weapons: [Weapon]
-            
-            public struct Elimination: Codable {
-                public var counts: [Int: Int]
-            }
-            
-            public struct SpecialUsage: Codable {
-                public var count: Int
-            }
-            
-            public struct Weapon: Codable {
-                public var weaponId: Int
-            }
-        }
-        
-        public struct WaveResult: Codable {
-            public var eventId: Int
-            public var goldenEggAppearances: Int
-            public var goldenEggDelivered: Int
-            public var goldenEggQuota: Int
-            public var powerEggCollected: Int
-            public var waterId: Int
-            public var wave: Int
-        }
+        public let id: Int
+        public let scheduleId, startAt: String
+        public let members: [String]
+        public let bossAppearances: CodableDictionary<BossType, Int>
+        public let uploaderUserId, clearWaves: Int
+        public let failReasonId: Int?
+        public let dangerRate, createdAt, updatedAt: String
+        public let goldenEggDelivered, powerEggCollected, bossAppearanceCount, bossEliminationCount: Int
+        public let isEligibleForNoNightRecord: Bool
+        public let memberAccounts: [MemberAccount]?
+        public let schedule: Schedule?
+        public let playerResults: [PlayerResult]
+        public let waves: [Wave]
+    }
+
+    // MARK: - MemberAccount
+    public struct MemberAccount: Codable {
+        public let playerId, name: String
+        public let id: Int?
+        public let twitterAvatar: String?
+        public let updatedAt: String?
+        public let userId, isPrimary: Int?
+        public let isCustomName, isRegistered: Bool?
+    }
+
+    // MARK: - PlayerResult
+    public struct PlayerResult: Codable {
+        public let playerId: String
+        public let goldenEggs, powerEggs, rescue, death: Int
+        public let specialId: SpecialId
+        public let bossEliminationCount: Int
+        public let gradePoint: Int?
+        public let bossEliminations: BossEliminations
+        public let specialUses: [Special]
+        public let weapons: [Weapon]
+    }
+
+    // MARK: - BossEliminations
+    public struct BossEliminations: Codable {
+        public let counts: CodableDictionary<BossType, Int>
+    }
+
+    // MARK: - SpecialType
+    public enum SpecialId: Int, Codable, CaseIterable {
+        case splatBombLauncher = 2
+        case stingRay = 7
+        case inkjet = 8
+        case splashdown = 9
+    }
+
+    // MARK: - Special
+    public struct Special: Codable {
+        public let count: Int
+    }
+
+    // MARK: - Weapon
+    public struct Weapon: Codable {
+        public let weaponId: Int
+    }
+
+    // MARK: - Schedule
+    public struct Schedule: Codable {
+        public let scheduleId, endAt: String
+        public let weapons: [Int]
+        public let stageId: StageId
+        public let rareWeaponId: Int?
+    }
+
+    public enum StageId: Int, Codable, CaseIterable {
+        case shakeup = 1
+        case shakeship = 2
+        case shakehouse = 3
+        case shakelift = 4
+        case shakeride = 5
+    }
+
+    // MARK: - Wave
+    public struct Wave: Codable {
+        public let wave, eventId, waterId, goldenEggQuota: Int
+        public let goldenEggAppearances, goldenEggDelivered, powerEggCollected: Int
     }
 }

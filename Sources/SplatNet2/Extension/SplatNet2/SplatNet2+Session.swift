@@ -14,8 +14,8 @@ import Foundation
 extension SplatNet2 {
     /// Download coop results summary from SplatNet2
     public func getCoopSummary(resultId: Int = 0)
-    -> AnyPublisher<Results.Response, SP2Error> {
-        let request = Results()
+    -> AnyPublisher<CoopSummary.Response, SP2Error> {
+        let request = CoopSummary()
         return Future { [self] promise in
             publish(request)
                 .sink(receiveCompletion: { completion in
@@ -38,7 +38,7 @@ extension SplatNet2 {
                     if response.summary.card.jobNum < resultId {
                         promise(.failure(SP2Error.invalidResultId))
                     }
-                    account?.coop = CoopInfo(from: response)
+//                    account?.coop = CoopInfo(from: response)
                     promise(.success(response))
                 })
                 .store(in: &task)
@@ -48,8 +48,8 @@ extension SplatNet2 {
 
     /// Download a specific coop result selected by result id from SplatNet2
     public func getCoopResult(resultId: Int)
-    -> AnyPublisher<Result.Response, SP2Error> {
-        let request = Result(resultId: resultId)
+    -> AnyPublisher<CoopResult.Response, SP2Error> {
+        let request = CoopResult(resultId: resultId)
         return publish(request)
     }
 
@@ -69,15 +69,16 @@ extension SplatNet2 {
 
     /// Download all gettable coop results from SplatNet2
     open func getCoopResults(resultId: Int? = nil)
-    -> AnyPublisher<[Result.Response], SP2Error> {
+    -> AnyPublisher<[CoopResult.Response], SP2Error> {
         guard let account = account else {
-            return Fail(outputType: [Result.Response].self, failure: SP2Error.credentialFailed)
+            return Fail(outputType: [CoopResult.Response].self, failure: SP2Error.credentialFailed)
                 .eraseToAnyPublisher()
         }
         // 取得するバイトIDを決定する
         let resultId: Int = {
             // 一度もバイトしたことがないアカウントは0として扱う
-            guard let jobNum = account.coop.jobNum else {
+            guard let jobNum = account.coop?.jobNum
+            else {
                 return 0
             }
             // リザルトIDが指定されていないときはKeychainのデータを使う
@@ -96,7 +97,7 @@ extension SplatNet2 {
                 .flatMap({
                     Range(max(resultId + 1, $0.summary.card.jobNum - 49) ... $0.summary.card.jobNum).publisher
                 })
-                .flatMap(maxPublishers: .max(1), { publish(Result(resultId: $0)) })
+                .flatMap(maxPublishers: .max(1), { publish(CoopResult(resultId: $0)) })
                 .collect()
                 .sink(receiveCompletion: { completion in
                     switch completion {

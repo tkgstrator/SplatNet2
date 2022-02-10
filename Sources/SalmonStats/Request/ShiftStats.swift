@@ -6,21 +6,21 @@
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
-import Foundation
 import Alamofire
-import SplatNet2
+import Common
+import Foundation
 
 public class ShiftStats: RequestType {
     public typealias ResponseType = ShiftStats.Response
     public var method: HTTPMethod = .get
     public var path: String
     public var parameters: Parameters?
-    public var headers: [String : String]?
-    
+    public var headers: [String: String]?
+
     init(startTime: Int) {
         self.path = "players/91d160aa84e88da6/schedules/\(startTime)"
     }
-    
+
     public struct Response: Codable {
         // グローバルのみ対応
         var global: TmpStats

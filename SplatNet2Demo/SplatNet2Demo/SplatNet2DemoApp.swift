@@ -6,6 +6,7 @@
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
+import Common
 import SplatNet2
 import SwiftUI
 

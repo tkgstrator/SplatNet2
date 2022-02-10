@@ -8,6 +8,7 @@
 // swiftlint:disable discouraged_optional_collection
 
 import Alamofire
+import Common
 import Foundation
 
 public class XVersion: RequestType {

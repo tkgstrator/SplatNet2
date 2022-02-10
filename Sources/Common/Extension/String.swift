@@ -25,19 +25,19 @@ extension String {
             .replacingOccurrences(of: "/", with: "_")
     }
 
-    var codeChallenge: String {
+    public var codeChallenge: String {
         Data(SHA256.hash(data: Data(self.utf8))).base64EncodedString()
             .replacingOccurrences(of: "=", with: "")
             .replacingOccurrences(of: "+", with: "-")
             .replacingOccurrences(of: "/", with: "_")
     }
 
-    func capture(pattern: String, group: Int) -> String? {
+    public func capture(pattern: String, group: Int) -> String? {
         let result = capture(pattern: pattern, group: [group])
         return result.isEmpty ? nil : result[0]
     }
 
-    func capture(pattern: String, group: [Int]) -> [String] {
+    public func capture(pattern: String, group: [Int]) -> [String] {
         guard let regex = try? NSRegularExpression(pattern: pattern) else {
             return []
         }

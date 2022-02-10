@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import Common
 import Foundation
 
 public class NicknameIcons: RequestType {

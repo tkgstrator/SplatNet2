@@ -10,6 +10,7 @@ import Alamofire
 import BetterSafariView
 import CocoaLumberjackSwift
 import Combine
+import Common
 import SwiftUI
 
 public struct Authorize: ViewModifier {

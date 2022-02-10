@@ -7,10 +7,11 @@
 //
 
 import Alamofire
+import Common
 import Foundation
 
-public class Results: RequestType {
-    public typealias ResponseType = Results.Response
+public class CoopSummary: RequestType {
+    public typealias ResponseType = CoopSummary.Response
 
     public var method: HTTPMethod = .get
     public var path: String = "coop_results"
@@ -20,10 +21,10 @@ public class Results: RequestType {
 
     init() {}
 
-    // MARK: - CoopResults
+    // MARK: - CoopSummary
     public struct Response: Codable {
         let summary: Summary
-        let results: [Result.Response]
+        let results: [CoopResult.Response]
         let rewardGear: RewardGear
 
         // MARK: - RewardGear
@@ -59,7 +60,7 @@ public class Results: RequestType {
 
         // MARK: - Stat
         struct Stat: Codable {
-            let grade: Result.GradeType
+            let grade: CoopResult.GradeType
             let myGoldenIkuraTotal: Int
             let helpTotal: Int
             let deadTotal: Int

@@ -5,25 +5,26 @@
 //  Created by devonly on 2021/10/19.
 //
 
-import SwiftUI
-import SplatNet2
 import BetterSafariView
 import Combine
+import Foundation
+import SplatNet2
+import SwiftUI
 
 public struct Authorize: ViewModifier {
     @Binding var isPresented: Bool
     @State var task = Set<AnyCancellable>()
     let session: SalmonStats
-    
-    public typealias CompletionHandler = (Result<String, APIError>) -> Void
+
+    public typealias CompletionHandler = (Result<String, SP2Error>) -> Void
     let completionHandler: CompletionHandler
-    
+
     public init(isPresented: Binding<Bool>, session: SalmonStats, completionHandler: @escaping CompletionHandler) {
         self._isPresented = isPresented
         self.completionHandler = completionHandler
         self.session = session
     }
-    
+
     public func body(content: Content) -> some View {
         content
             .webAuthenticationSession(isPresented: $isPresented, content: {
@@ -32,7 +33,7 @@ public struct Authorize: ViewModifier {
                         session.apiToken = apiToken
                         completionHandler(.success(apiToken))
                     } else {
-                        completionHandler(.failure(.response))
+                        completionHandler(.failure(.credentialFailed))
                     }
                 }
                 .prefersEphemeralWebBrowserSession(false)
@@ -41,7 +42,7 @@ public struct Authorize: ViewModifier {
 }
 
 public extension View {
-    func authorize(isPresented: Binding<Bool>, session: SalmonStats, completion: @escaping (Result<String, APIError>) -> Void) -> some View {
+    func authorize(isPresented: Binding<Bool>, session: SalmonStats, completion: @escaping (Result<String, SP2Error>) -> Void) -> some View {
         self.modifier(Authorize(isPresented: isPresented, session: session) { response in
             completion(response)
         })

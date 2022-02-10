@@ -3,13 +3,15 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		100D8C3726EF3D2E00286036 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3626EF3D2E00286036 /* DetailView.swift */; };
 		100D8C3B26EF3D7100286036 /* MasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3A26EF3D7100286036 /* MasterView.swift */; };
 		104808E727AEB1ED005A290F /* SP2Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104808E627AEB1ED005A290F /* SP2Service.swift */; };
+		106B49EC27B4AE75004C7100 /* SalmonStats in Frameworks */ = {isa = PBXBuildFile; productRef = 106B49EB27B4AE75004C7100 /* SalmonStats */; };
+		106B49EE27B4AE75004C7100 /* SplatNet2 in Frameworks */ = {isa = PBXBuildFile; productRef = 106B49ED27B4AE75004C7100 /* SplatNet2 */; };
 		10A7E00627B0AF1400BB031D /* SP2Service+SplatNet2SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10A7E00527B0AF1400BB031D /* SP2Service+SplatNet2SessionDelegate.swift */; };
 		10F010B5263D7ADF002C40DA /* SplatNet2DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */; };
 		10F010B7263D7ADF002C40DA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010B6263D7ADF002C40DA /* ContentView.swift */; };
@@ -62,6 +64,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				106B49EE27B4AE75004C7100 /* SplatNet2 in Frameworks */,
+				106B49EC27B4AE75004C7100 /* SalmonStats in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,6 +184,8 @@
 			);
 			name = SplatNet2Demo;
 			packageProductDependencies = (
+				106B49EB27B4AE75004C7100 /* SalmonStats */,
+				106B49ED27B4AE75004C7100 /* SplatNet2 */,
 			);
 			productName = SplatNet2Demo;
 			productReference = 10F010B1263D7ADF002C40DA /* SplatNet2Demo.app */;
@@ -650,6 +656,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		106B49EB27B4AE75004C7100 /* SalmonStats */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SalmonStats;
+		};
+		106B49ED27B4AE75004C7100 /* SplatNet2 */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SplatNet2;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 10F010A9263D7ADF002C40DA /* Project object */;
 }

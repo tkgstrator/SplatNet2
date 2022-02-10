@@ -9,6 +9,7 @@
 import Alamofire
 import CocoaLumberjackSwift
 import Combine
+import Common
 import Foundation
 
 extension SplatNet2: Authenticator {

@@ -7,6 +7,7 @@
 //
 
 import Combine
+import Common
 import Foundation
 import SplatNet2
 
@@ -29,7 +30,7 @@ public final class SP2Service: ObservableObject {
     }
 
     internal var jobNum: Int? {
-        account?.coop.jobNum
+        account?.coop?.jobNum
     }
 
     internal var version: String {
@@ -70,7 +71,7 @@ public final class SP2Service: ObservableObject {
     }
 
     func getResults(resultId: Int) {
-        session.getCoopResults(resultId: resultId)
+        session.getCoopSummary(resultId: resultId)
             .sink(receiveCompletion: { _ in
             }, receiveValue: { response in
                 print(response)

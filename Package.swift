@@ -13,10 +13,10 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "SplatNet2",
-            targets: ["SplatNet2", "Common"]),
+            targets: ["SplatNet2"]),
         .library(
             name: "SalmonStats",
-            targets: ["SalmonStats", "Common"]),
+            targets: ["SalmonStats"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -33,12 +33,17 @@ let package = Package(
         .target(
             name: "SplatNet2",
             dependencies: [
+                "Common",
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ],
             resources: []
         ),
         .target(
             name: "SalmonStats",
-            dependencies: [],
+            dependencies: [
+                "SplatNet2",
+                "Common"
+            ],
             resources: []
         ),
         .target(
@@ -51,11 +56,6 @@ let package = Package(
                 .product(name: "SwiftCodableDictionary", package: "CodableDictionary")
             ],
             resources: [.copy("Resources/coop.json"), .copy("Resources/icon.png")]
-        ),
-        .testTarget(
-            name: "SplatNet2Tests",
-            dependencies: ["SplatNet2", "KeychainAccess"],
-            resources: [.copy("Resources/config.json")]
-        ),
+        )
     ]
 )

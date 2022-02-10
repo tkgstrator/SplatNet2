@@ -19,7 +19,7 @@ public class UserInfo: Codable {
     /// 認証用のパラメータなど
     public var credential: OAuthCredential
     /// バイト情報
-    public var coop = CoopInfo()
+    public var coop: CoopInfo?
 
     public init(nsaid: String, nickname: String) {
         self.credential = OAuthCredential(
@@ -30,18 +30,7 @@ public class UserInfo: Codable {
         )
         self.nickname = nickname
         self.membership = false
-    }
-
-    init(sessionToken: String, response: IksmSession.Response, nickname: String, membership: Bool, thumbnailURL: String) {
-        self.credential = OAuthCredential(
-            iksmSession: response.iksmSession,
-            sessionToken: sessionToken,
-            nsaid: response.nsaid,
-            expiration: Date(timeIntervalSinceNow: 60 * 60 * 24)
-        )
-        self.nickname = nickname
-        self.membership = membership
-        self.thumbnailURL = URL(unsafeString: thumbnailURL)
+        self.coop = nil
     }
 }
 

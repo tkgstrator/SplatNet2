@@ -43,7 +43,7 @@ internal struct MasterView: View {
         Form(content: {
             SectionSignIn
         })
-            .authorize(isPresented: $isPresented, session: service.session) { completion in
+            .authorize(isPresented: $isPresented, session: service.session) { _ in
 //                switch completion {
 //                    case .success(let value):
 //                        DDLogInfo(value)

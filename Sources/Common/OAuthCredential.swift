@@ -16,4 +16,11 @@ public struct OAuthCredential: AuthenticationCredential, Codable {
     let expiration: Date
 
     public var requiresRefresh: Bool { Date(timeIntervalSinceNow: 60 * 5) > expiration }
+
+    public init(iksmSession: String, sessionToken: String, nsaid: String, expiration: Date) {
+        self.iksmSession = iksmSession
+        self.sessionToken = sessionToken
+        self.nsaid = nsaid
+        self.expiration = expiration
+    }
 }
