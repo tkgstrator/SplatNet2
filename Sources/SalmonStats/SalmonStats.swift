@@ -41,6 +41,7 @@ open class SalmonStats {
         self.delegate = delegate
     }
 
+    /// アップロード用の認証トークン
     public var apiToken: String? {
         get {
             keychain.getAPIToken()
@@ -50,11 +51,13 @@ open class SalmonStats {
         }
     }
 
+    /// メタデータを取得
     public func getMetadata(nsaid: String) -> AnyPublisher<[Metadata.Response], SP2Error> {
         let request = Metadata(nsaid: nsaid)
         return publish(request)
     }
 
+    /// プレイヤーメタデータを取得
     public func getPlayerMetadata(nsaid: String) -> AnyPublisher<[Player.Response], SP2Error> {
         let request = Player(nsaid: nsaid)
         return publish(request)
@@ -70,6 +73,7 @@ open class SalmonStats {
         delegate?.uploadResults(resultId: resultId)
     }
 
+    /// リザルトを取得
     public func getResults(from: Int, to: Int) -> AnyPublisher<[CoopResult.Response], SP2Error> {
         Future { [self] promise in
             (from ... to).publisher
@@ -85,7 +89,8 @@ open class SalmonStats {
         .eraseToAnyPublisher()
     }
 
-    public func getResults(pageId: Int, count: Int = 50) -> AnyPublisher<[CoopResult.Response], SP2Error> {
+    /// リザルトを取得(pageId)
+    private func getResults(pageId: Int, count: Int = 50) -> AnyPublisher<[CoopResult.Response], SP2Error> {
         guard let nsaid = delegate?.nsaid
         else {
             return Fail(outputType: [CoopResult.Response].self, failure: SP2Error.credentialFailed)
@@ -94,8 +99,6 @@ open class SalmonStats {
         let request = ResultsStats(nsaid: nsaid, pageId: pageId, count: count)
         return Future { [self] promise in
             publish(request)
-                .subscribe(on: DispatchQueue(label: "SalmonStats"))
-                .receive(on: DispatchQueue(label: "SalmonStats"))
                 .sink(receiveCompletion: { completion in
                     print(completion)
                 }, receiveValue: { response in
@@ -106,6 +109,7 @@ open class SalmonStats {
         .eraseToAnyPublisher()
     }
 
+    /// リザルトを取得(resultId)
     public func getResult(resultId: Int) -> AnyPublisher<CoopResult.Response, SP2Error> {
         guard let nsaid = delegate?.nsaid
         else {

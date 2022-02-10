@@ -41,7 +41,8 @@ internal struct MasterView: View {
 
     var body: some View {
         Form(content: {
-            SectionSignIn
+            SplatNet2View()
+            SalmonStatsView()
         })
             .authorize(isPresented: $isPresented, session: service.session) { _ in
 //                switch completion {

@@ -15,6 +15,7 @@ public struct Authorize: ViewModifier {
     @Binding var isPresented: Bool
     @State var task = Set<AnyCancellable>()
     let session: SalmonStats
+    let oauthURL = URL(unsafeString: "https://salmon-stats-api.yuki.games/auth/twitter")
 
     public typealias CompletionHandler = (Result<String, SP2Error>) -> Void
     let completionHandler: CompletionHandler
@@ -28,7 +29,7 @@ public struct Authorize: ViewModifier {
     public func body(content: Content) -> some View {
         content
             .webAuthenticationSession(isPresented: $isPresented, content: {
-                WebAuthenticationSession(url: URL(string: "https://salmon-stats-api.yuki.games/auth/twitter")!, callbackURLScheme: "salmon-stats") { callbackURL, _ in
+                WebAuthenticationSession(url: oauthURL, callbackURLScheme: "salmon-stats") { callbackURL, _ in
                     if let apiToken = callbackURL?.absoluteString.capture(pattern: "api-token=(.*)", group: 1) {
                         session.apiToken = apiToken
                         completionHandler(.success(apiToken))
