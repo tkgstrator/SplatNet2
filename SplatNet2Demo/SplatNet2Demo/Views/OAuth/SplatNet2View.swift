@@ -28,7 +28,7 @@ struct SplatNet2View: View {
                 service.getCoopSummary()
             }, label: { Text("GET COOP RESULTS") })
             Button(action: {
-                service.getResult(resultId: 1_000)
+                service.getResult(resultId: 1_930)
             }, label: { Text("GET RESULT") })
             Button(action: {
                 service.getResults(resultId: 1_000)

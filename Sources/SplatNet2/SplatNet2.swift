@@ -14,7 +14,7 @@ import CryptoKit
 import Foundation
 import KeychainAccess
 
-open class SplatNet2 {
+open class SplatNet2: RequestInterceptor {
     /// アクセス用のセッション
     public let session: Session = {
         let configuration: URLSessionConfiguration = {
@@ -147,5 +147,36 @@ open class SplatNet2 {
                 return sp2Error
             })
             .eraseToAnyPublisher()
+    }
+
+    /// X-Product Versionをセットする
+    open func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+        var urlRequest: URLRequest = urlRequest
+        urlRequest.headers.update(name: "X-ProductVersion", value: version)
+        completion(.success(urlRequest))
+    }
+
+    /// X-Product Versionが低いときに取得してアップデートする
+    open func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+        guard let error = error.asSP2Error else {
+            completion(.doNotRetry)
+            return
+        }
+        DDLogError("RequestInterceptor: Retry \(error)")
+        switch error {
+        case .responseValidationFailed(let failure):
+            switch failure.reason {
+            case .upgradeRequired:
+                self.delegate?.failedWithUnavailableVersion(version: version)
+                completion(.doNotRetryWithError(error))
+                return
+            default:
+                completion(.doNotRetryWithError(error))
+                return
+            }
+        default:
+            completion(.doNotRetryWithError(error))
+            return
+        }
     }
 }

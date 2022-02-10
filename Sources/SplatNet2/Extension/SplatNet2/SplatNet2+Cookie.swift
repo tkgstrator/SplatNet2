@@ -13,7 +13,7 @@ import Common
 import Foundation
 import KeychainAccess
 
-extension SplatNet2: RequestInterceptor {
+extension SplatNet2 {
     fileprivate func authorize<T: RequestType>(_ request: T, state: SignInState) -> AnyPublisher<T.ResponseType, SP2Error> {
         session
             .request(request, interceptor: self)
@@ -44,41 +44,6 @@ extension SplatNet2: RequestInterceptor {
                 return sp2Error
             })
             .eraseToAnyPublisher()
-    }
-
-    #warning("エラー処理がガバい")
-    /// X-Product Versionをセットする
-    public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Swift.Result<URLRequest, Error>) -> Void) {
-        var urlRequest: URLRequest = urlRequest
-        urlRequest.headers.update(name: "X-ProductVersion", value: version)
-        completion(.success(urlRequest))
-    }
-
-    #warning("未実装")
-    /// X-Product Versionが低いときに取得してアップデートする
-    public func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
-        guard let error = error.asSP2Error else {
-            completion(.doNotRetry)
-            return
-        }
-
-        DDLogError("RequestInterceptor: Retry \(error)")
-
-        switch error {
-        case .responseValidationFailed(let failure):
-            switch failure.reason {
-            case .upgradeRequired:
-                self.delegate?.failedWithUnavailableVersion(version: version)
-                completion(.doNotRetryWithError(error))
-                return
-            default:
-                completion(.doNotRetryWithError(error))
-                return
-            }
-        default:
-            completion(.doNotRetryWithError(error))
-            return
-        }
     }
 
     /// SessionTokenを取得

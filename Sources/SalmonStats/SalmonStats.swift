@@ -14,7 +14,31 @@ import Foundation
 import KeychainAccess
 import SplatNet2
 
-internal class SalmonStats {}
+public class SalmonStats: SplatNet2 {
+    /// 認証用のAPIToken
+    public internal(set) var apiToken: String? {
+        get {
+            keychain.getAPIToken()
+        }
+        set {
+            keychain.setAPIToken(apiToken: newValue)
+        }
+    }
+
+    /// APITokenをセット
+    override public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+        /// 親クラスの処理を実行
+        super.adapt(urlRequest, for: session, completion: completion)
+        /// SalmonStats用の処理を実行
+        var urlRequest: URLRequest = urlRequest
+        guard let apiToken = apiToken else {
+            completion(.failure(SP2Error.credentialFailed))
+            return
+        }
+        urlRequest.headers.update(.authorization(bearerToken: apiToken))
+        return
+    }
+}
 
 public extension RequestType {
     var baseURL: URL {

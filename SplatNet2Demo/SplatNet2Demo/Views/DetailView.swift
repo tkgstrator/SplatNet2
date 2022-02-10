@@ -37,7 +37,7 @@ internal struct DetailView: View {
                 HStack(content: {
                     Text("api_token")
                     Spacer()
-                    Text(service.apiToken?.prefix(8) ?? "")
+                    Text(service.apiToken.prefix(8))
                         .lineLimit(1)
                         .foregroundColor(.secondary)
                 })

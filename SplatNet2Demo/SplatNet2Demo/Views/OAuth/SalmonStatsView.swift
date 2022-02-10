@@ -22,7 +22,7 @@ struct SalmonStatsView: View {
             }, label: {
                 Text("SIGN IN")
             })
-                .authorize(isPresented: $isPresented, session: service, completion: { result in
+                .authorizeToken(isPresented: $isPresented, session: service.session, completion: { result in
                     switch result {
                     case .success(let value):
                         DDLogInfo(value)
@@ -31,15 +31,12 @@ struct SalmonStatsView: View {
                     }
                 })
             Button(action: {
-                service.getPlayerMetadata()
             }, label: { Text("GET METADATA") })
             Button(action: {
             }, label: { Text("GET COOP RESULTS") })
             Button(action: {
-                service.uploadResult()
             }, label: { Text("UPLOAD RESULT") })
             Button(action: {
-                service.uploadResults()
             }, label: { Text("UPLOAD ALL RESULTS") })
         }, label: {
             Text("SalmonStats")

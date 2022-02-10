@@ -9,36 +9,44 @@
 import Combine
 import Common
 import Foundation
+import SalmonStats
 import SplatNet2
 
 public final class SP2Service: ObservableObject {
-    public private(set) var session: SplatNet2
+    public private(set) var session: SalmonStats
 
     @Published public var task: Set<AnyCancellable> = Set<AnyCancellable>()
-    @Published var account: UserInfo?
+    @Published var account: UserInfo? {
+        willSet {
+            guard let account = newValue else {
+                return
+            }
 
-    public var nsaid: String {
-        account?.credential.nsaid ?? ""
+            self.nsaid = account.credential.nsaid
+            self.nickname = account.nickname
+            self.iksmSession = account.credential.iksmSession
+            self.version = session.version
+            if let apiToken = session.apiToken {
+                self.apiToken = apiToken
+            }
+
+            if let jobNum = account.coop?.jobNum {
+                self.jobNum = String(describing: jobNum)
+            } else {
+                self.jobNum = "-"
+            }
+        }
     }
 
-    internal var nickname: String {
-        account?.nickname ?? ""
-    }
-
-    internal var iksmSession: String {
-        account?.credential.iksmSession ?? ""
-    }
-
-    internal var jobNum: Int? {
-        account?.coop?.jobNum
-    }
-
-    internal var version: String {
-        session.version
-    }
+    @Published var nsaid: String = ""
+    @Published var nickname: String = ""
+    @Published var iksmSession: String = ""
+    @Published var jobNum: String = ""
+    @Published var apiToken: String = ""
+    @Published var version: String = ""
 
     init() {
-        self.session = SplatNet2()
+        self.session = SalmonStats()
         self.account = session.account
         self.session.delegate = self
     }
