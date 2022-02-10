@@ -6,7 +6,6 @@
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
-import CocoaLumberjackSwift
 import Combine
 import SplatNet2
 import SwiftUI
@@ -35,7 +34,7 @@ internal struct MasterView: View {
                 service.getResults(resultId: 1_000)
             }, label: { Text("GET ALL RESULTS") })
             Button(action: {
-                DDLogInfo(SplatNet2.schedule)
+//                DDLogInfo(SplatNet2.schedule)
             }, label: { Text("GET ALL SCHEDULE") })
         })
     }
@@ -45,12 +44,12 @@ internal struct MasterView: View {
             SectionSignIn
         })
             .authorize(isPresented: $isPresented, session: service.session) { completion in
-                switch completion {
-                    case .success(let value):
-                        DDLogInfo(value)
-                    case .failure(let error):
-                        DDLogError(error.localizedDescription)
-                }
+//                switch completion {
+//                    case .success(let value):
+//                        DDLogInfo(value)
+//                    case .failure(let error):
+//                        DDLogError(error.localizedDescription)
+//                }
             }
             .navigationTitle("SplatNet2 Demo")
     }

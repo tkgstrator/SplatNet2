@@ -34,12 +34,12 @@ let package = Package(
             name: "SplatNet2",
             dependencies: [
             ],
-            resources: [.copy("Resources/coop.json"), .copy("Resources/icon.png")]
+            resources: []
         ),
         .target(
             name: "SalmonStats",
             dependencies: [],
-            resources: [.copy("Resources/coop.json"), .copy("Resources/icon.png")]
+            resources: []
         ),
         .target(
             name: "Common",

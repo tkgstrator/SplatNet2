@@ -7,7 +7,7 @@
 //
 
 import Alamofire
-import CocoaLumberjackSwift
+//import CocoaLumberjackSwift
 import Combine
 import Foundation
 import SplatNet2
