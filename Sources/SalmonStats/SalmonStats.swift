@@ -58,14 +58,29 @@ public class SalmonStats: SplatNet2 {
             .eraseToAnyPublisher()
     }
 
-    private func uploadResults(results: [CoopResult.Response]) -> AnyPublisher<[UploadResult.Response], SP2Error> {
-        let request = UploadResult(results: results)
-        return publish(request)
+    private func uploadResults(result: CoopResult.Response) -> AnyPublisher<[(UploadResult.Response, CoopResult.Response)], SP2Error> {
+        uploadResults(results: [result])
     }
 
-    public func uploadResult(resultId: Int) -> AnyPublisher<[UploadResult.Response], SP2Error> {
+    private func uploadResults(results: [CoopResult.Response]) -> AnyPublisher<[(UploadResult.Response, CoopResult.Response)], SP2Error> {
+        results.chunked(by: 10)
+            .map({ UploadResult(results: $0) })
+            .publisher
+            .flatMap({ [self] in publish($0) })
+            .collect()
+            .map({ zip($0.flatMap({ $0 }), results).compactMap({ ($0.0, $0.1) }) })
+            .eraseToAnyPublisher()
+    }
+
+    public func uploadResult(resultId: Int) -> AnyPublisher<[(UploadResult.Response, CoopResult.Response)], SP2Error> {
         getCoopResult(resultId: resultId)
-            .flatMap({ [self] in publish(UploadResult(result: $0)) })
+            .flatMap({ [self] in uploadResults(result: $0) })
+            .eraseToAnyPublisher()
+    }
+
+    public func uploadResults(resultId: Int? = nil) -> AnyPublisher<[(UploadResult.Response, CoopResult.Response)], SP2Error> {
+        getCoopResults(resultId: resultId)
+            .flatMap({ [self] in uploadResults(results: $0) })
             .eraseToAnyPublisher()
     }
 //    public func getCoopResultsFromSalmonStats(from: Int, to: Int) -> AnyPublisher<[CoopResult.Response], SP2Error> {

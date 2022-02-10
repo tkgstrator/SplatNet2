@@ -40,6 +40,7 @@ struct SalmonStatsView: View {
                 service.uploadResult(resultId: 1_965)
             }, label: { Text("UPLOAD RESULT") })
             Button(action: {
+                service.uploadResults()
             }, label: { Text("UPLOAD ALL RESULTS") })
         }, label: {
             Text("SalmonStats")
