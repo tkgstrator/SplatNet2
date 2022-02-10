@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,7 +17,6 @@
 		10F010BC263D7AE3002C40DA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 10F010BB263D7AE3002C40DA /* Preview Assets.xcassets */; };
 		10F010C7263D7AE4002C40DA /* SplatNet2DemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010C6263D7AE4002C40DA /* SplatNet2DemoTests.swift */; };
 		10F010D2263D7AE4002C40DA /* SplatNet2DemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010D1263D7AE4002C40DA /* SplatNet2DemoUITests.swift */; };
-		10F010E8263D7C2B002C40DA /* SplatNet2 in Frameworks */ = {isa = PBXBuildFile; productRef = 10F010E7263D7C2B002C40DA /* SplatNet2 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,7 +62,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				10F010E8263D7C2B002C40DA /* SplatNet2 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -182,7 +180,6 @@
 			);
 			name = SplatNet2Demo;
 			packageProductDependencies = (
-				10F010E7263D7C2B002C40DA /* SplatNet2 */,
 			);
 			productName = SplatNet2Demo;
 			productReference = 10F010B1263D7ADF002C40DA /* SplatNet2Demo.app */;
@@ -653,13 +650,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		10F010E7263D7C2B002C40DA /* SplatNet2 */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SplatNet2;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 10F010A9263D7ADF002C40DA /* Project object */;
 }
