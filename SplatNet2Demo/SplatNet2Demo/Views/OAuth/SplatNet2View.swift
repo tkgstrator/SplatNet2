@@ -26,15 +26,15 @@ struct SplatNet2View: View {
             })
             Button(action: {
                 service.getCoopSummary()
-            }, label: { Text("GET COOP RESULTS") })
+            }, label: { Text("GET COOP SUMMARY") })
             Button(action: {
-                service.getResult(resultId: 1_930)
+                service.getCoopResult(resultId: 1_930)
             }, label: { Text("GET RESULT") })
             Button(action: {
-                service.getResults(resultId: 1_000)
+                service.getCoopResults(resultId: 1_000)
             }, label: { Text("GET ALL RESULTS") })
             Button(action: {
-//                DDLogInfo(SplatNet2.schedule)
+                service.getCoopSchedules()
             }, label: { Text("GET ALL SCHEDULE") })
         }, label: {
             Text("SplatNet2")

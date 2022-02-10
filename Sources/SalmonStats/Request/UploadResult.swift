@@ -50,7 +50,6 @@ fileprivate extension CoopResult.Response {
         guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
             return [:]
         }
-        print(String(data: data, encoding: .utf8)!)
         return json
     }
 }

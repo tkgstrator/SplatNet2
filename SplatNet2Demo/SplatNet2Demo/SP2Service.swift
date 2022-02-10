@@ -6,6 +6,7 @@
 //  Copyright © 2022 Magi, Inc. All rights reserved.
 //
 
+import CocoaLumberjackSwift
 import Combine
 import Common
 import Foundation
@@ -62,27 +63,95 @@ public final class SP2Service: ObservableObject {
 
     func getCoopSummary() {
         session.getCoopSummary()
-            .sink(receiveCompletion: { _ in
-            }, receiveValue: { response in
-                print(response)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    DDLogInfo("Success")
+                case .failure(let error):
+                    DDLogError(error)
+                }
+            }, receiveValue: { _ in
+//                DDLogInfo(response)
             })
             .store(in: &task)
     }
 
-    func getResult(resultId: Int) {
+    func getCoopResult(resultId: Int) {
         session.getCoopResult(resultId: resultId)
-            .sink(receiveCompletion: { _ in
-            }, receiveValue: { response in
-                print(response)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    DDLogInfo("Success")
+                case .failure(let error):
+                    DDLogError(error)
+                }
+            }, receiveValue: { _ in
+//                DDLogInfo(response)
             })
             .store(in: &task)
     }
 
-    func getResults(resultId: Int) {
-        session.getCoopSummary(resultId: resultId)
-            .sink(receiveCompletion: { _ in
+    func getCoopResults(resultId: Int) {
+        session.getCoopResults(resultId: resultId)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    DDLogInfo("Success")
+                case .failure(let error):
+                    DDLogError(error)
+                }
             }, receiveValue: { response in
-                print(response)
+                DDLogInfo(response.count)
+//                DDLogInfo(response)
+            })
+            .store(in: &task)
+    }
+
+    func getCoopSchedules() {
+        DDLogInfo(SplatNet2.schedule.count)
+    }
+
+    func getMetadata() {
+        session.getMetadata()
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    DDLogInfo("Success")
+                case .failure(let error):
+                    DDLogError(error)
+                }
+            }, receiveValue: { response in
+                DDLogInfo(response)
+            })
+            .store(in: &task)
+    }
+
+    func getCoopResultFromSalmonStats(resultId: Int) {
+        session.getCoopResultFromSalmonStats(resultId: resultId)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    DDLogInfo("Success")
+                case .failure(let error):
+                    DDLogError(error)
+                }
+            }, receiveValue: { response in
+                DDLogInfo(response.jobId)
+            })
+            .store(in: &task)
+    }
+
+    func uploadResult(resultId: Int) {
+        session.uploadResult(resultId: resultId)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    DDLogInfo("Success")
+                case .failure(let error):
+                    DDLogError(error)
+                }
+            }, receiveValue: { response in
+                DDLogInfo(response.count)
             })
             .store(in: &task)
     }

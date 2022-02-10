@@ -31,10 +31,13 @@ struct SalmonStatsView: View {
                     }
                 })
             Button(action: {
+                service.getMetadata()
             }, label: { Text("GET METADATA") })
             Button(action: {
-            }, label: { Text("GET COOP RESULTS") })
+                service.getCoopResultFromSalmonStats(resultId: 100_000)
+            }, label: { Text("GET COOP RESULT") })
             Button(action: {
+                service.uploadResult(resultId: 1_965)
             }, label: { Text("UPLOAD RESULT") })
             Button(action: {
             }, label: { Text("UPLOAD ALL RESULTS") })

@@ -111,7 +111,7 @@ import SplatNet2
 //
 //    /// リザルトを取得(resultId)
 //    func getResult(resultId: Int) -> AnyPublisher<CoopResult.Response, SP2Error> {
-//        let request = ResultStats(resultId: resultId)
+//        let request = StatsResult(resultId: resultId)
 //        return Future { [self] promise in
 //            publish(request)
 //                .subscribe(on: DispatchQueue(label: "SalmonStats"))

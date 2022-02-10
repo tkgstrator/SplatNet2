@@ -12,7 +12,7 @@ import SplatNet2
 import SwiftUI
 
 extension CoopResult.Response {
-    init(from response: ResultStats.Response, playerId: String) {
+    init(from response: StatsResult.Response, playerId: String) {
         let schedule = SplatNet2.schedule.first(where: { $0.startTime == Date.timeIntervalSince1970(iso8601: response.scheduleId) })!
 
         self.init(
@@ -49,7 +49,7 @@ extension CoopResult.Response {
 }
 
 extension CoopResult.PlayerResult {
-    init(from player: ResultStats.PlayerResult, members: [ResultStats.MemberAccount]?, rareWeaponId: Int?) {
+    init(from player: StatsResult.PlayerResult, members: [StatsResult.MemberAccount]?, rareWeaponId: Int?) {
         self.init(
             pid: player.playerId,
             specialCounts: player.specialUses.map({ $0.count }),
@@ -67,7 +67,7 @@ extension CoopResult.PlayerResult {
 }
 
 extension CoopResult.SpecialType {
-    init(rawValue: ResultStats.SpecialId) {
+    init(rawValue: StatsResult.SpecialId) {
         self.init(
             imageA: rawValue.imageA,
             imageB: rawValue.imageB,
@@ -77,7 +77,7 @@ extension CoopResult.SpecialType {
     }
 }
 
-extension ResultStats.SpecialId {
+extension StatsResult.SpecialId {
     var imageA: ImageA {
         switch self {
             case .splatBombLauncher:
@@ -276,7 +276,7 @@ extension CoopResult.Brand {
 }
 
 extension CoopResult.GradeType {
-    init?(from response: ResultStats.Response, playerId: String) {
+    init?(from response: StatsResult.Response, playerId: String) {
         // プレイヤーIDが一致する最初のプレイヤーのgradePointを取得する
         // そのようなプレイヤーがいない、gradePointが入っていない、変換不可能な値がある場合はnilを返す
         guard let gradePoint = response.playerResults.first(where: { $0.playerId == playerId })?.gradePoint,
@@ -364,7 +364,7 @@ extension GradeId {
 }
 
 extension CoopResult.JobResult {
-    init(from response: ResultStats.Response) {
+    init(from response: StatsResult.Response) {
         self.init(
             failureWave: response.clearWaves == 3 ? nil : response.clearWaves,
             isClear: response.clearWaves == 3,
@@ -374,7 +374,7 @@ extension CoopResult.JobResult {
 }
 
 extension CoopResult.WaveDetail {
-    init(from response: ResultStats.Wave) {
+    init(from response: StatsResult.Wave) {
         self.init(
             quotaNum: response.goldenEggQuota,
             goldenIkuraPopNum: response.goldenEggAppearances,

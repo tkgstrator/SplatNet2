@@ -10,8 +10,8 @@ import Alamofire
 import Common
 import Foundation
 
-public class ResultsStats: RequestType {
-    public typealias ResponseType = ResultsStats.Response
+public class StatsResults: RequestType {
+    public typealias ResponseType = StatsResults.Response
     public var method: HTTPMethod = .get
     public var path: String
     public var parameters: Parameters?
@@ -30,6 +30,6 @@ public class ResultsStats: RequestType {
     public struct Response: Codable {
         public var currentPage: Int
         public var lastPage: Int
-        public var results: [ResultStats.Response]
+        public var results: [StatsResult.Response]
     }
 }

@@ -27,16 +27,87 @@ public class SalmonStats: SplatNet2 {
 
     /// APITokenをセット
     override public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
-        /// 親クラスの処理を実行
-        super.adapt(urlRequest, for: session, completion: completion)
         /// SalmonStats用の処理を実行
         var urlRequest: URLRequest = urlRequest
         guard let apiToken = apiToken else {
             completion(.failure(SP2Error.credentialFailed))
             return
         }
-        urlRequest.headers.update(.authorization(bearerToken: apiToken))
-        return
+        urlRequest.headers.add(.authorization(bearerToken: apiToken))
+        /// 親クラスの処理を実行
+        super.adapt(urlRequest, for: session, completion: completion)
+    }
+
+    public func getMetadata() -> AnyPublisher<[Metadata.Response], SP2Error> {
+        guard let nsaid = account?.credential.nsaid else {
+            return Fail(outputType: [Metadata.Response].self, failure: SP2Error.credentialFailed)
+                .eraseToAnyPublisher()
+        }
+        let request = Metadata(nsaid: nsaid)
+        return publish(request)
+    }
+
+    public func getCoopResultFromSalmonStats(resultId: Int) -> AnyPublisher<CoopResult.Response, SP2Error> {
+        guard let nsaid = account?.credential.nsaid else {
+            return Fail(outputType: CoopResult.Response.self, failure: SP2Error.credentialFailed)
+                .eraseToAnyPublisher()
+        }
+        let request = StatsResult(resultId: resultId)
+        return publish(request)
+            .map({ CoopResult.Response(from: $0, playerId: nsaid) })
+            .eraseToAnyPublisher()
+    }
+
+    private func uploadResults(results: [CoopResult.Response]) -> AnyPublisher<[UploadResult.Response], SP2Error> {
+        let request = UploadResult(results: results)
+        return publish(request)
+    }
+
+    public func uploadResult(resultId: Int) -> AnyPublisher<[UploadResult.Response], SP2Error> {
+        getCoopResult(resultId: resultId)
+            .flatMap({ [self] in publish(UploadResult(result: $0)) })
+            .eraseToAnyPublisher()
+    }
+//    public func getCoopResultsFromSalmonStats(from: Int, to: Int) -> AnyPublisher<[CoopResult.Response], SP2Error> {
+//        guard let nsaid = account?.credential.nsaid else {
+//            return Fail(outputType: [CoopResult.Response].self, failure: SP2Error.credentialFailed)
+//                .eraseToAnyPublisher()
+//        }
+//        [from ... to].publisher
+//            .flatMap({ publish(StatsResults(nsaid: nsaid, pageId: $0, count: 50)) })
+//            .collect()
+//            .eraseToAnyPublisher()
+//    }
+
+    /// リクエストを実行
+    internal func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
+        session
+            .request(request, interceptor: self)
+            .cURLDescription { request in
+                DDLogInfo(request)
+            }
+            .validationWithSP2Error(decoder: decoder)
+            .publishDecodable(type: T.ResponseType.self, decoder: decoder)
+            .value()
+            .handleEvents(receiveSubscription: { subscription in
+                self.delegate?.willReceiveSubscription(subscribe: subscription)
+            }, receiveOutput: { output in
+                self.delegate?.willReceiveOutput(output: output)
+            }, receiveCompletion: { completion in
+                self.delegate?.willReceiveCompletion(completion: completion)
+            }, receiveCancel: {
+                self.delegate?.willReceiveCancel()
+            }, receiveRequest: { request in
+                self.delegate?.willReceiveRequest(request: request)
+            })
+            .mapError({ error -> SP2Error in
+                DDLogError(error)
+                guard let sp2Error = error.asSP2Error else {
+                    return SP2Error.requestAdaptionFailed
+                }
+                return sp2Error
+            })
+            .eraseToAnyPublisher()
     }
 }
 

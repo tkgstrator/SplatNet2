@@ -1,5 +1,5 @@
 //
-//  ResultStats.swift
+//  StatsResult.swift
 //  SalmonStats
 //
 //  Created by tkgstrator on 2021/04/13.
@@ -12,8 +12,8 @@ import Common
 import Foundation
 import SplatNet2
 
-public class ResultStats: RequestType {
-    public typealias ResponseType = ResultStats.Response
+public class StatsResult: RequestType {
+    public typealias ResponseType = StatsResult.Response
 
     public var method: HTTPMethod = .get
     public var path: String
