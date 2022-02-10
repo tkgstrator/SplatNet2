@@ -14,10 +14,10 @@ import SplatNet2
 public final class SP2Service: ObservableObject {
     public private(set) var session: SplatNet2
 
-    @Published var task: Set<AnyCancellable> = Set<AnyCancellable>()
+    @Published public var task: Set<AnyCancellable> = Set<AnyCancellable>()
     @Published var account: UserInfo?
 
-    internal var nsaid: String {
+    public var nsaid: String {
         account?.credential.nsaid ?? ""
     }
 

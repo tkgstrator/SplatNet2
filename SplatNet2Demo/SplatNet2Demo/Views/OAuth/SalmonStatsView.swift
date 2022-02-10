@@ -6,8 +6,8 @@
 //  Copyright © 2022 Magi, Inc. All rights reserved.
 //
 
-import SwiftUI
 import SalmonStats
+import SwiftUI
 
 struct SalmonStatsView: View {
     @EnvironmentObject var service: SP2Service
@@ -19,22 +19,21 @@ struct SalmonStatsView: View {
             Button(action: {
                 isPresented.toggle()
             }, label: {
-                Text("SIGN IN(SalmonStats)")
+                Text("SIGN IN")
             })
-                .authorize(isPresented: $isPresented, session: service.session, completion: { result in
+                .authorize(isPresented: $isPresented, session: service, completion: { result in
                 print(result)
             })
             Button(action: {
-                service.getCoopSummary()
+                service.getPlayerMetadata()
+            }, label: { Text("GET METADATA") })
+            Button(action: {
             }, label: { Text("GET COOP RESULTS") })
             Button(action: {
-                service.getResult(resultId: 1_000)
             }, label: { Text("GET RESULT") })
             Button(action: {
-                service.getResults(resultId: 1_000)
             }, label: { Text("GET ALL RESULTS") })
             Button(action: {
-//                DDLogInfo(SplatNet2.schedule)
             }, label: { Text("GET ALL SCHEDULE") })
         }, label: {
             Text("SalmonStats")

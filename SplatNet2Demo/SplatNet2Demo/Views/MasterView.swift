@@ -7,7 +7,7 @@
 //
 
 import Combine
-import SplatNet2
+import SalmonStats
 import SwiftUI
 
 internal struct MasterView: View {
@@ -44,14 +44,6 @@ internal struct MasterView: View {
             SplatNet2View()
             SalmonStatsView()
         })
-            .authorize(isPresented: $isPresented, session: service.session) { _ in
-//                switch completion {
-//                    case .success(let value):
-//                        DDLogInfo(value)
-//                    case .failure(let error):
-//                        DDLogError(error.localizedDescription)
-//                }
-            }
             .navigationTitle("SplatNet2 Demo")
     }
 }

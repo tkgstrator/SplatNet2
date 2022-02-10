@@ -8,7 +8,7 @@
 import Foundation
 import KeychainAccess
 
-extension Keychain {
+public extension Keychain {
     /// APIToken
     var apiToken: String { "APIToken" }
 

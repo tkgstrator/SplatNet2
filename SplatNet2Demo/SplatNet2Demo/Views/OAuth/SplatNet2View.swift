@@ -19,7 +19,7 @@ struct SplatNet2View: View {
             Button(action: {
                 isPresented.toggle()
             }, label: {
-                Text("SIGN IN(SplatNet2)")
+                Text("SIGN IN")
             })
             .authorize(isPresented: $isPresented, session: service.session, completion: { result in
                 print(result)

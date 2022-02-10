@@ -30,7 +30,14 @@ internal struct DetailView: View {
                 HStack(content: {
                     Text("iksm_session")
                     Spacer()
-                    Text(service.iksmSession)
+                    Text(service.iksmSession.prefix(8))
+                        .lineLimit(1)
+                        .foregroundColor(.secondary)
+                })
+                HStack(content: {
+                    Text("api_token")
+                    Spacer()
+                    Text(service.apiToken?.prefix(8) ?? "")
                         .lineLimit(1)
                         .foregroundColor(.secondary)
                 })
