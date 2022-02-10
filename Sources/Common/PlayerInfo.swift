@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PlayerInfo.swift
 //  
 //
 //  Created by devonly on 2022/02/10.

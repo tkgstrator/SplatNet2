@@ -9,6 +9,7 @@
 import Alamofire
 import CocoaLumberjackSwift
 import Combine
+import Common
 import Foundation
 
 extension SplatNet2 {
@@ -62,7 +63,7 @@ extension SplatNet2 {
         guard let url = Bundle.module.url(forResource: "coop", withExtension: "json"),
               let data = try? Data(contentsOf: url),
               let schedule = try? decoder.decode([Schedule.Response].self, from: data) else {
-                  return []
+                  fatalError("Could not load coop.json in Resources.")
               }
         return schedule
     }()

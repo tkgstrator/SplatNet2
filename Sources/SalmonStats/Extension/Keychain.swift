@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Keychain.swift
 //  
 //
 //  Created by devonly on 2022/02/10.
@@ -8,7 +8,7 @@
 import Foundation
 import KeychainAccess
 
-public extension Keychain {
+extension Keychain {
     /// APIToken
     var apiToken: String { "APIToken" }
 

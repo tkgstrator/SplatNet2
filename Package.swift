@@ -36,7 +36,7 @@ let package = Package(
                 "Common",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ],
-            resources: []
+            resources: [.copy("Resources/coop.json")]
         ),
         .target(
             name: "SalmonStats",
@@ -55,7 +55,7 @@ let package = Package(
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                 .product(name: "SwiftCodableDictionary", package: "CodableDictionary")
             ],
-            resources: [.copy("Resources/coop.json"), .copy("Resources/icon.png")]
+            resources: [.copy("Resources/icon.png")]
         )
     ]
 )

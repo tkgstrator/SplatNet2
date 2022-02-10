@@ -10,6 +10,7 @@ import CocoaLumberjackSwift
 import Combine
 import Common
 import Foundation
+import KeychainAccess
 import SplatNet2
 
 public protocol SalmonStatsSessionDelegate: AnyObject {
@@ -20,9 +21,9 @@ public protocol SalmonStatsSessionDelegate: AnyObject {
     /// タスク管理
     var task: Set<AnyCancellable> { get set }
     /// 指定されたIDのリザルトを取得してアップロード
-    func uploadResult(resultId: Int) -> AnyPublisher<[UploadResult.Response], SP2Error>?
+    func uploadResult(result: CoopResult.Response) -> AnyPublisher<[UploadResult.Response], SP2Error>
     /// 指定されたIDから最新までのリザルトを取得してアップロード
-    func uploadResults(resultId: Int?) -> AnyPublisher<[(UploadResult.Response, CoopResult.Response)], SP2Error>?
+    func uploadResults(results: [CoopResult.Response]) -> AnyPublisher<[UploadResult.Response], SP2Error>
     /// メタデータを取得
     func getMetadata(nsaid: String) -> AnyPublisher<[Metadata.Response], SP2Error>
     /// プレイヤーメタデータを取得
@@ -36,11 +37,33 @@ public protocol SalmonStatsSessionDelegate: AnyObject {
 }
 
 public extension SalmonStatsSessionDelegate {
+    internal var keychain: Keychain {
+        Keychain(service: "SalmonStats")
+    }
+
+    var apiToken: String? {
+        get {
+            keychain.getAPIToken()
+        }
+        set(newValue) {
+            keychain.setAPIToken(apiToken: newValue)
+        }
+    }
     // JSON Decoder
     var decoder: JSONDecoder {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
+    }
+
+    func uploadResult(result: CoopResult.Response) -> AnyPublisher<[UploadResult.Response], SP2Error> {
+        let request = UploadResult(result: result)
+        return publish(request)
+    }
+
+    func uploadResults(results: [CoopResult.Response]) -> AnyPublisher<[UploadResult.Response], SP2Error> {
+        let request = UploadResult(results: results)
+        return publish(request)
     }
 
     /// メタデータを取得

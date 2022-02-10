@@ -6,6 +6,7 @@
 //  Copyright © 2022 Magi, Inc. All rights reserved.
 //
 
+import CocoaLumberjackSwift
 import SalmonStats
 import SwiftUI
 
@@ -22,19 +23,24 @@ struct SalmonStatsView: View {
                 Text("SIGN IN")
             })
                 .authorize(isPresented: $isPresented, session: service, completion: { result in
-                print(result)
-            })
+                    switch result {
+                    case .success(let value):
+                        DDLogInfo(value)
+                    case .failure(let error):
+                        DDLogError(error)
+                    }
+                })
             Button(action: {
                 service.getPlayerMetadata()
             }, label: { Text("GET METADATA") })
             Button(action: {
             }, label: { Text("GET COOP RESULTS") })
             Button(action: {
-            }, label: { Text("GET RESULT") })
+                service.uploadResult()
+            }, label: { Text("UPLOAD RESULT") })
             Button(action: {
-            }, label: { Text("GET ALL RESULTS") })
-            Button(action: {
-            }, label: { Text("GET ALL SCHEDULE") })
+                service.uploadResults()
+            }, label: { Text("UPLOAD ALL RESULTS") })
         }, label: {
             Text("SalmonStats")
         })
