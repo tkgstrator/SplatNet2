@@ -13,7 +13,7 @@ import Foundation
 
 extension SplatNet2 {
     /// リクエストを実行(IksmSessionを取得)
-    func generate(accessToken: String) -> AnyPublisher<IksmSession.Response, SP2Error> {
+    func generate(accessToken: String, state: SignInState) -> AnyPublisher<IksmSession.Response, SP2Error> {
         session.request(IksmSession(accessToken: accessToken))
             .validate()
             .validate(contentType: ["text/html"])
@@ -35,7 +35,7 @@ extension SplatNet2 {
             })
             .handleEvents(receiveSubscription: { subscription in
                 // どのリクエストが実行中か返す
-                self.delegate?.progressSignIn(state: .iksmSession)
+                self.delegate?.progressSignIn(state: state)
                 self.delegate?.willReceiveSubscription(subscribe: subscription)
             }, receiveOutput: { output in
                 self.delegate?.willReceiveOutput(output: output)

@@ -87,13 +87,13 @@ extension SplatNet2 {
     internal func getSplatoonAccessToken(splatoonToken: String, response: FlapgToken.Response)
     -> AnyPublisher<SplatoonAccessToken.Response, SP2Error> {
         let request = SplatoonAccessToken(from: response, splatoonToken: splatoonToken, version: version)
-        return authorize(request, state: .sessionToken(.app))
+        return authorize(request, state: .accessToken(.app))
     }
 
     /// IksmSessionを取得
     internal func getIksmSession(splatoonAccessToken: String)
     -> AnyPublisher<IksmSession.Response, SP2Error> {
-        generate(accessToken: splatoonAccessToken)
+        generate(accessToken: splatoonAccessToken, state: .iksmSession)
     }
 
     /// バージョンをAppStoreから取得
