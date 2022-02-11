@@ -1,4 +1,3 @@
-//  swiftlint:disable:this file_name
 //
 //  Publisher.swift
 //  SplatNet2
@@ -33,6 +32,20 @@ extension SplatNet2 {
                     promise(.success(IksmSession.Response(iksmSession: iksmSession, nsaid: nsaid)))
                 }
                 .eraseToAnyPublisher()
+            })
+            .handleEvents(receiveSubscription: { subscription in
+                // どのリクエストが実行中か返す
+                self.delegate?.progressSignIn(state: .iksmSession)
+                self.delegate?.willReceiveSubscription(subscribe: subscription)
+            }, receiveOutput: { output in
+                self.delegate?.willReceiveOutput(output: output)
+            }, receiveCompletion: { completion in
+//                self.delegate?.willReceiveCompletion(completion: completion)
+                self.delegate?.didFinishSplatNet2SignIn()
+            }, receiveCancel: {
+                self.delegate?.willReceiveCancel()
+            }, receiveRequest: { request in
+                self.delegate?.willReceiveRequest(request: request)
             })
             .eraseToAnyPublisher()
     }

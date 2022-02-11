@@ -25,8 +25,12 @@ public protocol SplatNet2SessionDelegate: AnyObject {
     func progressSignIn(state: SignInState)
     /// 取得可能なリザルトと現在リザルトを返す
     func isAvailableResults(current: Int, maximum: Int)
+    /// サインインが始まったときに呼ばれる
+    func willRunningSplatNet2SignIn()
     /// サインインが終わったときに呼ばれる
     func didFinishSplatNet2SignIn()
     /// X-Product Versionが低いときに呼ばれる
     func failedWithUnavailableVersion(version: String)
+    /// エラーが発生して終了した
+    func failedWithSP2Error(error: SP2Error)
 }

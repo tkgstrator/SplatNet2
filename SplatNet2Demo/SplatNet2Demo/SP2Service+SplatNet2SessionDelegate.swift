@@ -14,6 +14,12 @@ import Foundation
 import SplatNet2
 
 extension SP2Service: SplatNet2SessionDelegate {
+    public func willRunningSplatNet2SignIn() {
+    }
+    
+    public func failedWithSP2Error(error: SP2Error) {
+    }
+    
     public func willReceiveSubscription(subscribe: Subscription) {
     }
 

@@ -25,6 +25,9 @@ extension SplatNet2 {
             .value()
             .handleEvents(receiveSubscription: { subscription in
                 // どのリクエストが実行中か返す
+                if request is SessionToken {
+                    self.delegate?.willRunningSplatNet2SignIn()
+                }
                 self.delegate?.progressSignIn(state: state)
                 self.delegate?.willReceiveSubscription(subscribe: subscription)
             }, receiveOutput: { output in
