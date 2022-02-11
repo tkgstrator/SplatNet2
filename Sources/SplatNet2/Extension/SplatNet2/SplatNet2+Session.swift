@@ -68,6 +68,7 @@ extension SplatNet2 {
         return schedule
     }()
 
+    #warning("ゴミコード")
     /// Download all gettable coop results from SplatNet2
     open func getCoopResults(resultId: Int? = nil)
     -> AnyPublisher<[CoopResult.Response], SP2Error> {

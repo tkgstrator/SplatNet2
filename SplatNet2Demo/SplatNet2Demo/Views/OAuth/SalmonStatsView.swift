@@ -22,14 +22,7 @@ struct SalmonStatsView: View {
             }, label: {
                 Text("SIGN IN")
             })
-                .authorizeToken(isPresented: $isPresented, session: service.session, completion: { result in
-                    switch result {
-                    case .success(let value):
-                        DDLogInfo(value)
-                    case .failure(let error):
-                        DDLogError(error)
-                    }
-                })
+                .authorizeToken(isPresented: $isPresented, session: service.session)
             Button(action: {
                 service.getMetadata()
             }, label: { Text("GET METADATA") })

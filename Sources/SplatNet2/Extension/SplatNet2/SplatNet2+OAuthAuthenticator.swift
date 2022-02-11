@@ -39,8 +39,8 @@ extension SplatNet2: Authenticator {
                         return
                 }
             }, receiveValue: { [self] response in
-                #warning("怪しい部分なので検証が必要")
-                accounts = accounts.filter({ $0.credential.nsaid != response.credential.nsaid }) + [response]
+                self.account = response
+                self.delegate?.didFinishSplatNet2SignIn(account: response)
                 completion(.success(response.credential))
                 return
             })

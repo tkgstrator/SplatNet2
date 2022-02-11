@@ -18,11 +18,9 @@ public struct Authorize: ViewModifier {
     let oauthURL = URL(unsafeString: "https://salmon-stats-api.yuki.games/auth/twitter")
 
     public typealias CompletionHandler = (Result<String, SP2Error>) -> Void
-    let completionHandler: CompletionHandler
 
-    public init(isPresented: Binding<Bool>, session: SalmonStats, completionHandler: @escaping CompletionHandler) {
+    public init(isPresented: Binding<Bool>, session: SalmonStats) {
         self._isPresented = isPresented
-        self.completionHandler = completionHandler
         self.session = session
     }
 
@@ -32,9 +30,8 @@ public struct Authorize: ViewModifier {
                 WebAuthenticationSession(url: oauthURL, callbackURLScheme: "salmon-stats") { callbackURL, _ in
                     if let apiToken = callbackURL?.absoluteString.capture(pattern: "api-token=(.*)", group: 1) {
                         session.apiToken = apiToken
-                        completionHandler(.success(apiToken))
                     } else {
-                        completionHandler(.failure(.credentialFailed))
+                        session.delegate?.failedWithSP2Error(error: SP2Error.credentialFailed)
                     }
                 }
                 .prefersEphemeralWebBrowserSession(false)
@@ -45,12 +42,8 @@ public struct Authorize: ViewModifier {
 public extension View {
     func authorizeToken(
         isPresented: Binding<Bool>,
-        session: SalmonStats,
-        completion: @escaping (Result<String, SP2Error>) -> Void
+        session: SalmonStats
     ) -> some View {
-        self.modifier(Authorize(isPresented: isPresented, session: session) { response in
-            completion(response)
-        }
-        )
+        self.modifier(Authorize(isPresented: isPresented, session: session))
     }
 }
