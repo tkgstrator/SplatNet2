@@ -64,16 +64,16 @@ extension SplatNet2 {
     }
 
     /// S2sHashを取得
-    internal func getS2SHash(accessToken: String, timestamp: Int) -> AnyPublisher<S2SHash.Response, SP2Error> {
+    internal func getS2SHash(accessToken: String, timestamp: Int, state: SignInState) -> AnyPublisher<S2SHash.Response, SP2Error> {
         let request = S2SHash(accessToken: accessToken, timestamp: timestamp)
-        return authorize(request, state: .s2sHash(.nso))
+        return authorize(request, state: state)
     }
 
     /// FlapgTokenを取得
-    internal func getFlapgToken(accessToken: String, timestamp: Int, response: S2SHash.Response, type: FlapgToken.FlapgType)
+    internal func getFlapgToken(accessToken: String, timestamp: Int, response: S2SHash.Response, type: FlapgToken.FlapgType, state: SignInState)
     -> AnyPublisher<FlapgToken.Response, SP2Error> {
         let request = FlapgToken(accessToken: accessToken, timestamp: timestamp, hash: response.hash, type: type)
-        return authorize(request, state: .flapg(.nso))
+        return authorize(request, state: state)
     }
 
     /// SplatonTokenを取得
@@ -119,10 +119,10 @@ extension SplatNet2 {
             self.getAccessToken(sessionToken: sessionToken)
                 .flatMap({ response -> AnyPublisher<S2SHash.Response, SP2Error> in
                     accessToken = response.accessToken
-                    return self.getS2SHash(accessToken: response.accessToken, timestamp: timestamp)
+                    return self.getS2SHash(accessToken: response.accessToken, timestamp: timestamp, state: .s2sHash(.nso))
                 })
                 .flatMap({
-                    self.getFlapgToken(accessToken: accessToken, timestamp: timestamp, response: $0, type: .nso)
+                    self.getFlapgToken(accessToken: accessToken, timestamp: timestamp, response: $0, type: .nso, state: .flapg(.nso))
                 })
                 .flatMap({
                     self.getSplatoonToken(response: $0)
@@ -132,10 +132,10 @@ extension SplatNet2 {
                     nickname = response.result.user.name
                     thumbnailURL = response.result.user.imageUri
                     membership = response.result.user.membership.active
-                    return self.getS2SHash(accessToken: splatoonToken, timestamp: timestamp)
+                    return self.getS2SHash(accessToken: splatoonToken, timestamp: timestamp, state: .s2sHash(.app))
                 })
                 .flatMap({
-                    self.getFlapgToken(accessToken: splatoonToken, timestamp: timestamp, response: $0, type: .app)
+                    self.getFlapgToken(accessToken: splatoonToken, timestamp: timestamp, response: $0, type: .app, state: .flapg(.app))
                 })
                 .flatMap({
                     self.getSplatoonAccessToken(splatoonToken: splatoonToken, response: $0)

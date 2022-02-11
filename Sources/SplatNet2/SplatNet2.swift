@@ -82,13 +82,13 @@ open class SplatNet2: RequestInterceptor {
     public init() {
         let accounts: [UserInfo] = keychain.getAllUserInfo()
         self.accounts = accounts
-        self.account = accounts.first
+        self.account = keychain.getUserInfo()
     }
 
     public init(delegate: SplatNet2SessionDelegate) {
         let accounts: [UserInfo] = keychain.getAllUserInfo()
         self.accounts = accounts
-        self.account = accounts.first
+        self.account = keychain.getUserInfo()
         self.delegate = delegate
     }
 

@@ -8,14 +8,16 @@
 
 import Foundation
 
-public enum SignInState {
+public enum SignInState: Identifiable {
     case sessionToken(LoginType)
     case accessToken(LoginType)
     case s2sHash(LoginType)
     case flapg(LoginType)
     case iksmSession
 
-    var progress: Int {
+    public var id: Int { progress }
+
+    public var progress: Int {
         switch self {
             case .sessionToken(let value):
                 return value == .nso ? 0 : 5

@@ -39,7 +39,7 @@ extension SplatNet2 {
                 self.delegate?.willReceiveSubscription(subscribe: subscription)
             }, receiveOutput: { output in
                 self.delegate?.willReceiveOutput(output: output)
-            }, receiveCompletion: { completion in
+            }, receiveCompletion: { _ in
 //                self.delegate?.willReceiveCompletion(completion: completion)
                 self.delegate?.didFinishSplatNet2SignIn()
             }, receiveCancel: {

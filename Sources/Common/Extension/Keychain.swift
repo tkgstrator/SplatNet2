@@ -11,6 +11,8 @@ import KeychainAccess
 public extension Keychain {
     /// Account
     var scheme: String { "SplatNet2" }
+    /// Default
+    var defaultScheme: String { "Default" }
     /// X-Product Version
     var version: String { "X-Product Version" }
     /// JSONEncoder
@@ -41,6 +43,24 @@ public extension Keychain {
             return [UserInfo]()
         }
         return accounts
+    }
+
+    /// デフォルトアカウントとしてセット
+    func getUserInfo() -> UserInfo? {
+        guard let data = try? getData(defaultScheme),
+              let account = try? decoder.decode(UserInfo.self, from: data)
+        else {
+            return nil
+        }
+        return account
+    }
+
+    /// アカウントを追加
+    func setUserInfo(_ account: UserInfo?) throws {
+        guard let account = account else {
+            return
+        }
+        try set(try encoder.encode(account), key: defaultScheme)
     }
 
     /// アカウントを追加
