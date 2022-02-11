@@ -22,14 +22,13 @@ public struct Authorize: ViewModifier {
     let verifier = String.randomString
 
     public typealias CompletionHandler = (Swift.Result<UserInfo, SP2Error>) -> Void
-    let completionHandler: CompletionHandler
 
-    public init(isPresented: Binding<Bool>, session: SplatNet2, completionHandler: @escaping CompletionHandler) {
+    public init(isPresented: Binding<Bool>, session: SplatNet2) {
         self._isPresented = isPresented
-        self.completionHandler = completionHandler
         self.session = session
     }
 
+    #warning("ゴミコード")
     public func body(content: Content) -> some View {
         content
             .webAuthenticationSession(isPresented: $isPresented) {
@@ -60,14 +59,15 @@ public struct Authorize: ViewModifier {
                             .sink(receiveCompletion: { completion in
                                 switch completion {
                                 case .finished:
-                                    break
+                                    DDLogInfo("Login Success")
                                 case .failure(let error):
                                     sp2Error = error
                                 }
                             }, receiveValue: { response in
                                 // アカウントを追加する
                                 #warning("ここの処理をExtensionで実装します")
-                                session.accounts = session.accounts.filter({ $0.credential.nsaid != response.credential.nsaid }) + [response]
+                                session.account = response
+                                session.delegate?.didFinishSplatNet2SignIn(account: response)
                             })
                             .store(in: &task)
                     } catch {
@@ -90,10 +90,7 @@ public struct Authorize: ViewModifier {
 }
 
 public extension View {
-    func authorize(isPresented: Binding<Bool>, session: SplatNet2, completion: @escaping (Swift.Result<UserInfo, SP2Error>) -> Void) -> some View {
-        self.modifier(Authorize(isPresented: isPresented, session: session) { response in
-            completion(response)
-        }
-        )
+    func authorize(isPresented: Binding<Bool>, session: SplatNet2) -> some View {
+        self.modifier(Authorize(isPresented: isPresented, session: session))
     }
 }

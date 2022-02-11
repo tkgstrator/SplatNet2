@@ -21,9 +21,7 @@ struct SplatNet2View: View {
             }, label: {
                 Text("SIGN IN")
             })
-            .authorize(isPresented: $isPresented, session: service.session, completion: { result in
-                print(result)
-            })
+            .authorize(isPresented: $isPresented, session: service.session)
             Button(action: {
                 service.getCoopSummary()
             }, label: { Text("GET COOP SUMMARY") })

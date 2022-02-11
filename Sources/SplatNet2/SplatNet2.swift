@@ -65,9 +65,7 @@ open class SplatNet2: RequestInterceptor {
         // バイト情報が更新されたらここが通知される
         // そのときにKeychainに最新のデータを入れる
         didSet {
-            if let account = account {
-                try? keychain.setUserInfo(account)
-            }
+            try? keychain.setUserInfo(account)
         }
     }
 
@@ -83,6 +81,9 @@ open class SplatNet2: RequestInterceptor {
         let accounts: [UserInfo] = keychain.getAllUserInfo()
         self.accounts = accounts
         self.account = keychain.getUserInfo()
+        DDLogInfo("Initialize")
+        DDLogInfo("Accounts: \(accounts.count)")
+        DDLogInfo("Defaut account: \(account)")
     }
 
     public init(delegate: SplatNet2SessionDelegate) {

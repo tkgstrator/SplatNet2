@@ -14,6 +14,13 @@ import Foundation
 import SplatNet2
 
 extension SP2Service: SplatNet2SessionDelegate {
+    public func didFinishSplatNet2SignIn(account: UserInfo) {
+        DispatchQueue.main.async(execute: {
+            DDLogInfo(account)
+            self.account = account
+        })
+    }
+
     public func willRunningSplatNet2SignIn() {
     }
 

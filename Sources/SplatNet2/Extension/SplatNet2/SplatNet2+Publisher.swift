@@ -41,7 +41,7 @@ extension SplatNet2 {
                 self.delegate?.willReceiveOutput(output: output)
             }, receiveCompletion: { _ in
 //                self.delegate?.willReceiveCompletion(completion: completion)
-                self.delegate?.didFinishSplatNet2SignIn()
+//                self.delegate?.didFinishSplatNet2SignIn()
             }, receiveCancel: {
                 self.delegate?.willReceiveCancel()
             }, receiveRequest: { request in

@@ -14,7 +14,7 @@ public extension Keychain {
     /// Default
     var defaultScheme: String { "Default" }
     /// X-Product Version
-    var version: String { "X-Product Version" }
+    var version: String { "X-ProductVersion" }
     /// JSONEncoder
     var encoder: JSONEncoder { JSONEncoder() }
     /// JSONDecoder

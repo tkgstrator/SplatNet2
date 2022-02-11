@@ -8,6 +8,7 @@
 
 import Alamofire
 import Combine
+import Common
 import Foundation
 
 public protocol SplatNet2SessionDelegate: AnyObject {
@@ -28,7 +29,7 @@ public protocol SplatNet2SessionDelegate: AnyObject {
     /// サインインが始まったときに呼ばれる
     func willRunningSplatNet2SignIn()
     /// サインインが終わったときに呼ばれる
-    func didFinishSplatNet2SignIn()
+    func didFinishSplatNet2SignIn(account: UserInfo)
     /// X-Product Versionが低いときに呼ばれる
     func failedWithUnavailableVersion(version: String)
     /// エラーが発生して終了した
