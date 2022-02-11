@@ -29,11 +29,22 @@ public class SalmonStats: SplatNet2 {
     override public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
         /// SalmonStats用の処理を実行
         var urlRequest: URLRequest = urlRequest
-        guard let apiToken = apiToken else {
-            completion(.failure(SP2Error.credentialFailed))
+
+        guard let url = urlRequest.url?.absoluteString else {
+            completion(.failure(SP2Error.requestAdaptionFailed))
             return
         }
-        urlRequest.headers.add(.authorization(bearerToken: apiToken))
+
+        switch url.contains("salmon-stats") {
+        case true:
+            guard let apiToken = apiToken else {
+                completion(.failure(SP2Error.credentialFailed))
+                return
+            }
+            urlRequest.headers.add(.authorization(bearerToken: apiToken))
+        case false:
+            break
+        }
         /// 親クラスの処理を実行
         super.adapt(urlRequest, for: session, completion: completion)
     }
