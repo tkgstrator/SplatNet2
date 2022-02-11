@@ -20,15 +20,15 @@ public enum SignInState: Identifiable {
     public var progress: Int {
         switch self {
             case .sessionToken(let value):
-                return value == .nso ? 0 : 5
+                return value == .nso ? 0 : 4
             case .accessToken(let value):
-                return value == .nso ? 1 : 6
+                return value == .nso ? 1 : 7
             case .s2sHash(let value):
-                return value == .nso ? 2 : 3
+                return value == .nso ? 2 : 5
             case .flapg(let value):
-                return value == .nso ? 3 : 4
+                return value == .nso ? 3 : 6
             case .iksmSession:
-                return 7
+                return 8
         }
     }
 
