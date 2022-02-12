@@ -89,10 +89,30 @@ public class SalmonStats: SplatNet2 {
             .eraseToAnyPublisher()
     }
 
-    public func uploadResults(resultId: Int? = nil) -> AnyPublisher<[(UploadResult.Response, CoopResult.Response)], SP2Error> {
+//    private func uploadResults(resultId: Int? = nil) -> AnyPublisher<[(UploadResult.Response, CoopResult.Response)], SP2Error> {
+//        getCoopResults(resultId: resultId)
+//            .flatMap({ [self] in uploadResults(results: $0) })
+//            .eraseToAnyPublisher()
+//    }
+
+    public func uploadResults(resultId: Int? = nil) {
         getCoopResults(resultId: resultId)
             .flatMap({ [self] in uploadResults(results: $0) })
             .eraseToAnyPublisher()
+            .sink(receiveCompletion: { [self] completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    delegate?.failedWithSP2Error(error: error)
+                }
+            }, receiveValue: { [self] response in
+                let results = response.map({ (id: $0.0.salmonId, status: $0.0.created ? UploadStatus.success : UploadStatus.failure, result: $0.1 ) })
+                if let delegate = delegate as? SalmonStatsSessionDelegate {
+                    delegate.didFinishLoadResultsFromSplatNet2(results: results)
+                }
+            })
+            .store(in: &task)
     }
 //    public func getCoopResultsFromSalmonStats(from: Int, to: Int) -> AnyPublisher<[CoopResult.Response], SP2Error> {
 //        guard let nsaid = account?.credential.nsaid else {
@@ -126,13 +146,7 @@ public class SalmonStats: SplatNet2 {
             }, receiveRequest: { request in
                 self.delegate?.willReceiveRequest(request: request)
             })
-            .mapError({ error -> SP2Error in
-                DDLogError(error)
-                guard let sp2Error = error.asSP2Error else {
-                    return SP2Error.requestAdaptionFailed
-                }
-                return sp2Error
-            })
+            .mapToSP2Error()
             .eraseToAnyPublisher()
     }
 }
@@ -140,5 +154,33 @@ public class SalmonStats: SplatNet2 {
 public extension RequestType {
     var baseURL: URL {
         URL(unsafeString: "https://salmon-stats-api.yuki.games/api/")
+    }
+}
+
+public extension Publisher {
+    /// AFError -> SP2Error
+    func mapToSP2Error() -> Publishers.MapError<Self, SP2Error> {
+        mapError({ error -> SP2Error in
+            DDLogError(error)
+            guard let sp2Error = error.asSP2Error else {
+                return SP2Error.requestAdaptionFailed
+            }
+            return sp2Error
+        })
+    }
+
+    func result(delegate: SalmonStatsSessionDelegate?) -> AnyCancellable where Output == [(UploadResult.Response, CoopResult.Response)] {
+        mapToSP2Error()
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    delegate?.failedWithSP2Error(error: error)
+                }
+            }, receiveValue: { response in
+                let results = response.map({ (id: $0.0.salmonId, status: $0.0.created ? UploadStatus.success : UploadStatus.failure, result: $0.1 ) })
+                delegate?.didFinishLoadResultsFromSplatNet2(results: results)
+            })
     }
 }

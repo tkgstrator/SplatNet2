@@ -158,16 +158,5 @@ public final class SP2Service: ObservableObject {
 
     func uploadResults(resultId: Int? = nil) {
         session.uploadResults(resultId: resultId)
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    DDLogInfo("Success")
-                case .failure(let error):
-                    DDLogError(error)
-                }
-            }, receiveValue: { response in
-                DDLogInfo(response.count)
-            })
-            .store(in: &task)
     }
 }

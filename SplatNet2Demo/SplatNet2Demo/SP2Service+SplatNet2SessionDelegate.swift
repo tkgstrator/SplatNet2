@@ -14,6 +14,10 @@ import Foundation
 import SplatNet2
 
 extension SP2Service: SplatNet2SessionDelegate {
+    public func isGettingResultId(current: Int) {
+        DDLogInfo("Getting results: \(current)")
+    }
+
     public func didFinishSplatNet2SignIn(account: UserInfo) {
         DispatchQueue.main.async(execute: {
             DDLogInfo(account)
@@ -46,9 +50,7 @@ extension SP2Service: SplatNet2SessionDelegate {
     }
 
     public func isAvailableResults(current: Int, maximum: Int) {
-    }
-
-    public func didFinishSplatNet2SignIn() {
+        DDLogInfo("Getting results: \(current) -> \(maximum)")
     }
 
     public func failedWithUnavailableVersion(version: String) {

@@ -26,6 +26,8 @@ public protocol SplatNet2SessionDelegate: AnyObject {
     func progressSignIn(state: SignInState)
     /// 取得可能なリザルトと現在リザルトを返す
     func isAvailableResults(current: Int, maximum: Int)
+    /// リザルト複数取得中の進捗を返す
+    func isGettingResultId(current: Int)
     /// サインインが始まったときに呼ばれる
     func willRunningSplatNet2SignIn()
     /// サインインが終わったときに呼ばれる

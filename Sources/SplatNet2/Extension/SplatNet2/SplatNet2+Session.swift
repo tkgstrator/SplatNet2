@@ -39,7 +39,6 @@ extension SplatNet2 {
                     if response.summary.card.jobNum < resultId {
                         promise(.failure(SP2Error.invalidResultId))
                     }
-//                    account?.coop = CoopInfo(from: response)
                     promise(.success(response))
                 })
                 .store(in: &task)
@@ -96,10 +95,20 @@ extension SplatNet2 {
 
         return Future { [self] promise in
             getCoopSummary(resultId: resultId)
-                .flatMap({
-                    Range(max(resultId + 1, $0.summary.card.jobNum - 49) ... $0.summary.card.jobNum).publisher
+                .flatMap({ response -> Publishers.Sequence<Range<Int>, Never> in
+                    let maximum: Int = response.summary.card.jobNum
+                    let current: Int = max(resultId + 1, response.summary.card.jobNum - 49)
+                    delegate?.isAvailableResults(current: current, maximum: maximum)
+                    return Range(current ... maximum).publisher
                 })
                 .flatMap(maxPublishers: .max(1), { publish(CoopResult(resultId: $0)) })
+                .handleEvents(
+                    receiveOutput: { response in
+                        if let jobId = response.jobId {
+                            delegate?.isGettingResultId(current: jobId)
+                        }
+                    }
+                )
                 .collect()
                 .sink(receiveCompletion: { completion in
                     switch completion {
