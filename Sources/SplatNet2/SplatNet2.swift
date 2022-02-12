@@ -156,7 +156,7 @@ open class SplatNet2: RequestInterceptor {
         }
         switch error {
         case .responseValidationFailed(let failure):
-            switch failure.reason {
+            switch failure.failureReason {
             case .upgradeRequired:
                 self.delegate?.failedWithUnavailableVersion(version: version)
                 completion(.doNotRetryWithError(error))

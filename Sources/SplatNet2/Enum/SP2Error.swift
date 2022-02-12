@@ -10,7 +10,7 @@ import Alamofire
 import Foundation
 
 public protocol FailureResponse: Codable {
-    var reason: SP2Error.ResponseValidationFailureReason? { get }
+    var failureReason: SP2Error.ResponseValidationFailureReason? { get }
 }
 
 public enum SP2Error: Error {
@@ -98,7 +98,7 @@ public enum SP2Error: Error {
         public struct NSO: FailureResponse {
             public let errorDescription: String
             public let error: String
-            public var reason: SP2Error.ResponseValidationFailureReason? {
+            public var failureReason: SP2Error.ResponseValidationFailureReason? {
                 ResponseValidationFailureReason(rawValue: error)
             }
         }
@@ -107,7 +107,7 @@ public enum SP2Error: Error {
             public let errorMessage: String
             public let status: Int
             public let correlationId: String
-            public var reason: SP2Error.ResponseValidationFailureReason? {
+            public var failureReason: SP2Error.ResponseValidationFailureReason? {
                 ResponseValidationFailureReason(rawValue: errorMessage)
             }
         }
@@ -115,7 +115,7 @@ public enum SP2Error: Error {
         /// S2S用のエラーレスポンス
         public struct S2S: FailureResponse {
             public let error: String
-            public var reason: SP2Error.ResponseValidationFailureReason? {
+            public var failureReason: SP2Error.ResponseValidationFailureReason? {
                 ResponseValidationFailureReason(rawValue: error)
             }
         }
@@ -130,7 +130,7 @@ public enum SP2Error: Error {
         case .requestAdaptionFailed:
             return 5_000
         case .responseValidationFailed(let failure):
-            return failure.reason?.statusCode ?? 9_999
+            return failure.failureReason?.statusCode ?? 9_999
         case .oauthValidationFailed(let reason):
             return reason.statusCode
         case .dataDecodingFailed:
@@ -148,6 +148,30 @@ extension SP2Error: Identifiable {
 }
 
 extension SP2Error: LocalizedError {
+    public var failureReason: String? {
+        switch self {
+        case .noNewResults:
+            return "No new results on SplatNet2"
+        case .invalidResultId:
+            return "The specified result id is not available on SplatNet2."
+        case .requestAdaptionFailed:
+            return "Request adaption failed."
+        case .responseValidationFailed(let failure):
+            return failure.failureReason?.rawValue
+        case .oauthValidationFailed(let reason):
+            return "Auhentication is cancelled due to \(reason)."
+        case .dataDecodingFailed:
+            return "The response from SplatNet2 could not be decoded."
+        case .unacceptableStatusCode(let statusCode):
+            if statusCode == 404 {
+                return "The specified reuslt id is no longer available."
+            }
+            return "SplatNet2 response unacceptable status code \(statusCode)."
+        case .credentialFailed:
+            return "The credential could not be obtained."
+        }
+    }
+
     public var errorDescription: String? {
         switch self {
         case .noNewResults:
@@ -156,9 +180,9 @@ extension SP2Error: LocalizedError {
             return "Invalid result id."
         case .requestAdaptionFailed:
             return "Request adaption failed."
-        case .responseValidationFailed(let failure):
-            return failure.reason?.rawValue
-        case .oauthValidationFailed(let reason):
+        case .responseValidationFailed:
+            return "Response validation failed."
+        case .oauthValidationFailed:
             return "OAuth validation failed."
         case .dataDecodingFailed:
             return "Response data decoding failed."

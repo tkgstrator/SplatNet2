@@ -89,25 +89,20 @@ public class SalmonStats: SplatNet2 {
             .eraseToAnyPublisher()
     }
 
-//    private func uploadResults(resultId: Int? = nil) -> AnyPublisher<[(UploadResult.Response, CoopResult.Response)], SP2Error> {
-//        getCoopResults(resultId: resultId)
-//            .flatMap({ [self] in uploadResults(results: $0) })
-//            .eraseToAnyPublisher()
-//    }
-
     public func uploadResults(resultId: Int? = nil) {
-        getCoopResults(resultId: resultId)
+        /// apiTokenがなければアップロードできないのでエラーを返す
+        guard let _ = apiToken else {
+            delegate?.failedWithSP2Error(error: .credentialFailed)
+            return
+        }
+
+        return getCoopResults(resultId: resultId)
             .flatMap({ [self] in uploadResults(results: $0) })
             .eraseToAnyPublisher()
-            .sink(receiveCompletion: { [self] completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    break
-                }
+            .sink(receiveCompletion: { _ in
             }, receiveValue: { [self] response in
                 let results = response.map({ (id: $0.0.salmonId, status: $0.0.created ? UploadStatus.success : UploadStatus.failure, result: $0.1 ) })
+                /// 取得したリザルトを返す
                 if let delegate = delegate as? SalmonStatsSessionDelegate {
                     delegate.didFinishLoadResultsFromSplatNet2(results: results)
                 }
