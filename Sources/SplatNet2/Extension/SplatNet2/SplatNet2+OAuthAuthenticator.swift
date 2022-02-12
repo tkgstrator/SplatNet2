@@ -34,7 +34,6 @@ extension SplatNet2: Authenticator {
                     case .finished:
                         break
                     case .failure(let error):
-                        DDLogError(error)
                         completion(.failure(error))
                         return
                 }

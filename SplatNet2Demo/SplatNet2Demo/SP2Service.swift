@@ -45,6 +45,9 @@ public final class SP2Service: ObservableObject {
     @Published var jobNum: String = ""
     @Published var apiToken: String = ""
     @Published var version: String = ""
+    @Published var progress: (current: Int, maximum: Int) = (current: 0, maximum: 0)
+    @Published var reminder: (current: Int, total: Int) = (current: 0, total: 0)
+    @Published var sp2Error: SP2Error?
 
     init() {
         self.session = SalmonStats()
@@ -102,7 +105,6 @@ public final class SP2Service: ObservableObject {
                 }
             }, receiveValue: { response in
                 DDLogInfo(response.count)
-//                DDLogInfo(response)
             })
             .store(in: &task)
     }

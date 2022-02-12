@@ -62,15 +62,17 @@ internal struct DetailView: View {
                     Text(service.version)
                         .foregroundColor(.secondary)
                 })
-                Button(action: {
-//                    service.session.setXProductVersion(version: "1.13.2")
-                }, label: {
-                    Text("Set X-ProductVersion to 1.13.2")
+                HStack(content: {
+                    Text("Progress")
+                    Spacer()
+                    Text("\(service.progress.current) -> \(service.progress.maximum)")
+                        .foregroundColor(.secondary)
                 })
-                Button(action: {
-                    print(service.account)
-                }, label: {
-                    Text("Credential")
+                HStack(content: {
+                    Text("Progress")
+                    Spacer()
+                    Text("\(service.reminder.current) / \(service.reminder.total)")
+                        .foregroundColor(.secondary)
                 })
             }, header: {
                 Text("Account")

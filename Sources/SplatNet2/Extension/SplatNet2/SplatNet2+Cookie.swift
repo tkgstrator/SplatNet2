@@ -39,13 +39,7 @@ extension SplatNet2 {
             }, receiveRequest: { request in
                 self.delegate?.willReceiveRequest(request: request)
             })
-            .mapError({ error -> SP2Error in
-                DDLogError(error)
-                guard let sp2Error = error.asSP2Error else {
-                    return SP2Error.requestAdaptionFailed
-                }
-                return sp2Error
-            })
+            .mapToSP2Error(delegate: self.delegate)
             .eraseToAnyPublisher()
     }
 

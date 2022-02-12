@@ -16,6 +16,10 @@ import SplatNet2
 extension SP2Service: SplatNet2SessionDelegate {
     public func isGettingResultId(current: Int) {
         DDLogInfo("Getting results: \(current)")
+        DispatchQueue.main.async(execute: {
+            self.progress.current = current
+            self.reminder.current = self.reminder.total - (self.progress.maximum - current)
+        })
     }
 
     public func didFinishSplatNet2SignIn(account: UserInfo) {
@@ -29,6 +33,10 @@ extension SP2Service: SplatNet2SessionDelegate {
     }
 
     public func failedWithSP2Error(error: SP2Error) {
+        DispatchQueue.main.async(execute: {
+            DDLogError(error)
+            self.sp2Error = error
+        })
     }
 
     public func willReceiveSubscription(subscribe: Subscription) {
@@ -51,6 +59,10 @@ extension SP2Service: SplatNet2SessionDelegate {
 
     public func isAvailableResults(current: Int, maximum: Int) {
         DDLogInfo("Getting results: \(current) -> \(maximum)")
+        DispatchQueue.main.async(execute: {
+            self.progress = (current: current, maximum: maximum)
+            self.reminder = (current: 0, total: maximum - current + 1)
+        })
     }
 
     public func failedWithUnavailableVersion(version: String) {

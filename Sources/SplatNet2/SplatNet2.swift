@@ -81,9 +81,6 @@ open class SplatNet2: RequestInterceptor {
         let accounts: [UserInfo] = keychain.getAllUserInfo()
         self.accounts = accounts
         self.account = keychain.getUserInfo()
-        DDLogInfo("Initialize")
-        DDLogInfo("Accounts: \(accounts.count)")
-        DDLogInfo("Defaut account: \(account)")
     }
 
     public init(delegate: SplatNet2SessionDelegate) {
@@ -140,13 +137,7 @@ open class SplatNet2: RequestInterceptor {
             }, receiveRequest: { request in
                 self.delegate?.willReceiveRequest(request: request)
             })
-            .mapError({ error -> SP2Error in
-                DDLogError(error)
-                guard let sp2Error = error.asSP2Error else {
-                    return SP2Error.requestAdaptionFailed
-                }
-                return sp2Error
-            })
+            .mapToSP2Error(delegate: self.delegate)
             .eraseToAnyPublisher()
     }
 
@@ -163,7 +154,6 @@ open class SplatNet2: RequestInterceptor {
             completion(.doNotRetry)
             return
         }
-        DDLogError("RequestInterceptor: Retry \(error)")
         switch error {
         case .responseValidationFailed(let failure):
             switch failure.reason {

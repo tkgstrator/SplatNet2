@@ -27,7 +27,6 @@ extension SplatNet2 {
                         promise(.failure(error))
                     }
                 }, receiveValue: { response in
-                    DDLogInfo("Summary: \(resultId) -> \(response.summary.card.jobNum)")
                     #if DEBUG
                     #else
                     // No new results
