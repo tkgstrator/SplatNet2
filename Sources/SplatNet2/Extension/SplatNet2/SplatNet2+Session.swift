@@ -76,18 +76,8 @@ extension SplatNet2 {
         }
         // 取得するバイトIDを決定する
         let resultId: Int = {
-            // 一度もバイトしたことがないアカウントは0として扱う
-            guard let jobNum = account.coop?.jobNum
-            else {
-                return 0
-            }
-            // リザルトIDが指定されていないときはKeychainのデータを使う
             guard let resultId = resultId else {
-                #if DEBUG
-                return jobNum - 9
-                #else
-                return jobNum
-                #endif
+                return 0
             }
             return resultId
         }()

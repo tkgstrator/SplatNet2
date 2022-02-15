@@ -29,7 +29,7 @@ struct SplatNet2View: View {
                 service.getCoopResult(resultId: 1_930)
             }, label: { Text("GET RESULT") })
             Button(action: {
-                service.getCoopResults(resultId: 1_000)
+                service.getCoopResults(resultId: 1_965)
             }, label: { Text("GET ALL RESULTS") })
             Button(action: {
                 service.getCoopSchedules()

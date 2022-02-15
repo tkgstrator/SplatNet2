@@ -31,7 +31,7 @@ internal struct MasterView: View {
                 service.getCoopResult(resultId: 1_000)
             }, label: { Text("GET RESULT") })
             Button(action: {
-                service.getCoopResults(resultId: 1_000)
+                service.getCoopResults(resultId: 1_965)
             }, label: { Text("GET ALL RESULTS") })
             Button(action: {
 //                DDLogInfo(SplatNet2.schedule)

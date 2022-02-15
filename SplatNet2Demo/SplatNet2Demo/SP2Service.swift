@@ -94,7 +94,7 @@ public final class SP2Service: ObservableObject {
             .store(in: &task)
     }
 
-    func getCoopResults(resultId: Int) {
+    func getCoopResults(resultId: Int?) {
         session.getCoopResults(resultId: resultId)
             .sink(receiveCompletion: { completion in
                 switch completion {
