@@ -29,9 +29,7 @@ extension SplatNet2 {
                 }
                 return response
             })
-            .mapError({ error -> SP2Error in
-                error.asSP2Error ?? SP2Error.requestAdaptionFailed
-            })
+            .mapToSP2Error(delegate: delegate)
             .eraseToAnyPublisher()
     }
 
