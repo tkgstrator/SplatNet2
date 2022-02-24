@@ -17,32 +17,21 @@ extension SplatNet2 {
     public func getCoopSummary(resultId: Int = 0)
     -> AnyPublisher<CoopSummary.Response, SP2Error> {
         let request = CoopSummary()
-        return Future { [self] promise in
-            publish(request)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        break
-                    case .failure(let error):
-                        promise(.failure(error))
-                    }
-                }, receiveValue: { response in
-                    #if DEBUG
-                    #else
-                    // No new results
-                    if response.summary.card.jobNum == resultId {
-                        promise(.failure(SP2Error.noNewResults))
-                    }
-                    #endif
-                    // Invalid RequestId
-                    if response.summary.card.jobNum < resultId {
-                        promise(.failure(SP2Error.invalidResultId))
-                    }
-                    promise(.success(response))
-                })
-                .store(in: &task)
-        }
-        .eraseToAnyPublisher()
+        return publish(request)
+            .tryMap({ response in
+                // 新しいリザルトがない
+                if response.summary.card.jobNum == resultId {
+                    throw SP2Error.noNewResults
+                }
+                // 不正なリザルトID
+                if response.summary.card.jobNum < resultId {
+                    throw SP2Error.invalidResultId
+                }
+
+                return response
+            })
+            .mapToSP2Error(delegate: delegate)
+            .eraseToAnyPublisher()
     }
 
     /// Download a specific coop result selected by result id from SplatNet2
