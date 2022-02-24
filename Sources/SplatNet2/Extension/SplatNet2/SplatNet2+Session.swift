@@ -27,10 +27,11 @@ extension SplatNet2 {
                 if response.summary.card.jobNum < resultId {
                     throw SP2Error.invalidResultId
                 }
-
                 return response
             })
-            .mapToSP2Error(delegate: delegate)
+            .mapError({ error -> SP2Error in
+                error.asSP2Error ?? SP2Error.requestAdaptionFailed
+            })
             .eraseToAnyPublisher()
     }
 
@@ -55,11 +56,10 @@ extension SplatNet2 {
         return schedule
     }()
 
-    #warning("ゴミコード")
     /// Download all gettable coop results from SplatNet2
     open func getCoopResults(resultId: Int? = nil)
     -> AnyPublisher<[CoopResult.Response], SP2Error> {
-        guard let account = account else {
+        guard let _ = account else {
             return Fail(outputType: [CoopResult.Response].self, failure: SP2Error.credentialFailed)
                 .eraseToAnyPublisher()
         }
@@ -71,35 +71,22 @@ extension SplatNet2 {
             return resultId
         }()
 
-        return Future { [self] promise in
-            getCoopSummary(resultId: resultId)
-                .flatMap({ response -> Publishers.Sequence<Range<Int>, Never> in
-                    let maximum: Int = response.summary.card.jobNum
-                    let current: Int = max(resultId + 1, response.summary.card.jobNum - 49)
-                    delegate?.isAvailableResults(current: current, maximum: maximum)
-                    return Range(current ... maximum).publisher
-                })
-                .flatMap(maxPublishers: .max(1), { publish(CoopResult(resultId: $0)) })
-                .handleEvents(
-                    receiveOutput: { response in
-                        if let jobId = response.jobId {
-                            delegate?.isGettingResultId(current: jobId)
-                        }
+        return getCoopSummary(resultId: resultId)
+            .flatMap({ response -> Publishers.Sequence<Range<Int>, Never> in
+                let maximum: Int = response.summary.card.jobNum
+                let current: Int = max(resultId + 1, response.summary.card.jobNum - 49)
+                self.delegate?.isAvailableResults(current: current, maximum: maximum)
+                return Range(current ... maximum).publisher
+            })
+            .flatMap(maxPublishers: .max(1), { self.publish(CoopResult(resultId: $0)) })
+            .handleEvents(
+                receiveOutput: { response in
+                    if let jobId = response.jobId {
+                        self.delegate?.isGettingResultId(current: jobId)
                     }
-                )
-                .collect()
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        break
-                    case .failure(let error):
-                        promise(.failure(error))
-                    }
-                }, receiveValue: { response in
-                    promise(.success(response))
-                })
-                .store(in: &task)
-        }
-        .eraseToAnyPublisher()
+                }
+            )
+            .collect()
+            .eraseToAnyPublisher()
     }
 }
