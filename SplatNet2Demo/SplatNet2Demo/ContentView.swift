@@ -17,8 +17,12 @@ internal struct ContentView: View {
             MasterView()
             DetailView()
         })
-            .alert(item: $service.sp2Error, content: { error in
-                Alert(title: Text("Error \(String(format: "%04d", error.errorCode))"), message: Text(error.localizedDescription), dismissButton: .default(Text("Dismiss")))
+            .alert(isPresented: $service.isPresented, error: service.sp2Error, actions: { _ in
+                Button(action: {}, label: {
+                    Text("OK")
+                })
+            }, message: { error in
+                Text(error.failureReason ?? "Unknown error.")
             })
     }
 }

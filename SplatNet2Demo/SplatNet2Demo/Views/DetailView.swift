@@ -62,6 +62,11 @@ internal struct DetailView: View {
                     Text(service.version)
                         .foregroundColor(.secondary)
                 })
+                Button(action: {
+                    service.session.setXProductVersion(version: "1.10.0")
+                }, label: {
+                    Text("Set X-Product Version")
+                })
                 HStack(content: {
                     Text("Progress")
                     Spacer()

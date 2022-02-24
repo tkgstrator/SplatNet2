@@ -31,11 +31,10 @@ extension SplatNet2: Authenticator {
         getCookie(sessionToken: credential.sessionToken)
             .sink(receiveCompletion: { result in
                 switch result {
-                    case .finished:
-                        break
-                    case .failure(let error):
-                        completion(.failure(error))
-                        return
+                case .finished:
+                    break
+                case .failure(let error):
+                    completion(.failure(error))
                 }
             }, receiveValue: { [self] response in
                 self.account = response
@@ -46,7 +45,7 @@ extension SplatNet2: Authenticator {
             .store(in: &task)
     }
 
-    #warning("理解できてないので要修正")
+#warning("理解できてないので要修正")
     public func didRequest(
         _ urlRequest: URLRequest,
         with response: HTTPURLResponse,
@@ -55,7 +54,7 @@ extension SplatNet2: Authenticator {
         response.statusCode == 403
     }
 
-    #warning("理解できてないので要修正")
+#warning("理解できてないので要修正")
     public func isRequest(
         _ urlRequest: URLRequest,
         authenticatedWith credential: OAuthCredential

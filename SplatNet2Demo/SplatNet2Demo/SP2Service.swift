@@ -47,10 +47,15 @@ public final class SP2Service: ObservableObject {
     @Published var version: String = ""
     @Published var progress: (current: Int, maximum: Int) = (current: 0, maximum: 0)
     @Published var reminder: (current: Int, total: Int) = (current: 0, total: 0)
-    @Published var sp2Error: SP2Error?
+    @Published var sp2Error: SP2Error? {
+        willSet {
+            isPresented = newValue != nil
+        }
+    }
+    @Published var isPresented = false
 
     init() {
-        self.session = SalmonStats()
+        self.session = SalmonStats(refreshable: true)
         self.account = session.account
         self.session.delegate = self
     }

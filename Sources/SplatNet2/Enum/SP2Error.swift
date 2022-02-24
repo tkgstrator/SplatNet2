@@ -175,21 +175,21 @@ extension SP2Error: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .noNewResults:
-            return "No new results."
+            return "No new results"
         case .invalidResultId:
-            return "Invalid result id."
+            return "Invalid result id"
         case .requestAdaptionFailed:
-            return "Request adaption failed."
+            return "Request adaption failed"
         case .responseValidationFailed:
-            return "Response validation failed."
+            return "Response validation failed"
         case .oauthValidationFailed:
-            return "OAuth validation failed."
+            return "OAuth validation failed"
         case .dataDecodingFailed:
-            return "Response data decoding failed."
+            return "Response data decoding failed"
         case .unacceptableStatusCode(let statusCode):
             return "Unacceptable status code \(statusCode)"
         case .credentialFailed:
-            return "Invalid credential."
+            return "Invalid credential"
         }
     }
 }

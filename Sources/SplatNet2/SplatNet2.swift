@@ -40,6 +40,8 @@ open class SplatNet2: RequestInterceptor {
         }
     }
 
+    internal let refreshable: Bool
+
     public func setXProductVersion(version: String) {
         #if DEBUG
         keychain.setVersion(version: version)
@@ -77,17 +79,19 @@ open class SplatNet2: RequestInterceptor {
         }
     }
 
-    public init() {
+    public init(refreshable: Bool = false) {
         let accounts: [UserInfo] = keychain.getAllUserInfo()
         self.accounts = accounts
         self.account = keychain.getUserInfo()
+        self.refreshable = refreshable
     }
 
-    public init(delegate: SplatNet2SessionDelegate) {
+    public init(delegate: SplatNet2SessionDelegate, refreshable: Bool = false) {
         let accounts: [UserInfo] = keychain.getAllUserInfo()
         self.accounts = accounts
         self.account = keychain.getUserInfo()
         self.delegate = delegate
+        self.refreshable = refreshable
     }
 
     internal func oauthURL(state: String, verifier: String) -> URL {
@@ -158,15 +162,32 @@ open class SplatNet2: RequestInterceptor {
         case .responseValidationFailed(let failure):
             switch failure.failureReason {
             case .upgradeRequired:
-                self.delegate?.failedWithUnavailableVersion(version: version)
-                completion(.doNotRetryWithError(error))
-                return
+                if refreshable {
+                    getVersion()
+                        .sink(receiveCompletion: { result in
+                            switch result {
+                            case .finished:
+                                completion(.retry)
+                            case .failure:
+                                completion(.doNotRetry)
+                            }
+                        }, receiveValue: { response in
+                            if let version = response.results.first?.version {
+                                self.version = version
+                            }
+                        })
+                        .store(in: &task)
+                } else {
+                    self.delegate?.failedWithUnavailableVersion(version: version)
+                    completion(.doNotRetry)
+                    return
+                }
             default:
-                completion(.doNotRetryWithError(error))
+                completion(.doNotRetry)
                 return
             }
         default:
-            completion(.doNotRetryWithError(error))
+            completion(.doNotRetry)
             return
         }
     }
