@@ -9,12 +9,17 @@
 import Foundation
 
 public extension Error {
-    #warning("変換が適当すぎるので要修正")
     var asSP2Error: SP2Error? {
+        // Error -> SP2Error
+        if let error = self as? SP2Error {
+            return error
+        }
+        // Error -> AFError
         guard let error = self.asAFError else {
             return nil
         }
 
+        // AFError -> SP2Error
         switch error {
         case .responseValidationFailed(reason: let reason):
             switch reason {
