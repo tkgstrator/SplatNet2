@@ -46,12 +46,16 @@ extension SplatNet2 {
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             return decoder
         }()
-        guard let url = Bundle.module.url(forResource: "coop", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let schedule = try? decoder.decode([Schedule.Response].self, from: data) else {
-                  fatalError("Could not load coop.json in Resources.")
-              }
-        return schedule
+        do {
+            guard let url = Bundle.module.url(forResource: "coop", withExtension: "json") else {
+                return []
+            }
+            let data = try Data(contentsOf: url)
+            return try decoder.decode([Schedule.Response].self, from: data)
+        } catch {
+            DDLogError(error)
+            return []
+        }
     }()
 
     /// Download all gettable coop results from SplatNet2
