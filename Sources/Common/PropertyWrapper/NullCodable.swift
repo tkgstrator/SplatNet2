@@ -18,11 +18,8 @@ public struct NullCodable<T>: Codable where T: Codable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        switch wrappedValue {
-            case .some:
-                self.wrappedValue = try container.decode(T.self)
-            case .none:
-                self.wrappedValue = nil
+        if !container.decodeNil() {
+            self.wrappedValue = try container.decode(T.self)
         }
     }
 

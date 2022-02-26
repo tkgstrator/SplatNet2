@@ -93,8 +93,8 @@ public final class SP2Service: ObservableObject {
                 case .failure(let error):
                     DDLogError(error)
                 }
-            }, receiveValue: { _ in
-//                DDLogInfo(response)
+            }, receiveValue: { response in
+                DDLogInfo(response.jobResult)
             })
             .store(in: &task)
     }
