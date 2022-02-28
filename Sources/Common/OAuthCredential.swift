@@ -10,12 +10,16 @@ import Alamofire
 import Foundation
 
 public struct OAuthCredential: AuthenticationCredential, Codable {
-    public let iksmSession: String
+    public var iksmSession: String
     public let sessionToken: String
     public let nsaid: String
     let expiration: Date
 
+    #if DEBUG
+    public var requiresRefresh: Bool { Date(timeIntervalSinceNow: 60 * 60 * 24 - 60) > expiration }
+    #else
     public var requiresRefresh: Bool { Date(timeIntervalSinceNow: 60 * 5) > expiration }
+    #endif
 
     public init(iksmSession: String, sessionToken: String, nsaid: String, expiration: Date) {
         self.iksmSession = iksmSession
