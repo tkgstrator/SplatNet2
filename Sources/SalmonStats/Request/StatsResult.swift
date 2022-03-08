@@ -29,12 +29,13 @@ public class StatsResult: RequestType {
         public let id: Int
         public let scheduleId, startAt: String
         public let members: [String]
-        public let bossAppearances: CodableDictionary<BossType, Int>
+        public let bossAppearances: CodableDictionary<BossId, Int>
         public let uploaderUserId, clearWaves: Int
         public let failReasonId: Int?
         public let dangerRate, createdAt, updatedAt: String
         public let goldenEggDelivered, powerEggCollected, bossAppearanceCount, bossEliminationCount: Int
         public let isEligibleForNoNightRecord: Bool
+        //  swiftlint:disable:next discouraged_optional_collection
         public let memberAccounts: [MemberAccount]?
         public let schedule: Schedule?
         public let playerResults: [PlayerResult]
@@ -48,6 +49,7 @@ public class StatsResult: RequestType {
         public let twitterAvatar: String?
         public let updatedAt: String?
         public let userId, isPrimary: Int?
+        //  swiftlint:disable:next discouraged_optional_boolean
         public let isCustomName, isRegistered: Bool?
     }
 
@@ -65,15 +67,15 @@ public class StatsResult: RequestType {
 
     // MARK: - BossEliminations
     public struct BossEliminations: Codable {
-        public let counts: CodableDictionary<BossType, Int>
+        public let counts: CodableDictionary<BossId, Int>
     }
 
     // MARK: - SpecialType
     public enum SpecialId: Int, Codable, CaseIterable {
-        case splatBombLauncher = 2
-        case stingRay = 7
-        case inkjet = 8
-        case splashdown = 9
+        case splatBombLauncher  = 2
+        case stingRay           = 7
+        case inkjet             = 8
+        case splashdown         = 9
     }
 
     // MARK: - Special

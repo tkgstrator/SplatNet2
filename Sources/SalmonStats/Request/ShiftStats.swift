@@ -24,6 +24,7 @@ public class ShiftStats: RequestType {
     public struct Response: Codable {
         // グローバルのみ対応
         var global: TmpStats
+
         struct TmpStats: Codable {
             var bossAppearance3: Int
             var bossAppearance6: Int

@@ -1,18 +1,24 @@
 //
-//  SpecialId.swift
+//  BossId.swift
 //  SplatNet2
 //
-//  Created by tkgstrator on 2021/07/13.
+//  Created by tkgstrator on 2021/07/03.
 //  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
+import CodableDictionary
 import Foundation
 
-public enum SpecialId: Int, Codable, CaseIterable {
-    case splatBombLauncher  = 2
-    case stingRay           = 7
-    case inkjet             = 8
-    case splashdown         = 9
+public enum BossId: Int, Codable, CaseIterable, CodableDictionaryKey, Identifiable {
+    case goldie     = 3
+    case steelhead  = 6
+    case flyfish    = 9
+    case scrapper   = 12
+    case steelEel   = 13
+    case stinger    = 14
+    case maws       = 15
+    case griller    = 16
+    case drizzler   = 21
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
@@ -27,16 +33,20 @@ public enum SpecialId: Int, Codable, CaseIterable {
                 )
             )
         }
-        guard let rawValue = SpecialId(rawValue: intValue) else {
+        guard let rawValue = BossId(intValue: intValue) else {
             throw DecodingError.typeMismatch(
                 BossId.self,
                 .init(
                     codingPath: container.codingPath,
-                    debugDescription: "Cannot initialize SpecialId from invalid Int value \(intValue)",
+                    debugDescription: "Cannot initialize BossId from invalid Int value \(intValue)",
                     underlyingError: nil
                 )
             )
         }
         self = rawValue
     }
+}
+
+public extension BossId {
+    var id: Int { rawValue }
 }

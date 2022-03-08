@@ -17,13 +17,17 @@ internal struct ContentView: View {
             MasterView()
             DetailView()
         })
-            .alert(isPresented: $service.isPresented, error: service.sp2Error, actions: { _ in
-                Button(action: {}, label: {
-                    Text("OK")
-                })
-            }, message: { error in
-                Text(error.failureReason ?? "Unknown error.")
-            })
+            .alert(
+                isPresented: $service.isPresented,
+                error: service.sp2Error,
+                actions: { _ in
+                    Button(action: {}, label: {
+                        Text("OK")
+                    })
+                }, message: { error in
+                    Text(error.failureReason ?? "Unknown error.")
+                }
+            )
     }
 }
 

@@ -24,7 +24,8 @@ extension CoopResult.Response {
                 .map({ CoopResult.PlayerResult(
                     from: $0,
                     members: response.memberAccounts,
-                    rareWeaponId: response.schedule?.rareWeaponId)
+                    rareWeaponId: response.schedule?.rareWeaponId
+                )
                 }),
             schedule: CoopResult.Schedule(from: response.scheduleId),
             kumaPoint: nil,
@@ -41,7 +42,9 @@ extension CoopResult.Response {
             startTime: schedule.startTime,
             playTime: Date.timeIntervalSince1970(iso8601: response.startAt),
             endTime: schedule.endTime,
-            bossCounts: CodableDictionary(uniqueKeysWithValues: response.bossAppearances.map({ ($0.key, CoopResult.BossCount(bossId: $0.key, count: $0.value)) })),
+            bossCounts: CodableDictionary(
+                uniqueKeysWithValues: response.bossAppearances.map({ ($0.key, CoopResult.BossCount(bossId: $0.key, count: $0.value)) })
+            ),
             gradePoint: nil,
             dangerRate: Double(response.dangerRate) ?? 0.0
         )
@@ -49,12 +52,15 @@ extension CoopResult.Response {
 }
 
 extension CoopResult.PlayerResult {
+    //  swiftlint:disable:next discouraged_optional_collection
     init(from player: StatsResult.PlayerResult, members: [StatsResult.MemberAccount]?, rareWeaponId: Int?) {
         self.init(
             pid: player.playerId,
             specialCounts: player.specialUses.map({ $0.count }),
             goldenIkuraNum: player.goldenEggs,
-            bossKillCounts: CodableDictionary(uniqueKeysWithValues: player.bossEliminations.counts.map({ ($0.key, CoopResult.BossCount(bossId: $0.key, count: $0.value)) })),
+            bossKillCounts: CodableDictionary(
+                uniqueKeysWithValues: player.bossEliminations.counts.map({ ($0.key, CoopResult.BossCount(bossId: $0.key, count: $0.value)) })
+            ),
             special: CoopResult.SpecialType(rawValue: player.specialId),
             deadCount: player.death,
             name: members?.first(where: { $0.playerId == player.playerId })?.name,
@@ -132,12 +138,12 @@ extension StatsResult.SpecialId {
 }
 
 extension CoopResult.BossCount {
-    init(bossId: BossType, count: Int) {
+    init(bossId: BossId, count: Int) {
         self.init(boss: CoopResult.Boss(bossId: bossId), count: count)
     }
 }
 
-extension BossType {
+extension BossId {
     var bossName: String {
         switch self {
             case .goldie:
@@ -163,30 +169,26 @@ extension BossType {
 }
 
 extension CoopResult.Boss {
-    enum BossName: String {
-        case go
-    }
-
-    init(bossId: BossType) {
+    init(bossId: BossId) {
         switch bossId {
-            case .goldie:
-                self = CoopResult.Boss(name: bossId.rawValue, key: .sakelienGolden)
-            case .steelhead:
-                self = CoopResult.Boss(name: bossId.rawValue, key: .sakelienBomber)
-            case .flyfish:
-                self = CoopResult.Boss(name: bossId.rawValue, key: .sakelienCupTwins)
-            case .steelEel:
-                self = CoopResult.Boss(name: bossId.rawValue, key: .sakelienSnake)
-            case .scrapper:
-                self = CoopResult.Boss(name: bossId.rawValue, key: .sakelienShield)
-            case .stinger:
-                self = CoopResult.Boss(name: bossId.rawValue, key: .sakelienTower)
-            case .maws:
-                self = CoopResult.Boss(name: bossId.rawValue, key: .sakediver)
-            case .griller:
-                self = CoopResult.Boss(name: bossId.rawValue, key: .sakedozer)
-            case .drizzler:
-                self = CoopResult.Boss(name: bossId.rawValue, key: .sakerocket)
+        case .goldie:
+            self = CoopResult.Boss(name: BossKey.sakelienGolden.rawValue, key: .sakelienGolden)
+        case .steelhead:
+            self = CoopResult.Boss(name: BossKey.sakelienBomber.rawValue, key: .sakelienBomber)
+        case .flyfish:
+            self = CoopResult.Boss(name: BossKey.sakelienCupTwins.rawValue, key: .sakelienCupTwins)
+        case .steelEel:
+            self = CoopResult.Boss(name: BossKey.sakelienSnake.rawValue, key: .sakelienSnake)
+        case .scrapper:
+            self = CoopResult.Boss(name: BossKey.sakelienShield.rawValue, key: .sakelienShield)
+        case .stinger:
+            self = CoopResult.Boss(name: BossKey.sakelienTower.rawValue, key: .sakelienTower)
+        case .maws:
+            self = CoopResult.Boss(name: BossKey.sakediver.rawValue, key: .sakediver)
+        case .griller:
+            self = CoopResult.Boss(name: BossKey.sakedozer.rawValue, key: .sakedozer)
+        case .drizzler:
+            self = CoopResult.Boss(name: BossKey.sakerocket.rawValue, key: .sakerocket)
         }
     }
 }

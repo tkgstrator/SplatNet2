@@ -9,6 +9,6 @@
 import Foundation
 
 public enum FailureReason: String, Codable, CaseIterable {
-    case wipeOut = "wipe_out"
-    case timeLimit = "time_limit"
+    case wipeOut    = "wipe_out"
+    case timeLimit  = "time_limit"
 }

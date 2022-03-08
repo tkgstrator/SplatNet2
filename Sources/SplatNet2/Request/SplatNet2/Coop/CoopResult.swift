@@ -41,7 +41,7 @@ public class CoopResult: RequestType {
         public let gradePointDelta: Int?
         public let jobRate: Int?
         public let startTime, playTime, endTime: Int
-        public let bossCounts: CodableDictionary<BossType, BossCount>
+        public let bossCounts: CodableDictionary<BossId, BossCount>
         public let gradePoint: Int?
         public let dangerRate: Double
 
@@ -62,7 +62,7 @@ public class CoopResult: RequestType {
             startTime: Int,
             playTime: Int,
             endTime: Int,
-            bossCounts: CodableDictionary<BossType, BossCount>,
+            bossCounts: CodableDictionary<BossId, BossCount>,
             gradePoint: Int?,
             dangerRate: Double
         ) {
@@ -164,7 +164,7 @@ public class CoopResult: RequestType {
         public let pid: String
         public let specialCounts: [Int]
         public let goldenIkuraNum: Int
-        public let bossKillCounts: CodableDictionary<BossType, BossCount>
+        public let bossKillCounts: CodableDictionary<BossId, BossCount>
         public let special: SpecialType
         public let deadCount: Int
         public let name: String?
@@ -177,7 +177,7 @@ public class CoopResult: RequestType {
             pid: String,
             specialCounts: [Int],
             goldenIkuraNum: Int,
-            bossKillCounts: CodableDictionary<BossType, BossCount>,
+            bossKillCounts: CodableDictionary<BossId, BossCount>,
             special: CoopResult.SpecialType,
             deadCount: Int,
             name: String?,

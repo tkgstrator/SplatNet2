@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - PlayerInfo
-struct RankedInfo: Codable {
+public struct RankedInfo: Codable {
     let player: Player
     let startTime: Int
     let loseCount: Int
@@ -26,7 +26,7 @@ struct RankedInfo: Codable {
 }
 
 // MARK: - Player
-struct Player: Codable {
+public struct Player: Codable {
     let udemaeRainmaker: Udemae
     let playerRank: Int
     let maxLeaguePointPair: Double
@@ -48,13 +48,13 @@ struct Player: Codable {
 }
 
 // MARK: - LeagueStats
-struct LeagueStats: Codable {
+public struct LeagueStats: Codable {
     let pair: Pair
     let team: Pair
 }
 
 // MARK: - Pair
-struct Pair: Codable {
+public struct Pair: Codable {
     let noMedalCount: Int
     let goldCount: Int
     let bronzeCount: Int
@@ -62,7 +62,7 @@ struct Pair: Codable {
 }
 
 // MARK: - Clothes
-struct Clothes: Codable {
+public struct Clothes: Codable {
     let brand: Brand
     let id: String
     let thumbnail: String
@@ -73,7 +73,7 @@ struct Clothes: Codable {
 }
 
 // MARK: - Brand
-class Brand: Codable {
+public class Brand: Codable {
     let frequentSkill: Brand?
     let id: String
     let image: String
@@ -81,19 +81,19 @@ class Brand: Codable {
 }
 
 // MARK: - Skills
-struct Skills: Codable {
+public struct Skills: Codable {
     let main: Brand
     let subs: [Brand?]
 }
 
 // MARK: - PlayerType
-struct PlayerType: Codable {
+public struct PlayerType: Codable {
     let style: String
     let species: String
 }
 
 // MARK: - Udemae
-struct Udemae: Codable {
+public struct Udemae: Codable {
     let sPlusNumber: Int?
     let name: String
     let isNumberReached: Bool
@@ -102,7 +102,7 @@ struct Udemae: Codable {
 }
 
 // MARK: - Weapon
-struct Weapon: Codable {
+public struct Weapon: Codable {
     let sub: Special
     let special: Special
     let image: String
@@ -112,7 +112,7 @@ struct Weapon: Codable {
 }
 
 // MARK: - Special
-struct Special: Codable {
+public struct Special: Codable {
     let name: String
     let imageA: String
     let id: String
@@ -120,7 +120,7 @@ struct Special: Codable {
 }
 
 // MARK: - StageStat
-struct StageStat: Codable {
+public struct StageStat: Codable {
     let asariLose: Int
     let yaguraLose: Int
     let hokoWin: Int
@@ -134,7 +134,7 @@ struct StageStat: Codable {
 }
 
 // MARK: - WeaponStat
-struct WeaponStat: Codable {
+public struct WeaponStat: Codable {
     let weapon: Weapon
     let totalPaintPoint: Int
     let loseCount: Int

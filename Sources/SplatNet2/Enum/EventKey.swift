@@ -9,11 +9,11 @@
 import Foundation
 
 public enum EventKey: String, Codable, CaseIterable {
-    case waterLevels = "water-levels"
-    case rush = "rush"
-    case goldieSeeking = "goldie-seeking"
-    case griller = "griller"
-    case fog = "fog"
-    case theMothership = "the-mothership"
-    case cohockCharge = "cohock-charge"
+    case waterLevels    = "water-levels"
+    case rush           = "rush"
+    case goldieSeeking  = "goldie-seeking"
+    case griller        = "griller"
+    case fog            = "fog"
+    case theMothership  = "the-mothership"
+    case cohockCharge   = "cohock-charge"
 }

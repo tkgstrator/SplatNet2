@@ -18,6 +18,7 @@ public class UploadResult: RequestType {
     public var path: String = "results"
     public var encoding: ParameterEncoding = JSONEncoding.default
     public var parameters: Parameters?
+    //  swiftlint:disable:next discouraged_optional_collection
     public var headers: [String: String]?
 
     init(results: [CoopResult.Response]) {
