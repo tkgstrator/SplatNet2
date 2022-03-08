@@ -9,7 +9,7 @@
 import CodableDictionary
 import Foundation
 
-public enum BossId: Int, Codable, CaseIterable, CodableDictionaryKey, Identifiable {
+ public enum BossId: Int, Codable, CaseIterable, CodableDictionaryKey, Identifiable {
     case goldie     = 3
     case steelhead  = 6
     case flyfish    = 9
@@ -19,6 +19,11 @@ public enum BossId: Int, Codable, CaseIterable, CodableDictionaryKey, Identifiab
     case maws       = 15
     case griller    = 16
     case drizzler   = 21
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode("\(rawValue)")
+    }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
@@ -45,7 +50,7 @@ public enum BossId: Int, Codable, CaseIterable, CodableDictionaryKey, Identifiab
         }
         self = rawValue
     }
-}
+ }
 
 public extension BossId {
     var id: Int { rawValue }

@@ -30,7 +30,7 @@ struct SalmonStatsView: View {
                 service.getCoopResultFromSalmonStats(resultId: 100_000)
             }, label: { Text("GET COOP RESULT") })
             Button(action: {
-                service.uploadResult(resultId: 1_965)
+                service.uploadResult(resultId: 2_030)
             }, label: { Text("UPLOAD RESULT") })
             Button(action: {
                 service.uploadResults()

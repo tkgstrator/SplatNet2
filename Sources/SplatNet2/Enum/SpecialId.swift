@@ -14,6 +14,11 @@ public enum SpecialId: Int, Codable, CaseIterable, Identifiable {
     case inkjet             = 8
     case splashdown         = 9
 
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode("\(rawValue)")
+    }
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let stringValue = try container.decode(String.self)

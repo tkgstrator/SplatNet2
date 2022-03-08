@@ -16,6 +16,11 @@ public enum GradeId: Int, Codable, CaseIterable {
     case apparentice    = 1
     case intern         = 0
 
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode("\(rawValue)")
+    }
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let stringValue = try container.decode(String.self)

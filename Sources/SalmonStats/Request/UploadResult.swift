@@ -22,6 +22,7 @@ public class UploadResult: RequestType {
     public var headers: [String: String]?
 
     init(results: [CoopResult.Response]) {
+        // swiftlint:disable:next force_try
         self.parameters = ["results": results.map({ $0.asJSON() })]
     }
 

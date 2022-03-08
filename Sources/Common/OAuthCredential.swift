@@ -16,7 +16,7 @@ public struct OAuthCredential: AuthenticationCredential, Codable {
     let expiration: Date
 
     #if DEBUG
-    public var requiresRefresh: Bool { Date(timeIntervalSinceNow: 60 * 60 * 24 - 60) > expiration }
+    public var requiresRefresh: Bool { Date(timeIntervalSinceNow: 60 * 60 * 23) > expiration }
     #else
     public var requiresRefresh: Bool { Date(timeIntervalSinceNow: 60 * 5) > expiration }
     #endif
