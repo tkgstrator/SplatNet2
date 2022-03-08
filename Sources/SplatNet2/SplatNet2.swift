@@ -23,7 +23,8 @@ open class SplatNet2: RequestInterceptor {
             config.timeoutIntervalForRequest = 5
             return config
         }()
-        return Session(configuration: configuration)
+        let queue = DispatchQueue(label: "SplatNet2")
+        return Session(configuration: configuration, rootQueue: queue, requestQueue: queue)
     }()
 
     /// ユーザデータを格納するKeychain
@@ -40,8 +41,10 @@ open class SplatNet2: RequestInterceptor {
         }
     }
 
+    /// X-Product Versionを自動でアップデートするかどうか
     internal let refreshable: Bool
 
+    /// X-Product Versionを手動で設定する
     public func setXProductVersion(version: String) {
         #if DEBUG
         keychain.setVersion(version: version)
@@ -50,7 +53,7 @@ open class SplatNet2: RequestInterceptor {
         #endif
     }
 
-    // JSON Decoder
+    // JSONDecoder
     public let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -130,6 +133,8 @@ open class SplatNet2: RequestInterceptor {
             .validationWithSP2Error(decoder: decoder)
             .publishDecodable(type: T.ResponseType.self, decoder: decoder)
             .value()
+            .subscribe(on: DispatchQueue(label: "work.tkgstrator.splatnet2"), options: nil)
+            .receive(on: DispatchQueue(label: "work.tkgstrator.splatnet2"), options: nil)
             .handleEvents(receiveSubscription: { subscription in
                 self.delegate?.willReceiveSubscription(subscribe: subscription)
             }, receiveOutput: { output in
