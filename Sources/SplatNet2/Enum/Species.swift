@@ -8,7 +8,11 @@
 
 import Foundation
 
-public enum Species: String, Codable, CaseIterable {
+public enum Species: String, Codable, CaseIterable, Identifiable {
     case inklings
     case octolings
+}
+
+public extension Species {
+    var id: String { rawValue }
 }

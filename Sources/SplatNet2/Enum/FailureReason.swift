@@ -8,7 +8,11 @@
 
 import Foundation
 
-public enum FailureReason: String, Codable, CaseIterable {
+public enum FailureReason: String, Codable, CaseIterable, Identifiable {
     case wipeOut    = "wipe_out"
     case timeLimit  = "time_limit"
+}
+
+public extension FailureReason {
+    var id: String { rawValue }
 }

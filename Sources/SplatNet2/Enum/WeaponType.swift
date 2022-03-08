@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum WeaponType: Int, Codable, CaseIterable {
+public enum WeaponType: Int, Codable, CaseIterable, Identifiable {
     case randomGold                 = -2
     case randomGreen                = -1
     case shooterShort               = 0
@@ -183,4 +183,16 @@ public enum WeaponType: Int, Codable, CaseIterable {
         case chargerSpark               = "20020"
         case slosherVase                = "20030"
     }
+}
+
+public extension WeaponType {
+    var id: Int { rawValue }
+}
+
+public extension WeaponType.WeaponId {
+    var id: String { rawValue }
+}
+
+public extension WeaponType.Image {
+    var id: String { rawValue }
 }

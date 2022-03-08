@@ -42,3 +42,7 @@ public enum GradeId: Int, Codable, CaseIterable {
         self = rawValue
     }
 }
+
+public extension GradeId {
+    var id: Int { rawValue }
+}

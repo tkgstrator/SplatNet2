@@ -19,12 +19,4 @@ public class Schedule: Codable {
         public var endTime: Int
         public var weaponList: [WeaponType]
     }
-
-    public enum StageId: Int, Codable, CaseIterable {
-        case shakeup = 5_000
-        case shakeship = 5_001
-        case shakehouse = 5_002
-        case shakelift = 5_003
-        case shakeride = 5_004
-    }
 }

@@ -266,9 +266,9 @@ public class CoopResult: RequestType {
     // MARK: - Stage
     public struct Stage: Codable {
         public let name: String
-        public let image: StageType.Image
+        public let image: StageKey
 
-        public init(name: String, image: StageType.Image) {
+        public init(name: String, image: StageKey) {
             self.name = name
             self.image = image
         }

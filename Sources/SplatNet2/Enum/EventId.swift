@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum EventId: Int, Codable, CaseIterable {
+public enum EventId: Int, Codable, CaseIterable, Identifiable {
     case waterLevels    = 0
     case rush           = 1
     case goldieSeeking  = 2
@@ -16,4 +16,8 @@ public enum EventId: Int, Codable, CaseIterable {
     case fog            = 4
     case theMothership  = 5
     case cohockCharge   = 6
+}
+
+public extension EventId {
+    var id: Int { rawValue }
 }

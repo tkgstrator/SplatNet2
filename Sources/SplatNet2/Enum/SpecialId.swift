@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum SpecialId: Int, Codable, CaseIterable {
+public enum SpecialId: Int, Codable, CaseIterable, Identifiable {
     case splatBombLauncher  = 2
     case stingRay           = 7
     case inkjet             = 8
@@ -39,4 +39,8 @@ public enum SpecialId: Int, Codable, CaseIterable {
         }
         self = rawValue
     }
+}
+
+public extension SpecialId {
+    var id: Int { rawValue }
 }

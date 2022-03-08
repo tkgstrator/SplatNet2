@@ -8,7 +8,11 @@
 
 import Foundation
 
-public enum Style: String, Codable, CaseIterable {
+public enum Style: String, Codable, CaseIterable, Identifiable {
     case girl
     case boy
+}
+
+public extension Style {
+    var id: String { rawValue }
 }

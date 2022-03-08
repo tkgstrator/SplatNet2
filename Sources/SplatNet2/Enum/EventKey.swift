@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum EventKey: String, Codable, CaseIterable {
+public enum EventKey: String, Codable, CaseIterable, Identifiable {
     case waterLevels    = "water-levels"
     case rush           = "rush"
     case goldieSeeking  = "goldie-seeking"
@@ -16,4 +16,8 @@ public enum EventKey: String, Codable, CaseIterable {
     case fog            = "fog"
     case theMothership  = "the-mothership"
     case cohockCharge   = "cohock-charge"
+}
+
+public extension EventKey {
+    var id: String { rawValue }
 }

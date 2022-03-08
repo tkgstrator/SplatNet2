@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum BossKey: String, Codable, CaseIterable {
+public enum BossKey: String, Codable, CaseIterable, Identifiable {
     case sakelienGolden     = "sakelien-golden"
     case sakelienBomber     = "sakelien-bomber"
     case sakelienCupTwins   = "sakelien-cup-twins"
@@ -18,4 +18,8 @@ public enum BossKey: String, Codable, CaseIterable {
     case sakediver          = "sakediver"
     case sakedozer          = "sakedozer"
     case sakerocket         = "sakerocket"
+}
+
+public extension BossKey {
+    var id: String { rawValue }
 }

@@ -8,8 +8,12 @@
 
 import Foundation
 
-public enum WaterKey: String, Codable, CaseIterable {
+public enum WaterKey: String, Codable, CaseIterable, Identifiable {
     case high
     case low
     case normal
+}
+
+public extension WaterKey {
+    var id: String { rawValue }
 }

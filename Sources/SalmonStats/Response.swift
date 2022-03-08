@@ -208,7 +208,7 @@ extension CoopResult.Schedule {
 
 extension CoopResult.Stage {
     init(from schedule: Schedule.Response) {
-        let stageImage: StageType.Image = StageType.Image(stageId: schedule.stageId)
+        let stageImage = StageKey(stageId: schedule.stageId)
         self.init(
             name: stageImage.stageName,
             image: stageImage
@@ -216,8 +216,8 @@ extension CoopResult.Stage {
     }
 }
 
-extension StageType.Image {
-    init(stageId: Schedule.StageId) {
+extension StageKey {
+    init(stageId: StageId) {
         switch stageId {
             case .shakeup:
                 self = .shakeup
