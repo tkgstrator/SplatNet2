@@ -9,9 +9,9 @@
 import Foundation
 
 public enum WaterKey: String, Codable, CaseIterable, Identifiable {
-    case high
     case low
     case normal
+    case high
 }
 
 public extension WaterKey {
