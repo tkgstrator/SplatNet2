@@ -28,10 +28,10 @@ internal struct MasterView: View {
                 service.getCoopSummary()
             }, label: { Text("GET COOP RESULTS") })
             Button(action: {
-                service.getCoopResult(resultId: 1_000)
+                service.getCoopResult(resultId: 2_070)
             }, label: { Text("GET RESULT") })
             Button(action: {
-                service.getCoopResults(resultId: 2_030)
+                service.getCoopResults(resultId: 2_070)
             }, label: { Text("GET ALL RESULTS") })
             Button(action: {
 //                DDLogInfo(SplatNet2.schedule)

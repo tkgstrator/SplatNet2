@@ -83,42 +83,48 @@ public class SalmonStats: SplatNet2 {
             .eraseToAnyPublisher()
     }
 
+    /// 一件だけリザルトアップロード
     public func uploadResult(resultId: Int) -> AnyPublisher<[(UploadResult.Response, CoopResult.Response)], SP2Error> {
         getCoopResult(resultId: resultId)
             .flatMap({ [self] in uploadResults(result: $0) })
             .eraseToAnyPublisher()
     }
 
+    /// New! Salmon StatsにWAVE記録をアップロード
+    private func uploadWaveResults(results: [CoopResult.Response]) -> AnyPublisher<UploadWave.Response, SP2Error> {
+        let request = UploadWave(results)
+        return publish(request)
+    }
+
+    /// New! Salmon StatsにWAVE記録をアップロード
+    public func uploadWaveResults(results: [CoopResult.Response]) {
+        uploadWaveResults(results: results)
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in
+            })
+            .store(in: &task)
+    }
+
+    /// Salmon Statsに記録をアップロード
     public func uploadResults(resultId: Int? = nil) {
         /// apiTokenがなければアップロードできないのでエラーを返す
-        guard let _ = apiToken else {
+        if apiToken == .none {
             delegate?.failedWithSP2Error(error: .credentialFailed)
             return
         }
 
-        return getCoopResults(resultId: resultId)
+        getCoopResults(resultId: resultId)
             .flatMap({ [self] in uploadResults(results: $0) })
             .eraseToAnyPublisher()
             .sink(receiveCompletion: { _ in
             }, receiveValue: { [self] response in
-                let results = response.map({ (id: $0.0.salmonId, status: $0.0.created ? UploadStatus.success : UploadStatus.failure, result: $0.1 ) })
+                let results = response.map({ SalmonResult(result: $0) })
                 /// 取得したリザルトを返す
-                if let delegate = delegate as? SalmonStatsSessionDelegate {
+                if let delegate = self.delegate as? SalmonStatsSessionDelegate {
                     delegate.didFinishLoadResultsFromSplatNet2(results: results)
                 }
             })
             .store(in: &task)
     }
-//    public func getCoopResultsFromSalmonStats(from: Int, to: Int) -> AnyPublisher<[CoopResult.Response], SP2Error> {
-//        guard let nsaid = account?.credential.nsaid else {
-//            return Fail(outputType: [CoopResult.Response].self, failure: SP2Error.credentialFailed)
-//                .eraseToAnyPublisher()
-//        }
-//        [from ... to].publisher
-//            .flatMap({ publish(StatsResults(nsaid: nsaid, pageId: $0, count: 50)) })
-//            .collect()
-//            .eraseToAnyPublisher()
-//    }
 
     /// リクエストを実行
     internal func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {

@@ -26,10 +26,10 @@ struct SplatNet2View: View {
                 service.getCoopSummary()
             }, label: { Text("GET COOP SUMMARY") })
             Button(action: {
-                service.getCoopResult(resultId: 3_563)
+                service.getCoopResult(resultId: 2_070)
             }, label: { Text("GET RESULT") })
             Button(action: {
-                service.getCoopResults(resultId: 1_965)
+                service.getCoopResults(resultId: 2_070)
             }, label: { Text("GET ALL RESULTS") })
             Button(action: {
                 service.getCoopSchedules()

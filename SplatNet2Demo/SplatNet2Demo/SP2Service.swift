@@ -57,7 +57,7 @@ public final class SP2Service: ObservableObject {
     init() {
         self.session = SalmonStats(refreshable: true)
         self.account = session.account
-        self.session.delegate = self
+        //        self.session.delegate = self
     }
 
     func getVersion() {
@@ -79,7 +79,7 @@ public final class SP2Service: ObservableObject {
                     DDLogError(error)
                 }
             }, receiveValue: { _ in
-//                DDLogInfo(response)
+                //                DDLogInfo(response)
             })
             .store(in: &task)
     }
@@ -157,13 +157,12 @@ public final class SP2Service: ObservableObject {
                 case .failure(let error):
                     DDLogError(error)
                 }
-            }, receiveValue: { response in
-                DDLogInfo(response.first)
+            }, receiveValue: { _ in
             })
             .store(in: &task)
     }
 
-    func uploadResults(resultId: Int? = nil) {
+    func uploadResults(resultId: Int? = 2_070) {
         session.uploadResults(resultId: resultId)
     }
 }

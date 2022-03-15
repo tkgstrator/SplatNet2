@@ -22,7 +22,6 @@ public class UploadResult: RequestType {
     public var headers: [String: String]?
 
     init(results: [CoopResult.Response]) {
-        // swiftlint:disable:next force_try
         self.parameters = ["results": results.map({ $0.asJSON() })]
     }
 
@@ -37,16 +36,15 @@ public class UploadResult: RequestType {
     }
 }
 
-fileprivate extension CoopResult.Response {
-    private static let encoder: JSONEncoder = {
-        let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
-        encoder.outputFormatting = [.withoutEscapingSlashes, .prettyPrinted, .sortedKeys]
-        return encoder
-    }()
-
+extension Encodable {
     func asJSON() -> [String: Any] {
-        guard let data = try? CoopResult.Response.encoder.encode(self) else {
+        let encoder: JSONEncoder = {
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            encoder.outputFormatting = .withoutEscapingSlashes
+            return encoder
+        }()
+        guard let data = try? encoder.encode(self) else {
             return [:]
         }
         guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {

@@ -299,3 +299,63 @@ public class CoopResult: RequestType {
     }
 }
 //  swiftlint:enable type_body_length
+
+public extension CoopResult.Response {
+    var playerResults: [CoopResult.PlayerResult] {
+        if let otherResults = otherResults {
+            return [myResult] + otherResults
+        }
+        return [myResult]
+    }
+}
+
+public extension CoopResult.EventType {
+    var rawValue: EventId {
+        switch self.key {
+        case .waterLevels:
+            return .waterLevels
+        case .rush:
+            return .rush
+        case .goldieSeeking:
+            return .goldieSeeking
+        case .griller:
+            return .griller
+        case .fog:
+            return .fog
+        case .theMothership:
+            return .theMothership
+        case .cohockCharge:
+            return .cohockCharge
+        }
+    }
+}
+
+public extension CoopResult.WaterLevel {
+    var rawValue: WaterId {
+        switch self.key {
+        case .low:
+            return .low
+        case .normal:
+            return .normal
+        case .high:
+            return .high
+        }
+    }
+}
+
+extension CoopResult.WaveDetail: Equatable {
+    public static func == (lhs: CoopResult.WaveDetail, rhs: CoopResult.WaveDetail) -> Bool {
+        lhs.ikuraNum == rhs.ikuraNum &&
+        lhs.goldenIkuraNum == rhs.goldenIkuraNum &&
+        lhs.goldenIkuraPopNum == rhs.goldenIkuraPopNum &&
+        lhs.quotaNum == rhs.quotaNum &&
+        lhs.eventType.key == rhs.eventType.key &&
+        lhs.waterLevel.key == rhs.waterLevel.key
+    }
+}
+
+extension CoopResult.Response: Equatable {
+    public static func == (lhs: CoopResult.Response, rhs: CoopResult.Response) -> Bool {
+        lhs.playTime == rhs.startTime
+    }
+}

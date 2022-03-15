@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import CocoaLumberjackSwift
 import Foundation
 
 public extension DataRequest {
@@ -15,6 +16,9 @@ public extension DataRequest {
         validate({ _, response, data in
             DataRequest.ValidationResult(catching: {
                 if let data = data {
+                    #if DEBUG
+                    DDLogError("Status Code \(response.statusCode)")
+                    #endif
                     if let failure = try? decoder.decode(SP2Error.Failure.NSO.self, from: data) {
                         throw SP2Error.responseValidationFailed(failure: failure)
                     }

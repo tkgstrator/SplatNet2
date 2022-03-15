@@ -15,10 +15,5 @@ import SplatNet2
 
 public protocol SalmonStatsSessionDelegate: SplatNet2SessionDelegate {
     /// アップロード済みのリザルトと結果をまとめて返す
-    func didFinishLoadResultsFromSplatNet2(results: [(id: Int, status: UploadStatus, result: CoopResult.Response)])
-}
-
-public enum UploadStatus {
-    case failure
-    case success
+    func didFinishLoadResultsFromSplatNet2(results: [SalmonResult])
 }
