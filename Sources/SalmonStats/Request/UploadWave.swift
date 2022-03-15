@@ -71,12 +71,12 @@ public class UploadWave: RequestType {
     }
 
     public struct Response: Codable {
-        let results: [UploadWaveResult]
+        public let results: [UploadWaveResult]
     }
 
     public struct UploadWaveResult: Codable {
-        let waveId: Int?
-        let created: Bool
+        public let waveId: Int?
+        public let created: Bool
     }
 
 //    public struct Response: Codable {

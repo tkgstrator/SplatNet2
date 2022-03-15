@@ -9,9 +9,9 @@ import Foundation
 import SplatNet2
 
 public struct SalmonResult: Codable {
-    let id: Int
-    let result: CoopResult.Response
-    let status: UploadStatus
+    public let id: Int
+    public let result: CoopResult.Response
+    public let status: UploadStatus
 
     public enum UploadStatus: Int, Codable, CaseIterable {
         case failure
