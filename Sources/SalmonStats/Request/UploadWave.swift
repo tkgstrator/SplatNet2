@@ -75,7 +75,7 @@ public class UploadWave: RequestType {
     }
 
     public struct UploadWaveResult: Codable {
-        public let waveId: Int?
+        public let waveId: Int?
         public let created: Bool
     }
 
