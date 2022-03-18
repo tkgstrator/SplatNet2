@@ -32,7 +32,7 @@ public class CoopResult: RequestType {
         public let grade: GradeType?
         //  swiftlint:disable:next discouraged_optional_collection
         public let otherResults: [PlayerResult]?
-        public let schedule: Schedule
+        public let schedule: Schedule?
         public let kumaPoint: Int?
         public let waveDetails: [WaveDetail]
         public let jobResult: JobResult
@@ -51,7 +51,7 @@ public class CoopResult: RequestType {
             grade: CoopResult.GradeType?,
             //  swiftlint:disable:next discouraged_optional_collection
             otherResults: [CoopResult.PlayerResult]?,
-            schedule: CoopResult.Schedule,
+            schedule: CoopResult.Schedule?,
             kumaPoint: Int?,
             waveDetails: [CoopResult.WaveDetail],
             jobResult: CoopResult.JobResult,

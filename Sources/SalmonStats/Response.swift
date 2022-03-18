@@ -13,7 +13,7 @@ import SwiftUI
 
 extension CoopResult.Response {
     init(from response: StatsResult.Response, playerId: String) {
-        let schedule = SplatNet2.schedule.first(where: { $0.startTime == Date.timeIntervalSince1970(iso8601: response.scheduleId) })!
+//        let schedule = SplatNet2.schedule.first(where: { $0.startTime == Date.timeIntervalSince1970(iso8601: response.scheduleId) })!
 
         self.init(
             jobScore: nil,
@@ -27,7 +27,7 @@ extension CoopResult.Response {
                     rareWeaponId: response.schedule?.rareWeaponId
                 )
                 }),
-            schedule: CoopResult.Schedule(from: response.scheduleId),
+            schedule: nil,
             kumaPoint: nil,
             waveDetails: response.waves.map({ CoopResult.WaveDetail(from: $0) }),
             jobResult: CoopResult.JobResult(from: response),
@@ -39,9 +39,9 @@ extension CoopResult.Response {
             ),
             gradePointDelta: nil,
             jobRate: nil,
-            startTime: schedule.startTime,
+            startTime: Date.timeIntervalSince1970(iso8601: response.scheduleId),
             playTime: Date.timeIntervalSince1970(iso8601: response.startAt),
-            endTime: schedule.endTime,
+            endTime: 0,
             bossCounts: CodableDictionary(
                 uniqueKeysWithValues: response.bossAppearances.map({ ($0.key, CoopResult.BossCount(bossId: $0.key, count: $0.value)) })
             ),
@@ -193,18 +193,18 @@ extension CoopResult.Boss {
     }
 }
 
-extension CoopResult.Schedule {
-    init(from scheduleId: String) {
-        let schedule = SplatNet2.schedule.first(where: { $0.startTime == Date.timeIntervalSince1970(iso8601: scheduleId) })!
-
-        self.init(
-            stage: CoopResult.Stage(from: schedule),
-            weapons: schedule.weaponList.map({ CoopResult.WeaponList(weaponId: $0.rawValue, rareWeaponId: schedule.rareWeapon?.rawValue) }),
-            endTime: schedule.endTime,
-            startTime: schedule.startTime
-        )
-    }
-}
+//extension CoopResult.Schedule {
+//    init(from scheduleId: String) {
+//        let schedule = SplatNet2.schedule.first(where: { $0.startTime == Date.timeIntervalSince1970(iso8601: scheduleId) })!
+//
+//        self.init(
+//            stage: CoopResult.Stage(from: schedule),
+//            weapons: schedule.weaponList.map({ CoopResult.WeaponList(weaponId: $0.rawValue, rareWeaponId: schedule.rareWeapon?.rawValue) }),
+//            endTime: schedule.endTime,
+//            startTime: schedule.startTime
+//        )
+//    }
+//}
 
 extension CoopResult.Stage {
     init(from schedule: Schedule.Response) {
