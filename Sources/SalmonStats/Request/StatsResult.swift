@@ -32,7 +32,9 @@ public class StatsResult: RequestType {
         public let bossAppearances: CodableDictionary<BossId, Int>
         public let uploaderUserId, clearWaves: Int
         public let failReasonId: Int?
-        public let dangerRate, createdAt, updatedAt: String
+        public let dangerRate: String
+        public let createdAt: String
+        public let updatedAt: String
         public let goldenEggDelivered, powerEggCollected, bossAppearanceCount, bossEliminationCount: Int
         public let isEligibleForNoNightRecord: Bool
         //  swiftlint:disable:next discouraged_optional_collection
@@ -56,6 +58,7 @@ public class StatsResult: RequestType {
     // MARK: - PlayerResult
     public struct PlayerResult: Codable {
         public let playerId: String
+        public let name: String?
         public let goldenEggs, powerEggs, rescue, death: Int
         public let specialId: SpecialId
         public let bossEliminationCount: Int
@@ -108,5 +111,11 @@ public class StatsResult: RequestType {
     public struct Wave: Codable {
         public let wave, eventId, waterId, goldenEggQuota: Int
         public let goldenEggAppearances, goldenEggDelivered, powerEggCollected: Int
+    }
+}
+
+extension CodableDictionary where Key == BossId, Value == Int {
+    public func sortedValue() -> [Int] {
+        self.sorted(by: { $0.key.rawValue < $1.key.rawValue }).map({ $0.value })
     }
 }

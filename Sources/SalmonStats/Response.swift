@@ -19,18 +19,19 @@ extension CoopResult.Response {
             jobScore: nil,
             playerType: nil,
             grade: CoopResult.GradeType(from: response, playerId: playerId),
-            otherResults: response.playerResults
-                .filter({ $0.playerId != playerId })
-                .map({ CoopResult.PlayerResult(
-                    from: $0,
-                    members: response.memberAccounts,
-                    rareWeaponId: response.schedule?.rareWeaponId
-                )
-                }),
+            otherResults: [],
+//            otherResults: response.playerResults
+//                .filter({ $0.playerId != playerId })
+//                .map({ CoopResult.PlayerResult(
+//                    from: $0,
+//                    members: response.memberAccounts,
+//                    rareWeaponId: response.schedule?.rareWeaponId
+//                )
+//                }),
             schedule: nil,
             kumaPoint: nil,
             waveDetails: response.waves.map({ CoopResult.WaveDetail(from: $0) }),
-            jobResult: CoopResult.JobResult(from: response),
+            jobResult: CoopResult.JobResult(result: response),
             jobId: nil,
             myResult: CoopResult.PlayerResult(
                 from: response.playerResults.first(where: { $0.playerId == playerId }) ?? response.playerResults.first!,
@@ -39,8 +40,8 @@ extension CoopResult.Response {
             ),
             gradePointDelta: nil,
             jobRate: nil,
-            startTime: Date.timeIntervalSince1970(iso8601: response.scheduleId),
-            playTime: Date.timeIntervalSince1970(iso8601: response.startAt),
+            startTime: 0,
+            playTime: 0,
             endTime: 0,
             bossCounts: CodableDictionary(
                 uniqueKeysWithValues: response.bossAppearances.map({ ($0.key, CoopResult.BossCount(bossId: $0.key, count: $0.value)) })
@@ -193,7 +194,7 @@ extension CoopResult.Boss {
     }
 }
 
-//extension CoopResult.Schedule {
+// extension CoopResult.Schedule {
 //    init(from scheduleId: String) {
 //        let schedule = SplatNet2.schedule.first(where: { $0.startTime == Date.timeIntervalSince1970(iso8601: scheduleId) })!
 //
@@ -204,7 +205,7 @@ extension CoopResult.Boss {
 //            startTime: schedule.startTime
 //        )
 //    }
-//}
+// }
 
 extension CoopResult.Stage {
     init(from schedule: Schedule.Response) {
@@ -366,7 +367,7 @@ extension GradeId {
 }
 
 extension CoopResult.JobResult {
-    init(from response: StatsResult.Response) {
+    public init(result response: StatsResult.Response) {
         self.init(
             failureWave: response.clearWaves == 3 ? nil : response.clearWaves,
             isClear: response.clearWaves == 3,

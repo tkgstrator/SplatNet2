@@ -359,3 +359,9 @@ extension CoopResult.Response: Equatable {
         lhs.playTime == rhs.startTime
     }
 }
+
+extension CodableDictionary where Key == BossId, Value == CoopResult.BossCount {
+    public func sortedValue() -> [Int] {
+        self.sorted(by: { $0.key.rawValue < $1.key.rawValue }).map({ $0.value.count })
+    }
+}
