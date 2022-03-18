@@ -58,17 +58,6 @@ public class SalmonStats: SplatNet2 {
         return publish(request)
     }
 
-    public func getCoopResultFromSalmonStats(resultId: Int) -> AnyPublisher<CoopResult.Response, SP2Error> {
-        guard let nsaid = account?.credential.nsaid else {
-            return Fail(outputType: CoopResult.Response.self, failure: SP2Error.credentialFailed)
-                .eraseToAnyPublisher()
-        }
-        let request = StatsResult(resultId: resultId)
-        return publish(request)
-            .map({ CoopResult.Response(from: $0, playerId: nsaid) })
-            .eraseToAnyPublisher()
-    }
-
     private func uploadResults(result: CoopResult.Response) -> AnyPublisher<[(UploadResult.Response, CoopResult.Response)], SP2Error> {
         uploadResults(results: [result])
     }
