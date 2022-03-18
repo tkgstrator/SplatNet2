@@ -133,21 +133,6 @@ public final class SP2Service: ObservableObject {
             .store(in: &task)
     }
 
-    func getCoopResultFromSalmonStats(resultId: Int) {
-        session.getCoopResultFromSalmonStats(resultId: resultId)
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    DDLogInfo("Success")
-                case .failure(let error):
-                    DDLogError(error)
-                }
-            }, receiveValue: { response in
-                DDLogInfo(response.jobId)
-            })
-            .store(in: &task)
-    }
-
     func uploadResult(resultId: Int) {
         session.uploadResult(resultId: resultId)
             .sink(receiveCompletion: { completion in

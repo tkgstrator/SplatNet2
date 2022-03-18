@@ -125,7 +125,7 @@ open class SplatNet2: RequestInterceptor {
             }
             return AuthenticationInterceptor(authenticator: self, credential: credential)
         }()
-        
+
         return session
             .request(request, interceptor: interceptor)
             .cURLDescription { request in

@@ -27,9 +27,6 @@ struct SalmonStatsView: View {
                 service.getMetadata()
             }, label: { Text("GET METADATA") })
             Button(action: {
-                service.getCoopResultFromSalmonStats(resultId: 100_000)
-            }, label: { Text("GET COOP RESULT") })
-            Button(action: {
                 service.uploadResult(resultId: 2_030)
             }, label: { Text("UPLOAD RESULT") })
             Button(action: {
