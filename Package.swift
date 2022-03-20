@@ -23,7 +23,7 @@ let package = Package(
         .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.4.3"),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", from: "4.2.2"),
         .package(url: "https://github.com/stleamist/BetterSafariView.git", from: "2.4.0"),
-        .package(url: "https://github.com/realm/SwiftLint.git", from: "0.45.0"),
+//        .package(url: "https://github.com/realm/SwiftLint.git", from: "0.45.0"),
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", from: "3.7.4"),
         .package(name: "CodableDictionary", url: "https://github.com/YOCKOW/SwiftCodableDictionary.git", from: "1.0.1")
     ],
