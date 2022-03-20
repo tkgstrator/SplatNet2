@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		100D8C3726EF3D2E00286036 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3626EF3D2E00286036 /* DetailView.swift */; };
 		100D8C3B26EF3D7100286036 /* MasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3A26EF3D7100286036 /* MasterView.swift */; };
+		101FB7FF27E7B54E0028A048 /* SalmonStats in Frameworks */ = {isa = PBXBuildFile; productRef = 101FB7FE27E7B54E0028A048 /* SalmonStats */; };
+		101FB80127E7B54E0028A048 /* SplatNet2 in Frameworks */ = {isa = PBXBuildFile; productRef = 101FB80027E7B54E0028A048 /* SplatNet2 */; };
 		104808E727AEB1ED005A290F /* SP2Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104808E627AEB1ED005A290F /* SP2Service.swift */; };
-		106B49EC27B4AE75004C7100 /* SalmonStats in Frameworks */ = {isa = PBXBuildFile; productRef = 106B49EB27B4AE75004C7100 /* SalmonStats */; };
-		106B49EE27B4AE75004C7100 /* SplatNet2 in Frameworks */ = {isa = PBXBuildFile; productRef = 106B49ED27B4AE75004C7100 /* SplatNet2 */; };
 		106B49F127B4CC27004C7100 /* SplatNet2View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106B49F027B4CC27004C7100 /* SplatNet2View.swift */; };
 		106B49F327B4CD37004C7100 /* SalmonStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106B49F227B4CD37004C7100 /* SalmonStatsView.swift */; };
 		10A7E00627B0AF1400BB031D /* SP2Service+SplatNet2SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10A7E00527B0AF1400BB031D /* SP2Service+SplatNet2SessionDelegate.swift */; };
@@ -43,6 +43,7 @@
 /* Begin PBXFileReference section */
 		100D8C3626EF3D2E00286036 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		100D8C3A26EF3D7100286036 /* MasterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterView.swift; sourceTree = "<group>"; };
+		101FB7FD27E7B35A0028A048 /* SplatNet2 */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SplatNet2; path = ..; sourceTree = "<group>"; };
 		104808E627AEB1ED005A290F /* SP2Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SP2Service.swift; sourceTree = "<group>"; };
 		106B49F027B4CC27004C7100 /* SplatNet2View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplatNet2View.swift; sourceTree = "<group>"; };
 		106B49F227B4CD37004C7100 /* SalmonStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalmonStatsView.swift; sourceTree = "<group>"; };
@@ -60,7 +61,6 @@
 		10F010CD263D7AE4002C40DA /* SplatNet2DemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplatNet2DemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		10F010D1263D7AE4002C40DA /* SplatNet2DemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplatNet2DemoUITests.swift; sourceTree = "<group>"; };
 		10F010D3263D7AE4002C40DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		10F010E2263D7B6B002C40DA /* SplatNet2 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SplatNet2; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,8 +68,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				106B49EE27B4AE75004C7100 /* SplatNet2 in Frameworks */,
-				106B49EC27B4AE75004C7100 /* SalmonStats in Frameworks */,
+				101FB80127E7B54E0028A048 /* SplatNet2 in Frameworks */,
+				101FB7FF27E7B54E0028A048 /* SalmonStats in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +90,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		101FB7FC27E7B35A0028A048 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				101FB7FD27E7B35A0028A048 /* SplatNet2 */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
 		106B49EF27B4CC13004C7100 /* OAuth */ = {
 			isa = PBXGroup;
 			children = (
@@ -112,7 +120,7 @@
 		10F010A8263D7ADF002C40DA = {
 			isa = PBXGroup;
 			children = (
-				10F010E2263D7B6B002C40DA /* SplatNet2 */,
+				101FB7FC27E7B35A0028A048 /* Packages */,
 				10F010B3263D7ADF002C40DA /* SplatNet2Demo */,
 				10F010C5263D7AE4002C40DA /* SplatNet2DemoTests */,
 				10F010D0263D7AE4002C40DA /* SplatNet2DemoUITests */,
@@ -190,7 +198,6 @@
 				10F010AD263D7ADF002C40DA /* Sources */,
 				10F010AE263D7ADF002C40DA /* Frameworks */,
 				10F010AF263D7ADF002C40DA /* Resources */,
-				104D7323273A879C000BF485 /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -198,8 +205,8 @@
 			);
 			name = SplatNet2Demo;
 			packageProductDependencies = (
-				106B49EB27B4AE75004C7100 /* SalmonStats */,
-				106B49ED27B4AE75004C7100 /* SplatNet2 */,
+				101FB7FE27E7B54E0028A048 /* SalmonStats */,
+				101FB80027E7B54E0028A048 /* SplatNet2 */,
 			);
 			productName = SplatNet2Demo;
 			productReference = 10F010B1263D7ADF002C40DA /* SplatNet2Demo.app */;
@@ -312,27 +319,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		104D7323273A879C000BF485 /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ${PROJECT_DIR}/..\nenv -i /bin/sh -c \"source /etc/profile && swift run swiftlint --fix\"\nenv -i /bin/sh -c \"source /etc/profile && swift run swiftlint\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		10F010AD263D7ADF002C40DA /* Sources */ = {
@@ -674,11 +660,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		106B49EB27B4AE75004C7100 /* SalmonStats */ = {
+		101FB7FE27E7B54E0028A048 /* SalmonStats */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SalmonStats;
 		};
-		106B49ED27B4AE75004C7100 /* SplatNet2 */ = {
+		101FB80027E7B54E0028A048 /* SplatNet2 */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SplatNet2;
 		};

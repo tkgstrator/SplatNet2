@@ -1,5 +1,5 @@
 //
-//  ResultWave.swift
+//  UploadWave.swift
 //  
 //
 //  Created by devonly on 2022/03/14.

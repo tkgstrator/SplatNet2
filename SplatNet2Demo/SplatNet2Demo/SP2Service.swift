@@ -6,12 +6,12 @@
 //  Copyright © 2022 Magi, Inc. All rights reserved.
 //
 
-import CocoaLumberjackSwift
 import Combine
 import Common
 import Foundation
 import SalmonStats
 import SplatNet2
+import CocoaLumberjackSwift
 
 public final class SP2Service: ObservableObject {
     public private(set) var session: SalmonStats
@@ -149,5 +149,37 @@ public final class SP2Service: ObservableObject {
 
     func uploadResults(resultId: Int? = 2_070) {
         session.uploadResults(resultId: resultId)
+    }
+    
+    func uploadWaveResults() {
+        session.getCoopResults()
+            .flatMap(maxPublishers: .max(1), { self.session.uploadWaveResults(results: $0) })
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    DDLogInfo("Success")
+                case .failure(let error):
+                    DDLogError(error)
+                }
+            }, receiveValue: { response in
+                DDLogInfo(response)
+            })
+            .store(in: &task)
+    }
+    
+    func getWaveResults() {
+        session.getWaveResults(startTime: 1647734400)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    DDLogInfo("Success")
+                case .failure(let error):
+                    DDLogError(error)
+                }
+            }, receiveValue: { response in
+                DDLogInfo(response)
+            })
+            .store(in: &task)
+
     }
 }

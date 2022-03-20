@@ -32,6 +32,12 @@ struct SalmonStatsView: View {
             Button(action: {
                 service.uploadResults()
             }, label: { Text("UPLOAD ALL RESULTS") })
+            Button(action: {
+                service.uploadWaveResults()
+            }, label: { Text("UPLOAD ALL WAVE RESULTS") })
+            Button(action: {
+                service.getWaveResults()
+            }, label: { Text("GET WAVE RESULTS") })
         }, label: {
             Text("SalmonStats")
         })

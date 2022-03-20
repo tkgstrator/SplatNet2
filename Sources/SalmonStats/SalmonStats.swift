@@ -24,17 +24,17 @@ public class SalmonStats: SplatNet2 {
             keychain.setAPIToken(apiToken: newValue)
         }
     }
-
+    
     /// APITokenをセット
     override public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
         /// SalmonStats用の処理を実行
         var urlRequest: URLRequest = urlRequest
-
+        
         guard let url = urlRequest.url?.absoluteString else {
             completion(.failure(SP2Error.requestAdaptionFailed))
             return
         }
-
+        
         switch url.contains("salmon-stats") {
         case true:
             guard let apiToken = apiToken else {
@@ -48,7 +48,7 @@ public class SalmonStats: SplatNet2 {
         /// 親クラスの処理を実行
         super.adapt(urlRequest, for: session, completion: completion)
     }
-
+    
     public func getMetadata() -> AnyPublisher<[Metadata.Response], SP2Error> {
         guard let nsaid = account?.credential.nsaid else {
             return Fail(outputType: [Metadata.Response].self, failure: SP2Error.credentialFailed)
@@ -57,11 +57,14 @@ public class SalmonStats: SplatNet2 {
         let request = Metadata(nsaid: nsaid)
         return publish(request)
     }
-
-    private func uploadResults(result: CoopResult.Response) -> AnyPublisher<[(UploadResult.Response, CoopResult.Response)], SP2Error> {
+    
+    /// 一件だけSalmon Statsにデータをアップロード
+    public func uploadResults(result: CoopResult.Response) -> AnyPublisher<[(UploadResult.Response, CoopResult.Response)], SP2Error> {
         uploadResults(results: [result])
     }
-
+    
+    /// Salmon Statsは同時に10件までしかアップロードできない
+    /// 10件ずつに分割してアップロード
     private func uploadResults(results: [CoopResult.Response]) -> AnyPublisher<[(UploadResult.Response, CoopResult.Response)], SP2Error> {
         results.chunked(by: 10)
             .map({ UploadResult(results: $0) })
@@ -71,36 +74,33 @@ public class SalmonStats: SplatNet2 {
             .map({ zip($0.flatMap({ $0 }), results).compactMap({ ($0.0, $0.1) }) })
             .eraseToAnyPublisher()
     }
-
+    
     /// 一件だけリザルトアップロード
     public func uploadResult(resultId: Int) -> AnyPublisher<[(UploadResult.Response, CoopResult.Response)], SP2Error> {
         getCoopResult(resultId: resultId)
             .flatMap({ [self] in uploadResults(result: $0) })
             .eraseToAnyPublisher()
     }
-
+    
     /// New! Salmon StatsにWAVE記録をアップロード
-    private func uploadWaveResults(results: [CoopResult.Response]) -> AnyPublisher<UploadWave.Response, SP2Error> {
+    public func uploadWaveResults(results: [CoopResult.Response]) -> AnyPublisher<UploadWave.Response, SP2Error> {
         let request = UploadWave(results)
         return publish(request)
     }
-
-    /// New! Salmon StatsにWAVE記録をアップロード
-    public func uploadWaveResults(results: [CoopResult.Response]) {
-        uploadWaveResults(results: results)
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in
-            })
-            .store(in: &task)
+    
+    /// New! Salmon StatsからWAVE記録をダウンロード
+    public func getWaveResults(startTime: Int) -> AnyPublisher<ResultWave.Response, SP2Error> {
+        let request = ResultWave(startTime: startTime)
+        return publish(request)
     }
-
-    /// Salmon Statsに記録をアップロード
+    
+    /// 指定したリザルトIDからSalmon Statsに記録をアップロード
     public func uploadResults(resultId: Int? = nil) {
-        /// apiTokenがなければアップロードできないのでエラーを返す
         if apiToken == .none {
             delegate?.failedWithSP2Error(error: .credentialFailed)
             return
         }
-
+        
         getCoopResults(resultId: resultId)
             .flatMap({ [self] in uploadResults(results: $0) })
             .eraseToAnyPublisher()
