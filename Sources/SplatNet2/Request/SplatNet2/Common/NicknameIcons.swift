@@ -24,12 +24,12 @@ public class NicknameIcons: RequestType {
     }
 
     public struct Response: Codable {
-        public var nicknameAndIcons: [NicknameIcon]
+        public let nicknameAndIcons: [NicknameIcon]
 
         public struct NicknameIcon: Codable {
-            public var nickname: String
-            public var nsaId: String
-            public var thumbnailUrl: URL
+            public let nickname: String
+            public let nsaId: String
+            public let thumbnailUrl: URL
 
             enum CodingKeys: String, CodingKey {
                 case nickname
