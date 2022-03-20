@@ -7,16 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		100D8C3726EF3D2E00286036 /* ProgressLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3626EF3D2E00286036 /* ProgressLogView.swift */; };
-		100D8C3B26EF3D7100286036 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3A26EF3D7100286036 /* SignInView.swift */; };
-		1090C67A263DC7BB000DD54C /* BetterSafariView in Frameworks */ = {isa = PBXBuildFile; productRef = 1090C679263DC7BB000DD54C /* BetterSafariView */; };
+		100D8C3726EF3D2E00286036 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3626EF3D2E00286036 /* DetailView.swift */; };
+		100D8C3B26EF3D7100286036 /* MasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100D8C3A26EF3D7100286036 /* MasterView.swift */; };
+		104808E727AEB1ED005A290F /* SP2Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104808E627AEB1ED005A290F /* SP2Service.swift */; };
+		106B49EC27B4AE75004C7100 /* SalmonStats in Frameworks */ = {isa = PBXBuildFile; productRef = 106B49EB27B4AE75004C7100 /* SalmonStats */; };
+		106B49EE27B4AE75004C7100 /* SplatNet2 in Frameworks */ = {isa = PBXBuildFile; productRef = 106B49ED27B4AE75004C7100 /* SplatNet2 */; };
+		106B49F127B4CC27004C7100 /* SplatNet2View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106B49F027B4CC27004C7100 /* SplatNet2View.swift */; };
+		106B49F327B4CD37004C7100 /* SalmonStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106B49F227B4CD37004C7100 /* SalmonStatsView.swift */; };
+		10A7E00627B0AF1400BB031D /* SP2Service+SplatNet2SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10A7E00527B0AF1400BB031D /* SP2Service+SplatNet2SessionDelegate.swift */; };
 		10F010B5263D7ADF002C40DA /* SplatNet2DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */; };
 		10F010B7263D7ADF002C40DA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010B6263D7ADF002C40DA /* ContentView.swift */; };
 		10F010B9263D7AE3002C40DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 10F010B8263D7AE3002C40DA /* Assets.xcassets */; };
 		10F010BC263D7AE3002C40DA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 10F010BB263D7AE3002C40DA /* Preview Assets.xcassets */; };
 		10F010C7263D7AE4002C40DA /* SplatNet2DemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010C6263D7AE4002C40DA /* SplatNet2DemoTests.swift */; };
 		10F010D2263D7AE4002C40DA /* SplatNet2DemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F010D1263D7AE4002C40DA /* SplatNet2DemoUITests.swift */; };
-		10F010E8263D7C2B002C40DA /* SplatNet2 in Frameworks */ = {isa = PBXBuildFile; productRef = 10F010E7263D7C2B002C40DA /* SplatNet2 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,9 +41,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		100D8C3626EF3D2E00286036 /* ProgressLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressLogView.swift; sourceTree = "<group>"; };
-		100D8C3A26EF3D7100286036 /* SignInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		100D8C3626EF3D2E00286036 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		100D8C3A26EF3D7100286036 /* MasterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterView.swift; sourceTree = "<group>"; };
+		104808E627AEB1ED005A290F /* SP2Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SP2Service.swift; sourceTree = "<group>"; };
+		106B49F027B4CC27004C7100 /* SplatNet2View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplatNet2View.swift; sourceTree = "<group>"; };
+		106B49F227B4CD37004C7100 /* SalmonStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalmonStatsView.swift; sourceTree = "<group>"; };
 		1090C671263DA84F000DD54C /* SplatNet2Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SplatNet2Demo.entitlements; sourceTree = "<group>"; };
+		10A7E00527B0AF1400BB031D /* SP2Service+SplatNet2SessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SP2Service+SplatNet2SessionDelegate.swift"; sourceTree = "<group>"; };
 		10F010B1263D7ADF002C40DA /* SplatNet2Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplatNet2Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplatNet2DemoApp.swift; sourceTree = "<group>"; };
 		10F010B6263D7ADF002C40DA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -60,8 +68,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				10F010E8263D7C2B002C40DA /* SplatNet2 in Frameworks */,
-				1090C67A263DC7BB000DD54C /* BetterSafariView in Frameworks */,
+				106B49EE27B4AE75004C7100 /* SplatNet2 in Frameworks */,
+				106B49EC27B4AE75004C7100 /* SalmonStats in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,6 +90,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		106B49EF27B4CC13004C7100 /* OAuth */ = {
+			isa = PBXGroup;
+			children = (
+				106B49F027B4CC27004C7100 /* SplatNet2View.swift */,
+				106B49F227B4CD37004C7100 /* SalmonStatsView.swift */,
+			);
+			path = OAuth;
+			sourceTree = "<group>";
+		};
+		108B490E27438714007C6E4F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				106B49EF27B4CC13004C7100 /* OAuth */,
+				100D8C3A26EF3D7100286036 /* MasterView.swift */,
+				100D8C3626EF3D2E00286036 /* DetailView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		10F010A8263D7ADF002C40DA = {
 			isa = PBXGroup;
 			children = (
@@ -110,8 +137,9 @@
 				1090C671263DA84F000DD54C /* SplatNet2Demo.entitlements */,
 				10F010B4263D7ADF002C40DA /* SplatNet2DemoApp.swift */,
 				10F010B6263D7ADF002C40DA /* ContentView.swift */,
-				100D8C3A26EF3D7100286036 /* SignInView.swift */,
-				100D8C3626EF3D2E00286036 /* ProgressLogView.swift */,
+				104808E627AEB1ED005A290F /* SP2Service.swift */,
+				10A7E00527B0AF1400BB031D /* SP2Service+SplatNet2SessionDelegate.swift */,
+				108B490E27438714007C6E4F /* Views */,
 				10F010B8263D7AE3002C40DA /* Assets.xcassets */,
 				10F010BD263D7AE3002C40DA /* Info.plist */,
 				10F010BA263D7AE3002C40DA /* Preview Content */,
@@ -162,6 +190,7 @@
 				10F010AD263D7ADF002C40DA /* Sources */,
 				10F010AE263D7ADF002C40DA /* Frameworks */,
 				10F010AF263D7ADF002C40DA /* Resources */,
+				104D7323273A879C000BF485 /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -169,8 +198,8 @@
 			);
 			name = SplatNet2Demo;
 			packageProductDependencies = (
-				10F010E7263D7C2B002C40DA /* SplatNet2 */,
-				1090C679263DC7BB000DD54C /* BetterSafariView */,
+				106B49EB27B4AE75004C7100 /* SalmonStats */,
+				106B49ED27B4AE75004C7100 /* SplatNet2 */,
 			);
 			productName = SplatNet2Demo;
 			productReference = 10F010B1263D7ADF002C40DA /* SplatNet2Demo.app */;
@@ -219,7 +248,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1300;
 				ORGANIZATIONNAME = "Magi, Inc.";
 				TargetAttributes = {
 					10F010B0263D7ADF002C40DA = {
@@ -246,7 +275,6 @@
 			);
 			mainGroup = 10F010A8263D7ADF002C40DA;
 			packageReferences = (
-				1090C678263DC7BB000DD54C /* XCRemoteSwiftPackageReference "BetterSafariView" */,
 			);
 			productRefGroup = 10F010B2263D7ADF002C40DA /* Products */;
 			projectDirPath = "";
@@ -285,14 +313,39 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		104D7323273A879C000BF485 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ${PROJECT_DIR}/..\nenv -i /bin/sh -c \"source /etc/profile && swift run swiftlint --fix\"\nenv -i /bin/sh -c \"source /etc/profile && swift run swiftlint\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		10F010AD263D7ADF002C40DA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				104808E727AEB1ED005A290F /* SP2Service.swift in Sources */,
+				10A7E00627B0AF1400BB031D /* SP2Service+SplatNet2SessionDelegate.swift in Sources */,
 				10F010B7263D7ADF002C40DA /* ContentView.swift in Sources */,
-				100D8C3726EF3D2E00286036 /* ProgressLogView.swift in Sources */,
-				100D8C3B26EF3D7100286036 /* SignInView.swift in Sources */,
+				100D8C3726EF3D2E00286036 /* DetailView.swift in Sources */,
+				106B49F327B4CD37004C7100 /* SalmonStatsView.swift in Sources */,
+				100D8C3B26EF3D7100286036 /* MasterView.swift in Sources */,
+				106B49F127B4CC27004C7100 /* SplatNet2View.swift in Sources */,
 				10F010B5263D7ADF002C40DA /* SplatNet2DemoApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -333,6 +386,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -380,13 +434,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -394,6 +449,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -435,12 +491,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -456,7 +513,7 @@
 				DEVELOPMENT_TEAM = D9HU6JZF2Q;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SplatNet2Demo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -479,7 +536,7 @@
 				DEVELOPMENT_TEAM = D9HU6JZF2Q;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SplatNet2Demo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -616,24 +673,12 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		1090C678263DC7BB000DD54C /* XCRemoteSwiftPackageReference "BetterSafariView" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/stleamist/BetterSafariView";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.3.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		1090C679263DC7BB000DD54C /* BetterSafariView */ = {
+		106B49EB27B4AE75004C7100 /* SalmonStats */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1090C678263DC7BB000DD54C /* XCRemoteSwiftPackageReference "BetterSafariView" */;
-			productName = BetterSafariView;
+			productName = SalmonStats;
 		};
-		10F010E7263D7C2B002C40DA /* SplatNet2 */ = {
+		106B49ED27B4AE75004C7100 /* SplatNet2 */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SplatNet2;
 		};

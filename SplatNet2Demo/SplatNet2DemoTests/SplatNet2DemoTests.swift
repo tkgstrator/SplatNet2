@@ -3,18 +3,18 @@
 //  SplatNet2DemoTests
 //
 //  Created by tkgstrator on 2021/05/01.
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
-import XCTest
 @testable import SplatNet2Demo
+import XCTest
 
 class SplatNet2DemoTests: XCTestCase {
-
-    override func setUpWithAPIError() throws {
+    override func setUpWithSP2Error() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
 
-    override func tearDownWithAPIError() throws {
+    override func tearDownWithSP2Error() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
@@ -29,5 +29,4 @@ class SplatNet2DemoTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
-
 }

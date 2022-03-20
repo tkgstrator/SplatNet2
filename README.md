@@ -37,7 +37,7 @@ import Combine
 
 var task = Set<AnyCancellable>()
 
-manager.getResultCoop(jobId: 1)
+manager.getResult(jobId: 1)
     .sink(receiveCompletion: { completion in
         switch completion {
         case .finished:

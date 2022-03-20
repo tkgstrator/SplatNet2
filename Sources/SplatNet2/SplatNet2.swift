@@ -3,211 +3,198 @@
 //  SplatNet2
 //
 //  Created by tkgstrator on 2021/07/13.
+//  Copyright © 2021 Magi, Corporation. All rights reserved.
 //
 
-import Foundation
 import Alamofire
+import CocoaLumberjackSwift
 import Combine
+import Common
+import CryptoKit
+import Foundation
+import KeychainAccess
 
-public extension SplatNet2 {
-    // 変換用のクラス
-    class Coop {
-        public class Result: Codable {
-            public var jobId: Int = 0
-            public var stageId: Int = 5000
-            public var jobScore: Int?
-            public var jobRate: Int?
-            public var jobResult: ResultJob = ResultJob()
-            public var dangerRate: Double = 0.0
-            public var schedule: Schedule = Schedule()
-            public var kumaPoint: Int?
-            public var grade: Int?
-            public var gradePoint: Int?
-            public var gradePointDelta: Int?
-            public var time: ResultTime = ResultTime()
-            public var bossCounts: [Int] = []
-            public var bossKillCounts: [Int] = []
-            public var results: [ResultPlayer] = []
-            public var waveDetails: [ResultWave] = []
-            public var goldenEggs: Int = 0
-            public var powerEggs: Int = 0
-            
-            public init() {}
-            internal init(from response: ResultCoop.Response) {
-                self.jobId = response.jobId
-                self.stageId = response.schedule.stage.stageId
-                self.jobScore = response.jobScore
-                self.jobRate = response.jobRate
-                self.jobResult = ResultJob(from: response.jobResult)
-                self.dangerRate = response.dangerRate
-                self.schedule = Schedule(from: response.schedule)
-                self.kumaPoint = response.kumaPoint
-                self.grade = Int(response.grade.id)!
-                self.gradePoint = response.gradePoint
-                self.gradePointDelta = response.gradePointDelta
-                self.time = ResultTime(from: response)
-                self.bossCounts = response.bossCounts.sorted(by: { Int($0.key)! < Int($1.key)!}).map { $0.value.count }
-                var results: [ResultCoop.Response.PlayerResult] = [response.myResult]
-                results.append(contentsOf: response.otherResults)
-                self.results = results.map { ResultPlayer(from: $0) }
-                self.waveDetails = response.waveDetails.map { ResultWave(from: $0) }
-                var tmpKillCounts = Array(repeating: 0, count: 9)
-                for result in self.results {
-                    tmpKillCounts = Array(zip(tmpKillCounts, result.bossKillCounts)).map { $0.0 + $0.1 }
+open class SplatNet2: RequestInterceptor {
+    /// アクセス用のセッション
+    public let session: Session = {
+        let configuration: URLSessionConfiguration = {
+            let config = URLSessionConfiguration.default
+            config.httpMaximumConnectionsPerHost = 1
+            config.timeoutIntervalForRequest = 5
+            return config
+        }()
+        let queue = DispatchQueue(label: "SplatNet2")
+        return Session(configuration: configuration, rootQueue: queue, requestQueue: queue)
+    }()
+
+    /// ユーザデータを格納するKeychain
+    // swiftlint:disable:next force_unwrapping
+    public private(set) var keychain = Keychain(service: Bundle.main.bundleIdentifier!)
+
+    /// X-ProductVersion
+    public internal(set) var version: String {
+        get {
+            keychain.getVersion()
+        }
+        set {
+            keychain.setVersion(version: newValue)
+        }
+    }
+
+    /// X-Product Versionを自動でアップデートするかどうか
+    internal let refreshable: Bool
+
+    /// X-Product Versionを手動で設定する
+    public func setXProductVersion(version: String) {
+        #if DEBUG
+        keychain.setVersion(version: version)
+        #else
+        DDLogWarn("This feature is only enabled for Debug build.")
+        #endif
+    }
+
+    // JSONDecoder
+    public let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
+
+    /// タスク管理
+    public var task = Set<AnyCancellable>()
+    /// Delegate
+    public weak var delegate: SplatNet2SessionDelegate?
+
+    /// 現在利用しているアカウント
+    public var account: UserInfo? {
+        // バイト情報が更新されたらここが通知される
+        // そのときにKeychainに最新のデータを入れる
+        didSet {
+            try? keychain.setUserInfo(account)
+        }
+    }
+
+    /// 保存されている全てのアカウント
+    public internal(set) var accounts: [UserInfo] {
+        willSet {
+            try? keychain.setUserInfo(newValue)
+            account = newValue.first
+        }
+    }
+
+    public init(refreshable: Bool = false) {
+        let accounts: [UserInfo] = keychain.getAllUserInfo()
+        self.accounts = accounts
+        self.account = keychain.getUserInfo()
+        self.refreshable = refreshable
+    }
+
+    public init(delegate: SplatNet2SessionDelegate, refreshable: Bool = false) {
+        let accounts: [UserInfo] = keychain.getAllUserInfo()
+        self.accounts = accounts
+        self.account = keychain.getUserInfo()
+        self.delegate = delegate
+        self.refreshable = refreshable
+    }
+
+    internal func oauthURL(state: String, verifier: String) -> URL {
+        let parameters: [String: String] = [
+            "state": state,
+            "redirect_uri": "npf71b963c1b7b6d119://auth",
+            "client_id": "71b963c1b7b6d119",
+            "scope": "openid+user+user.birthday+user.mii+user.screenName",
+            "response_type": "session_token_code",
+            "session_token_code_challenge": verifier.codeChallenge,
+            "session_token_code_challenge_method": "S256",
+            "theme": "login_form",
+        ]
+        return URL(unsafeString: "https://accounts.nintendo.com/connect/1.0.0/authorize?\(parameters.queryString)")
+    }
+
+    /// リクエストを実行
+    internal func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
+        let interceptor: AuthenticationInterceptor<SplatNet2>? = {
+            switch request {
+            case is XVersion:
+                return nil
+            default:
+                break
+            }
+            guard let credential = account?.credential else {
+                return nil
+            }
+            return AuthenticationInterceptor(authenticator: self, credential: credential)
+        }()
+
+        return session
+            .request(request, interceptor: interceptor)
+            .cURLDescription { request in
+                DDLogInfo(request)
+            }
+            .validationWithSP2Error(decoder: decoder)
+            .publishDecodable(type: T.ResponseType.self, decoder: decoder)
+            .value()
+            .subscribe(on: DispatchQueue(label: "work.tkgstrator.splatnet2"), options: nil)
+            .receive(on: DispatchQueue(label: "work.tkgstrator.splatnet2"), options: nil)
+            .handleEvents(receiveSubscription: { subscription in
+                self.delegate?.willReceiveSubscription(subscribe: subscription)
+            }, receiveOutput: { output in
+                self.delegate?.willReceiveOutput(output: output)
+            }, receiveCompletion: { completion in
+                self.delegate?.willReceiveCompletion(completion: completion)
+            }, receiveCancel: {
+                self.delegate?.willReceiveCancel()
+            }, receiveRequest: { request in
+                self.delegate?.willReceiveRequest(request: request)
+            })
+            .mapToSP2Error(delegate: self.delegate)
+            .eraseToAnyPublisher()
+    }
+
+    /// X-Product Versionをセットする
+    open func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+        var urlRequest: URLRequest = urlRequest
+        urlRequest.headers.update(name: "X-ProductVersion", value: version)
+        completion(.success(urlRequest))
+    }
+
+    /// X-Product Versionが低いときに取得してアップデートする
+    open func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+        guard let error = error.asSP2Error else {
+            completion(.doNotRetry)
+            return
+        }
+        switch error {
+        case .responseValidationFailed(let failure):
+            switch failure.failureReason {
+            case .upgradeRequired:
+                if refreshable {
+                    getVersion()
+                        .sink(receiveCompletion: { result in
+                            switch result {
+                            case .finished:
+                                completion(.retry)
+                            case .failure:
+                                completion(.doNotRetry)
+                            }
+                        }, receiveValue: { response in
+                            if let version = response.results.first?.version {
+                                self.version = version
+                            }
+                        })
+                        .store(in: &task)
+                } else {
+                    self.delegate?.failedWithUnavailableVersion(version: version)
+                    completion(.doNotRetry)
+                    return
                 }
-                self.bossKillCounts = tmpKillCounts
-                self.goldenEggs = response.waveDetails.map{ $0.goldenIkuraNum }.reduce(0, +)
-                self.powerEggs = response.waveDetails.map{ $0.ikuraNum }.reduce(0, +)
+            default:
+                completion(.doNotRetry)
+                return
             }
-        }
-
-        public class ResultTime: Codable {
-            public var playTime: Int = 0
-            public var startTime: Int = 0
-            public var endTime: Int = 0
-            
-            public init() {}
-            internal init(from response: ResultCoop.Response) {
-                self.startTime = response.startTime
-                self.endTime = response.endTime
-                self.playTime = response.playTime
-            }
-        }
-        public class ResultJob: Codable {
-            public var failureReason: String?
-            public var failureWave: Int?
-            public var isClear: Bool = false
-
-            public init() {}
-            internal init(from response: ResultCoop.Response.JobResult) {
-                self.failureWave = response.failureWave
-                self.failureReason = response.failureReason
-                self.isClear = response.isClear
-            }
-        }
-
-        public class Schedule: Codable {
-            public var startTime: Int = 0
-            public var endTime: Int = 0
-            public var weaponList: [Int] = []
-            public var stageId: Int = 5000
-
-            public init() {}
-            internal init(from response: ResultCoop.Response.Schedule) {
-                self.startTime = response.startTime
-                self.endTime = response.endTime
-                self.weaponList = response.weapons.map { Int($0.id)! }
-                self.stageId = response.stage.stageId
-            }
-        }
-
-        public class ResultPlayer: Codable {
-            public var bossKillCounts: [Int] = Array(repeating: 0, count: 9)
-            public var helpCount: Int = 0
-            public var deadCount: Int = 0
-            public var ikuraNum: Int = 0
-            public var goldenIkuraNum: Int = 0
-            public var pid: String = ""
-            public var name: String?
-            public var playerType: PlayerType = PlayerType()
-            public var specialId: Int = 0
-            public var specialCounts: [Int] = []
-            public var weaponList: [Int] = []
-
-            public init() {}
-            internal init(from response: ResultCoop.Response.PlayerResult) {
-                self.bossKillCounts = response.bossKillCounts.sorted(by: { Int($0.key)! < Int($1.key)!}).map { $0.value.count }
-                self.helpCount = response.helpCount
-                self.deadCount = response.deadCount
-                self.ikuraNum = response.ikuraNum
-                self.goldenIkuraNum = response.goldenIkuraNum
-                self.pid = response.pid
-                self.name = response.name
-                self.playerType = PlayerType(from: response.playerType)
-                self.specialId = Int(response.special.id)!
-                self.specialCounts = response.specialCounts
-                self.weaponList = response.weaponList.map { Int($0.id)! }
-            }
-        }
-
-        public class PlayerType: Codable {
-            public var species: String = "inkling"
-            public var style: String = "girl"
-
-            public init() {}
-            internal init(from response: ResultCoop.Response.PlayerType) {
-                self.species = response.species
-                self.style = response.style
-            }
-        }
-
-        public class ResultWave: Codable {
-            public var eventType: Int = 0
-            public var waterLevel: Int = 1
-            public var ikuraNum: Int = 0
-            public var goldenIkuraNum: Int = 0
-            public var goldenIkuraPopNum: Int = 0
-            public var quotaNum: Int = 0
-
-            public init() {}
-            internal init(from response: ResultCoop.Response.WaveResult) {
-                self.eventType = EventType(rawValue: response.eventType.key)!.eventType
-                self.waterLevel = WaterLevel(rawValue: response.waterLevel.key)!.waterLevel
-                self.ikuraNum = response.ikuraNum
-                self.goldenIkuraNum = response.goldenIkuraNum
-                self.goldenIkuraPopNum = response.goldenIkuraPopNum
-                self.quotaNum = response.quotaNum
-            }
-        }
-
-        internal enum EventType: String, CaseIterable {
-            case noevent = "water-levels"
-            case rush = "rush"
-            case goldie = "goldie-seeking"
-            case griller = "griller"
-            case mothership = "the-mothership"
-            case fog = "fog"
-            case cohock = "cohock-charge"
-        }
-
-        internal enum WaterLevel: String, CaseIterable {
-            case low = "low"
-            case normal = "normal"
-            case high = "high"
-        }
-    }
-}
-
-extension SplatNet2.Coop.EventType {
-    var eventType: Int {
-        switch self {
-        case .noevent:
-            return 0
-        case .rush:
-            return 1
-        case .goldie:
-            return 2
-        case .griller:
-            return 3
-        case .mothership:
-            return 4
-        case .fog:
-            return 5
-        case .cohock:
-            return 6
-        }
-    }
-}
-
-extension SplatNet2.Coop.WaterLevel {
-    var waterLevel: Int {
-        switch self {
-        case .low:
-            return 0
-        case .normal:
-            return 1
-        case .high:
-            return 2
+        default:
+            completion(.doNotRetry)
+            return
         }
     }
 }
