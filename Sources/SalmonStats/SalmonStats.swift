@@ -50,11 +50,11 @@ public class SalmonStats: SplatNet2 {
     }
     
     public func getMetadata() -> AnyPublisher<[Metadata.Response], SP2Error> {
-        guard let nsaid = account?.credential.nsaid else {
+        if accounts.isEmpty {
             return Fail(outputType: [Metadata.Response].self, failure: SP2Error.credentialFailed)
                 .eraseToAnyPublisher()
         }
-        let request = Metadata(nsaid: nsaid)
+        let request = Metadata(nsaid: account.credential.nsaid)
         return publish(request)
     }
     

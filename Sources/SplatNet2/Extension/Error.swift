@@ -28,6 +28,8 @@ public extension Error {
             default:
                 return nil
             }
+        case .requestAdaptationFailed(error: let reason):
+            return SP2Error.unacceptableStatusCode(statusCode: 404)
         default:
             return nil
         }

@@ -13,12 +13,22 @@ import Common
 import Foundation
 
 extension SplatNet2 {
+    public func getFriendActivityList() -> AnyPublisher<FriendList.Response, SP2Error> {
+        if accounts.isEmpty {
+            return Fail(outputType: FriendList.Response.self, failure: SP2Error.credentialFailed)
+                .eraseToAnyPublisher()
+        }
+        let request = FriendList(splatoonToken: account.credential.splatoonToken)
+        return publish(request)
+    }
+    
     /// Download coop results summary from SplatNet2
     public func getCoopSummary(resultId: Int = 0)
     -> AnyPublisher<CoopSummary.Response, SP2Error> {
         let request = CoopSummary()
         return publish(request)
-            .tryMap({ response in
+            .tryMap({ response throws -> CoopSummary.Response in
+                self.account.resultCoop = CoopInfo(summary: response)
                 // 新しいリザルトがない
                 if response.summary.card.jobNum == resultId {
                     throw SP2Error.noNewResults
@@ -61,7 +71,7 @@ extension SplatNet2 {
     /// Download all gettable coop results from SplatNet2
     open func getCoopResults(resultId: Int? = nil)
     -> AnyPublisher<[CoopResult.Response], SP2Error> {
-        guard let _ = account else {
+        if accounts.isEmpty {
             return Fail(outputType: [CoopResult.Response].self, failure: SP2Error.credentialFailed)
                 .eraseToAnyPublisher()
         }
@@ -75,6 +85,8 @@ extension SplatNet2 {
 
         return getCoopSummary(resultId: resultId)
             .flatMap({ response -> Publishers.Sequence<Range<Int>, Never> in
+                /// バイト情報をアップデート
+                self.account.resultCoop = CoopInfo(summary: response)
                 let maximum: Int = response.summary.card.jobNum
                 let current: Int = max(resultId + 1, response.summary.card.jobNum - 49)
                 self.delegate?.isAvailableResults(current: current, maximum: maximum)

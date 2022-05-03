@@ -66,33 +66,29 @@ open class SplatNet2: RequestInterceptor {
     public weak var delegate: SplatNet2SessionDelegate?
 
     /// 現在利用しているアカウント
-    public var account: UserInfo? {
+    public var account: UserInfo {
         // バイト情報が更新されたらここが通知される
         // そのときにKeychainに最新のデータを入れる
-        didSet {
-            try? keychain.setUserInfo(account)
+        willSet {
+            self.keychain.addAccount(newValue)
+            self.accounts = self.keychain.getAccounts()
         }
     }
 
     /// 保存されている全てのアカウント
-    public internal(set) var accounts: [UserInfo] {
-        willSet {
-            try? keychain.setUserInfo(newValue)
-            account = newValue.first
-        }
-    }
+    public internal(set) var accounts: [UserInfo]
 
     public init(refreshable: Bool = false) {
-        let accounts: [UserInfo] = keychain.getAllUserInfo()
+        let accounts: [UserInfo] = keychain.getAccounts()
         self.accounts = accounts
-        self.account = keychain.getUserInfo()
+        self.account = keychain.getAccount()
         self.refreshable = refreshable
     }
 
     public init(delegate: SplatNet2SessionDelegate, refreshable: Bool = false) {
-        let accounts: [UserInfo] = keychain.getAllUserInfo()
+        let accounts: [UserInfo] = keychain.getAccounts()
         self.accounts = accounts
-        self.account = keychain.getUserInfo()
+        self.account = keychain.getAccount()
         self.delegate = delegate
         self.refreshable = refreshable
     }
@@ -120,10 +116,10 @@ open class SplatNet2: RequestInterceptor {
             default:
                 break
             }
-            guard let credential = account?.credential else {
+            if accounts.isEmpty {
                 return nil
             }
-            return AuthenticationInterceptor(authenticator: self, credential: credential)
+            return AuthenticationInterceptor(authenticator: self, credential: account.credential)
         }()
 
         return session
@@ -135,7 +131,7 @@ open class SplatNet2: RequestInterceptor {
             .publishDecodable(type: T.ResponseType.self, decoder: decoder)
             .value()
             .subscribe(on: DispatchQueue(label: "work.tkgstrator.splatnet2"), options: nil)
-            .receive(on: DispatchQueue(label: "work.tkgstrator.splatnet2"), options: nil)
+            .receive(on: RunLoop.main)
             .handleEvents(receiveSubscription: { subscription in
                 self.delegate?.willReceiveSubscription(subscribe: subscription)
             }, receiveOutput: { output in
@@ -147,6 +143,7 @@ open class SplatNet2: RequestInterceptor {
             }, receiveRequest: { request in
                 self.delegate?.willReceiveRequest(request: request)
             })
+            .retry(1)
             .mapToSP2Error(delegate: self.delegate)
             .eraseToAnyPublisher()
     }

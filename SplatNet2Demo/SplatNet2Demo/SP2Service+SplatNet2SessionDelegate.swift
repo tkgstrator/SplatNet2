@@ -34,7 +34,6 @@ extension SP2Service: SplatNet2SessionDelegate {
 
     public func failedWithSP2Error(error: SP2Error) {
         DispatchQueue.main.async(execute: {
-            DDLogError(error)
             self.sp2Error = error
         })
     }

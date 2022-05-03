@@ -63,8 +63,8 @@ public enum SP2Error: Error {
         case invalidToken       = "Invalid token."
         case expiredToken       = "Token expired."
         case unauthorized       = "Unauthorized."
-        case tooManyRequests    = "Too many requests."
-        case malformedUserAgent = "Malformed user agent."
+        case tooManyRequests    = "Too many requests"
+        case malformedUserAgent = "Malformed user agent"
 
         public var statusCode: Int {
             switch self {
@@ -164,7 +164,7 @@ extension SP2Error: LocalizedError {
             return "The response from SplatNet2 could not be decoded."
         case .unacceptableStatusCode(let statusCode):
             if statusCode == 404 {
-                return "The specified reuslt id is no longer available."
+                return "No available resources(Disconnected results/flapg server error)."
             }
             return "SplatNet2 response unacceptable status code \(statusCode)."
         case .credentialFailed:
@@ -187,7 +187,7 @@ extension SP2Error: LocalizedError {
         case .dataDecodingFailed:
             return "Response data decoding failed"
         case .unacceptableStatusCode(let statusCode):
-            return "Unacceptable status code \(statusCode)"
+            return "Status code \(statusCode)"
         case .credentialFailed:
             return "Invalid credential"
         }

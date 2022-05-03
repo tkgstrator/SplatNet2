@@ -14,9 +14,11 @@ internal class S2SHash: RequestType {
     typealias ResponseType = S2SHash.Response
 
     var method: HTTPMethod = .post
-    var baseURL = URL(unsafeString: "https://elifessler.com/s2s/api/")
-    var path: String = "gen2"
-    var encoding: ParameterEncoding = URLEncoding.default
+    var baseURL = URL(unsafeString: "https://lanplay.splatnet2.com/api/")
+//    var baseURL = URL(unsafeString: "https://elifessler.com/s2s/api/")
+    var path: String = "s2s"
+    var encoding: ParameterEncoding = JSONEncoding.default
+//    var encoding: ParameterEncoding = URLEncoding.default
     var parameters: Parameters?
     //  swiftlint:disable:next discouraged_optional_collection
     var headers: [String: String]?
@@ -24,11 +26,13 @@ internal class S2SHash: RequestType {
     init(accessToken: String, timestamp: Int) {
         self.parameters = [
             "naIdToken": accessToken,
-            "timestamp": String(timestamp),
+            "timestamp": timestamp,
         ]
     }
 
     internal struct Response: Codable {
         let hash: String
+        let naIdToken: String
+        let timestamp: Int
     }
 }

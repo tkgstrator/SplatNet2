@@ -18,6 +18,9 @@ public extension DataRequest {
                 if let data = data {
                     #if DEBUG
                     DDLogError("Status Code \(response.statusCode)")
+                    if let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] {
+                        DDLogInfo(json)
+                    }
                     #endif
                     if let failure = try? decoder.decode(SP2Error.Failure.NSO.self, from: data) {
                         throw SP2Error.responseValidationFailed(failure: failure)
@@ -28,9 +31,9 @@ public extension DataRequest {
                     if let failure = try? decoder.decode(SP2Error.Failure.S2S.self, from: data) {
                         throw SP2Error.responseValidationFailed(failure: failure)
                     }
-                    if (response.statusCode < 200) || (response.statusCode >= 400) {
-                        throw SP2Error.unacceptableStatusCode(statusCode: response.statusCode)
-                    }
+                }
+                if (response.statusCode < 200) || (response.statusCode >= 400) {
+                    throw SP2Error.unacceptableStatusCode(statusCode: response.statusCode)
                 }
             })
         })

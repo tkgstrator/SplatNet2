@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  UserInfo+Initialize.swift
 //  
 //
 //  Created by devonly on 2022/02/10.
@@ -9,16 +9,16 @@ import Common
 import Foundation
 
 extension UserInfo {
-    convenience init(sessionToken: String, response: IksmSession.Response, nickname: String, membership: Bool, thumbnailURL: String) {
-        self.init(nsaid: response.nsaid, nickname: nickname)
-        self.credential = OAuthCredential(
-            iksmSession: response.iksmSession,
+    init(sessionToken: String, response: IksmSession.Response, user: SplatoonToken.Response) {
+        self.init(
+            nsaid: user.result.user.nsaId,
+            membership: user.result.user.links.nintendoAccount.membership.active,
+            friendCode: user.result.user.links.friendCode.id,
             sessionToken: sessionToken,
-            nsaid: response.nsaid,
-            expiration: Date(timeIntervalSinceNow: 60 * 60 * 24)
+            splatoonToken: user.result.webApiServerCredential.accessToken,
+            iksmSession: response.iksmSession,
+            thumbnailURL: URL(unsafeString: user.result.user.imageUri),
+            nickname: user.result.user.name
         )
-        self.nickname = nickname
-        self.membership = membership
-        self.thumbnailURL = URL(unsafeString: thumbnailURL)
     }
 }

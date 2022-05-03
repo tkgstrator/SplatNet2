@@ -23,6 +23,7 @@ extension SplatNet2 {
             .validationWithSP2Error(decoder: decoder)
             .publishDecodable(type: T.ResponseType.self, decoder: decoder)
             .value()
+            .retry(1)
             .handleEvents(receiveSubscription: { subscription in
                 // どのリクエストが実行中か返す
                 if request is SessionToken {
@@ -70,6 +71,13 @@ extension SplatNet2 {
         return authorize(request, state: state)
     }
 
+    /// FlapgTokenを取得
+    internal func getFlapgToken(response: S2SHash.Response, type: FlapgToken.FlapgType, state: SignInState)
+    -> AnyPublisher<FlapgToken.Response, SP2Error> {
+        let request = FlapgToken(response: response, type: type)
+        return authorize(request, state: state)
+    }
+
     /// SplatonTokenを取得
     internal func getSplatoonToken(response: FlapgToken.Response)
     -> AnyPublisher<SplatoonToken.Response, SP2Error> {
@@ -102,37 +110,31 @@ extension SplatNet2 {
     // swiftlint:disable function_body_length
     public func getCookie(sessionToken: String)
     -> AnyPublisher<UserInfo, SP2Error> {
-        var splatoonToken: String = ""
-        var accessToken: String = ""
-        var thumbnailURL: String = ""
-        var nickname: String = ""
-        var membership = false
+        var splatoonToken: SplatoonToken.Response!
         let timestamp = Int(Date().timeIntervalSince1970)
 
         return Future { promise in
             self.getAccessToken(sessionToken: sessionToken)
                 .flatMap({ response -> AnyPublisher<S2SHash.Response, SP2Error> in
-                    accessToken = response.accessToken
-                    return self.getS2SHash(accessToken: response.accessToken, timestamp: timestamp, state: .s2sHash(.nso))
+                    self.getS2SHash(accessToken: response.idToken, timestamp: timestamp, state: .s2sHash(.nso))
                 })
                 .flatMap({
-                    self.getFlapgToken(accessToken: accessToken, timestamp: timestamp, response: $0, type: .nso, state: .flapg(.nso))
+                    self.getFlapgToken(response: $0, type: .nso, state: .flapg(.nso))
+//                    self.getFlapgToken(accessToken: accessToken, timestamp: timestamp, response: $0, type: .nso, state: .flapg(.nso))
                 })
                 .flatMap({
                     self.getSplatoonToken(response: $0)
                 })
                 .flatMap({ response -> AnyPublisher<S2SHash.Response, SP2Error> in
-                    splatoonToken = response.result.webApiServerCredential.accessToken
-                    nickname = response.result.user.name
-                    thumbnailURL = response.result.user.imageUri
-                    membership = response.result.user.membership.active
-                    return self.getS2SHash(accessToken: splatoonToken, timestamp: timestamp, state: .s2sHash(.app))
+                    splatoonToken = response
+                    return self.getS2SHash(accessToken: splatoonToken.result.webApiServerCredential.accessToken, timestamp: timestamp, state: .s2sHash(.app))
                 })
                 .flatMap({
-                    self.getFlapgToken(accessToken: splatoonToken, timestamp: timestamp, response: $0, type: .app, state: .flapg(.app))
+                    self.getFlapgToken(response: $0, type: .app, state: .flapg(.app))
+//                    self.getFlapgToken(accessToken: splatoonToken.result.webApiServerCredential.accessToken, timestamp: timestamp, response: $0, type: .app, state: .flapg(.app))
                 })
                 .flatMap({
-                    self.getSplatoonAccessToken(splatoonToken: splatoonToken, response: $0)
+                    self.getSplatoonAccessToken(splatoonToken: splatoonToken.result.webApiServerCredential.accessToken, response: $0)
                 })
                 .flatMap({
                     self.getIksmSession(splatoonAccessToken: $0.result.accessToken)
@@ -142,20 +144,11 @@ extension SplatNet2 {
                         case .finished:
                             break
                         case .failure(let error):
+                            DDLogError(error)
                             promise(.failure(error))
                     }
                 }, receiveValue: { response in
-                    promise(
-                        .success(
-                            UserInfo(
-                                sessionToken: sessionToken,
-                                response: response,
-                                nickname: nickname,
-                                membership: membership,
-                                thumbnailURL: thumbnailURL
-                            )
-                        )
-                    )
+                    promise(.success(UserInfo(sessionToken: sessionToken, response: response, user: splatoonToken)))
                 })
                 .store(in: &self.task)
         }
