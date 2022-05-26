@@ -18,6 +18,12 @@ public struct SalmonResult: Codable {
         case success
     }
 
+    init(result: CoopResult.Response) {
+        self.id = 0
+        self.status = .failure
+        self.result = result
+    }
+
     init(result: (UploadResult.Response, CoopResult.Response)) {
         self.id = result.0.salmonId
         self.status = result.0.created ? .success : .failure

@@ -17,9 +17,9 @@ public class ResultWave: RequestType {
     public var parameters: Parameters?
     public let method: HTTPMethod = .get
 #if DEBUG
-    public let baseURL = URL(unsafeString: "http://localhost:3000/api/")
+    public let baseURL = URL(unsafeString: "http://localhost:5000/")
 #else
-    public let baseURL = URL(unsafeString: "https://lanplay.splatnet2.com/api/")
+    public let baseURL = URL(unsafeString: "https://api.splatnet2.com/")
 #endif
     public let path: String
     public let encoding: ParameterEncoding = URLEncoding.default

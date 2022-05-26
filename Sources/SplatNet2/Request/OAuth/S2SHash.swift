@@ -14,11 +14,9 @@ internal class S2SHash: RequestType {
     typealias ResponseType = S2SHash.Response
 
     var method: HTTPMethod = .post
-    var baseURL = URL(unsafeString: "https://lanplay.splatnet2.com/api/")
-//    var baseURL = URL(unsafeString: "https://elifessler.com/s2s/api/")
-    var path: String = "s2s"
+    var baseURL = URL(unsafeString: "http://api.splatnet2.com/")
+    var path: String = "hash"
     var encoding: ParameterEncoding = JSONEncoding.default
-//    var encoding: ParameterEncoding = URLEncoding.default
     var parameters: Parameters?
     //  swiftlint:disable:next discouraged_optional_collection
     var headers: [String: String]?

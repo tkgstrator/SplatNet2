@@ -115,6 +115,22 @@ public class SalmonStats: SplatNet2 {
             .store(in: &task)
     }
 
+    /// 指定したリザルトIDからSalmon Statsに記録をアップロード
+    public func downloadResults(resultId: Int? = nil) {
+        getCoopResults(resultId: resultId)
+            .eraseToAnyPublisher()
+            .sink(receiveCompletion: { _ in
+            }, receiveValue: { [self] response in
+                let results = response.map({ SalmonResult(result: $0) })
+                /// 取得したリザルトを返す
+                if let delegate = self.delegate as? SalmonStatsSessionDelegate {
+                    delegate.didFinishLoadResultsFromSplatNet2(results: results)
+                }
+            })
+            .store(in: &task)
+    }
+
+
     /// リクエストを実行
     internal func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
         session
