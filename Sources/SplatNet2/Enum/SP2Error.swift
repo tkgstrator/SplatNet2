@@ -65,6 +65,7 @@ public enum SP2Error: Error {
         case unauthorized       = "Unauthorized."
         case tooManyRequests    = "Too many requests"
         case malformedUserAgent = "Malformed user agent"
+        case entityTooLarge     = "request entity too large"
 
         public var statusCode: Int {
             switch self {
@@ -88,6 +89,8 @@ public enum SP2Error: Error {
                 return 9_429
             case .malformedUserAgent:
                 return 9_407
+            case .entityTooLarge:
+                return 9_413
             }
         }
     }
@@ -117,6 +120,15 @@ public enum SP2Error: Error {
             public let error: String
             public var failureReason: SP2Error.ResponseValidationFailureReason? {
                 ResponseValidationFailureReason(rawValue: error)
+            }
+        }
+
+        /// SalmonStats用のエラーレスポンス
+        public struct STATS: FailureResponse {
+            public let statusCode: Int
+            public let message: String
+            public var failureReason: SP2Error.ResponseValidationFailureReason? {
+                ResponseValidationFailureReason(rawValue: message)
             }
         }
     }

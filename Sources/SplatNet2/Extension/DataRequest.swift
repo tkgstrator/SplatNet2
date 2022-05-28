@@ -13,14 +13,11 @@ import Foundation
 public extension DataRequest {
     @discardableResult
     func validationWithSP2Error(decoder: JSONDecoder) -> Self {
-        validate({ _, response, data in
+        validate({ request, response, data in
             DataRequest.ValidationResult(catching: {
                 if let data = data {
                     #if DEBUG
                     DDLogError("Status Code \(response.statusCode)")
-//                    if let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] {
-//                        DDLogInfo(json)
-//                    }
                     #endif
                     if let failure = try? decoder.decode(SP2Error.Failure.NSO.self, from: data) {
                         throw SP2Error.responseValidationFailed(failure: failure)
@@ -29,6 +26,9 @@ public extension DataRequest {
                         throw SP2Error.responseValidationFailed(failure: failure)
                     }
                     if let failure = try? decoder.decode(SP2Error.Failure.S2S.self, from: data) {
+                        throw SP2Error.responseValidationFailed(failure: failure)
+                    }
+                    if let failure = try? decoder.decode(SP2Error.Failure.STATS.self, from: data) {
                         throw SP2Error.responseValidationFailed(failure: failure)
                     }
                 }

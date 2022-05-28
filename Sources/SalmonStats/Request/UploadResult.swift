@@ -11,8 +11,25 @@ import Common
 import Foundation
 import SplatNet2
 
+public enum UploadStatus: String, CaseIterable, Codable {
+    case created
+    case updated
+}
+
+public struct SalmonResult: Codable {
+    public let salmonId: Int
+    public let status: UploadStatus
+    public let result: CoopResult.Response
+
+    init(upload: UploadResult.Response.Result, result: CoopResult.Response) {
+        self.salmonId = upload.salmonId
+        self.status = upload.status
+        self.result = result
+    }
+}
+
 public class UploadResult: RequestType {
-    public typealias ResponseType = [UploadResult.Response]
+    public typealias ResponseType = UploadResult.Response
 
     public var method: HTTPMethod = .post
     public var path: String = "results"
@@ -21,18 +38,23 @@ public class UploadResult: RequestType {
     //  swiftlint:disable:next discouraged_optional_collection
     public var headers: [String: String]?
 
+    // 複数アップロード
     init(results: [CoopResult.Response]) {
         self.parameters = ["results": results.map({ $0.asJSON() })]
     }
 
+    // 単一アップロード
     init(result: CoopResult.Response) {
         self.parameters = ["results": [result.asJSON()]]
     }
 
     public struct Response: Codable {
-        public var created: Bool
-        public var jobId: Int
-        public var salmonId: Int
+        public let results: [Result]
+
+        public struct Result: Codable {
+            public var status: UploadStatus
+            public var salmonId: Int
+        }
     }
 }
 

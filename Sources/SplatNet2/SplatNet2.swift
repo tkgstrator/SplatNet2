@@ -20,7 +20,7 @@ open class SplatNet2: RequestInterceptor {
         let configuration: URLSessionConfiguration = {
             let config = URLSessionConfiguration.default
             config.httpMaximumConnectionsPerHost = 1
-            config.timeoutIntervalForRequest = 5
+            config.timeoutIntervalForRequest = 10
             return config
         }()
         let queue = DispatchQueue(label: "SplatNet2")
@@ -108,7 +108,7 @@ open class SplatNet2: RequestInterceptor {
     }
 
     /// リクエストを実行
-    internal func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
+    public func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
         let interceptor: AuthenticationInterceptor<SplatNet2>? = {
             switch request {
             case is XVersion:
@@ -125,7 +125,9 @@ open class SplatNet2: RequestInterceptor {
         return session
             .request(request, interceptor: interceptor)
             .cURLDescription { request in
-                DDLogInfo(request)
+                #if DEBUG
+//                DDLogInfo(request)
+                #endif
             }
             .validationWithSP2Error(decoder: decoder)
             .publishDecodable(type: T.ResponseType.self, decoder: decoder)

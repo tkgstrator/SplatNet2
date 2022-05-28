@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CocoaLumberjackSwift
 
 public extension Error {
     var asSP2Error: SP2Error? {
@@ -29,6 +30,7 @@ public extension Error {
                 return nil
             }
         case .requestAdaptationFailed(error: let reason):
+            DDLogError(reason)
             return SP2Error.unacceptableStatusCode(statusCode: 404)
         default:
             return nil
