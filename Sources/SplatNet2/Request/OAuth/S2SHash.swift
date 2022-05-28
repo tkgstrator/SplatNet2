@@ -14,7 +14,7 @@ internal class S2SHash: RequestType {
     typealias ResponseType = S2SHash.Response
 
     var method: HTTPMethod = .post
-    var baseURL = URL(unsafeString: "http://api.splatnet2.com/")
+    var baseURL = URL(unsafeString: "https://s2s-hash-server.herokuapp.com/")
     var path: String = "hash"
     var encoding: ParameterEncoding = JSONEncoding.default
     var parameters: Parameters?
