@@ -16,10 +16,32 @@ import SplatNet2
 
 public class SalmonStats: SplatNet2 {
 
+
     private func uploadResults(results: [CoopResult.Response]) -> AnyPublisher<[SalmonResult], SP2Error> {
         publish(UploadResult(results: results))
             .map({ zip($0.results, results).compactMap({ SalmonResult(upload: $0.0, result: $0.1) }) })
             .eraseToAnyPublisher()
+    }
+
+    public func update(uid: String, displayName: String?, screenName: String?, photoURL: String?) -> AnyPublisher<UserRequest.Response, SP2Error> {
+        // Keychainからアカウント情報を取得
+        let accounts: [UserRequest.Account] = keychain.getAccounts().map({ account in
+            UserRequest.Account(
+                nsaid: account.credential.nsaid,
+                nickname: account.nickname,
+                thumbnailUrl: account.thumbnailURL.absoluteString,
+                friendCode: account.friendCode
+            )
+        })
+        // リクエストを生成
+        let request: UserRequest = UserRequest(
+            uid: uid,
+            displayName: displayName,
+            screenName: screenName,
+            photoURL: photoURL,
+            accounts: accounts
+        )
+        return publish(request, isNeedOAuth: false)
     }
 
     /// リザルトアップロード
@@ -52,7 +74,7 @@ public class SalmonStats: SplatNet2 {
 public extension RequestType {
     var baseURL: URL {
         #if DEBUG
-        URL(unsafeString: "http://localhost:3000/v1/")
+        URL(unsafeString: "http://localhost:3030/v1/")
         #else
         URL(unsafeString: "https://api.splatnet2.com/v1/")
         #endif

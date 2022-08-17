@@ -108,8 +108,10 @@ open class SplatNet2: RequestInterceptor {
     }
 
     /// リクエストを実行
-    public func publish<T: RequestType>(_ request: T) -> AnyPublisher<T.ResponseType, SP2Error> {
-        let interceptor: AuthenticationInterceptor<SplatNet2>? = {
+    open func publish<T: RequestType>(_ request: T, isNeedOAuth: Bool = true) -> AnyPublisher<T.ResponseType, SP2Error> {
+        // 認証不要なら常にNilを代入する
+        let interceptor: AuthenticationInterceptor<SplatNet2>? = isNeedOAuth
+        ? {
             switch request {
             case is XVersion:
                 return nil
@@ -121,12 +123,13 @@ open class SplatNet2: RequestInterceptor {
             }
             return AuthenticationInterceptor(authenticator: self, credential: account.credential)
         }()
+        : nil
 
         return session
             .request(request, interceptor: interceptor)
             .cURLDescription { request in
                 #if DEBUG
-//                DDLogInfo(request)
+                DDLogInfo(request)
                 #endif
             }
             .validationWithSP2Error(decoder: decoder)

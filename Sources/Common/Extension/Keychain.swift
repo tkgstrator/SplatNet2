@@ -25,9 +25,10 @@ public extension Keychain {
     /// X-Product Versionを取得
     func getVersion() -> String {
         guard let version = try? get(self.version) else {
-            return "2.0.0"
+            return "2.2.0"
         }
-        return version
+
+        return version <= "2.2.0" ? "2.2.0" : version
     }
 
     /// X-Product Versionを設定

@@ -59,10 +59,10 @@ public class UploadResult: RequestType {
 }
 
 extension Encodable {
-    func asJSON() -> [String: Any] {
+    func asJSON(keyEncodingStragety: JSONEncoder.KeyEncodingStrategy = .convertToSnakeCase) -> [String: Any] {
         let encoder: JSONEncoder = {
             let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
+            encoder.keyEncodingStrategy = keyEncodingStragety
             encoder.outputFormatting = .withoutEscapingSlashes
             return encoder
         }()

@@ -17,7 +17,9 @@ public extension DataRequest {
             DataRequest.ValidationResult(catching: {
                 if let data = data {
                     #if DEBUG
-                    DDLogError("Status Code \(response.statusCode)")
+                    DDLogInfo("Status Code \(response.statusCode)")
+                    let response = try JSONSerialization.jsonObject(with: data)
+                    DDLogInfo(response)
                     #endif
                     if let failure = try? decoder.decode(SP2Error.Failure.NSO.self, from: data) {
                         throw SP2Error.responseValidationFailed(failure: failure)
