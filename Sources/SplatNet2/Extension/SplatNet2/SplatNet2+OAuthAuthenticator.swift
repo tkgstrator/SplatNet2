@@ -13,7 +13,7 @@ import Common
 import Foundation
 
 extension SplatNet2: Authenticator {
-    /// Credentialをリクエストに適用
+    // Credentialをリクエストに適用
     public func apply(
         _ credential: OAuthCredential,
         to urlRequest: inout URLRequest
@@ -22,7 +22,7 @@ extension SplatNet2: Authenticator {
         urlRequest.headers.add(HTTPHeader(name: "cookie", value: "iksm_session=\(credential.iksmSession)"))
     }
 
-    /// リフレッシュが必要
+    // リフレッシュが必要
     public func refresh(
         _ credential: OAuthCredential,
         for session: Session,

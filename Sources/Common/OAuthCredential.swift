@@ -14,19 +14,19 @@ public struct OAuthCredential: AuthenticationCredential, Codable {
     public let sessionToken: String
     public var splatoonToken: String
     public let nsaid: String
-    let expiration: Date
+    public var expiration: Date
 
-    #if DEBUG
-    public var requiresRefresh: Bool { Date(timeIntervalSinceNow: 60 * 60 * 23) > expiration }
-    #else
-    public var requiresRefresh: Bool { Date(timeIntervalSinceNow: 60 * 60 * 23) > expiration }
-    #endif
+    public var requiresRefresh: Bool { Date(timeIntervalSinceNow: 0) > expiration }
 
     public init(nsaid: String, iksmSession: String, sessionToken: String, splatoonToken: String) {
         self.iksmSession = iksmSession
         self.sessionToken = sessionToken
         self.splatoonToken = splatoonToken
         self.nsaid = nsaid
+        #if DEBUG
         self.expiration = Date(timeIntervalSinceNow: 60 * 60 * 24)
+        #else
+        self.expiration = Date(timeIntervalSinceNow: 60)
+        #endif
     }
 }
