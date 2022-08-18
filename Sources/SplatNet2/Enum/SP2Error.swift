@@ -192,7 +192,7 @@ extension SP2Error: LocalizedError {
             return "Invalid result id"
         case .requestAdaptionFailed:
             return "Request adaption failed"
-        case .responseValidationFailed(let failure):
+        case .responseValidationFailed(_):
             return "Response validation failed"
         case .oauthValidationFailed:
             return "OAuth validation failed"
