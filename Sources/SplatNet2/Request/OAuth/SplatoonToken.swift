@@ -20,57 +20,23 @@ internal class SplatoonToken: RequestType {
     //  swiftlint:disable:next discouraged_optional_collection
     var headers: [String: String]?
 
-    init(from result: FlapgToken.Response, version: String) {
+    init(accessToken: String, timestamp: UInt64, f: String, version: String) {
         self.headers = [
             "X-ProductVersion": "\(version)",
             "X-Platform": "Android",
         ]
         self.parameters = [
             "parameter": [
-                "f": result.result.f,
-                "naIdToken": result.result.p1,
-                "timestamp": result.result.p2,
-                "requestId": result.result.p3,
+                "f": f,
+                "naIdToken": accessToken,
+                "timestamp": timestamp,
+                "requestId": "00000000-0000-0000-0000-000000000000",
                 "naCountry": "JP",
                 "naBirthday": "1990-01-01",
                 "language": "ja-JP",
             ],
         ]
     }
-
-//    internal struct Response: Codable {
-//        var result: SplatoonTokenResult
-//        var status: Int
-//        var correlationId: String
-//
-//        struct SplatoonTokenResult: Codable {
-//            var webApiServerCredential: WebAPIServerCredential
-//            var user: WebAPIServerUser
-//            var firebaseCredential: FirebaseCredential
-//        }
-//
-//        struct WebAPIServerUser: Codable {
-//            var name: String
-//            var imageUri: String
-//            var id: Int
-//            var supportId: String
-//            var membership: Membership
-//        }
-//
-//        struct Membership: Codable {
-//            var active: Bool
-//        }
-//
-//        struct FirebaseCredential: Codable {
-//            var expiresIn: Int
-//            var accessToken: String
-//        }
-//
-//        struct WebAPIServerCredential: Codable {
-//            var expiresIn: Int
-//            var accessToken: String
-//        }
-//    }
 
     // MARK: - Response
     public struct Response: Codable {

@@ -11,6 +11,7 @@ import CocoaLumberjackSwift
 
 public extension Error {
     var asSP2Error: SP2Error? {
+        print(self)
         // Error -> SP2Error
         if let error = self as? SP2Error {
             return error

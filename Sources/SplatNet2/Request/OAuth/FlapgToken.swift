@@ -20,7 +20,7 @@ internal class FlapgToken: RequestType {
     //  swiftlint:disable:next discouraged_optional_collection
     var headers: [String: String]?
 
-    init(accessToken: String, timestamp: Int, hash: String, type: FlapgType) {
+    init(accessToken: String, timestamp: UInt64, hash: String, type: FlapgType) {
         self.headers = [
             "x-token": accessToken,
             "x-time": String(timestamp),

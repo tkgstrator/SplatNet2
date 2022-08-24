@@ -21,7 +21,7 @@ internal class S2SHash: RequestType {
     //  swiftlint:disable:next discouraged_optional_collection
     var headers: [String: String]?
 
-    init(accessToken: String, timestamp: Int) {
+    init(accessToken: String, timestamp: UInt64) {
         self.parameters = [
             "naIdToken": accessToken,
             "timestamp": timestamp,

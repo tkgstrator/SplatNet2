@@ -20,18 +20,18 @@ internal class SplatoonAccessToken: RequestType {
     //  swiftlint:disable:next discouraged_optional_collection
     var headers: [String: String]?
 
-    init(from result: FlapgToken.Response, splatoonToken: String, version: String) {
+    init(accessToken: String, timestamp: UInt64, f: String, version: String) {
         self.headers = [
             "X-Platform": "Android",
-            "Authorization": "Bearer \(splatoonToken)",
+            "Authorization": "Bearer \(accessToken)",
         ]
         self.parameters = [
             "parameter": [
-                "f": result.result.f,
+                "f": f,
                 "id": 5_741_031_244_955_648,
-                "registrationToken": result.result.p1,
-                "timestamp": result.result.p2,
-                "requestId": result.result.p3,
+                "registrationToken": accessToken,
+                "timestamp": timestamp,
+                "requestId": "00000000-0000-0000-0000-000000000000",
             ],
         ]
     }

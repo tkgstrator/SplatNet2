@@ -12,6 +12,7 @@ import Combine
 import Common
 import Foundation
 import KeychainAccess
+import Metal
 
 extension SplatNet2 {
     fileprivate func authorize<T: RequestType>(_ request: T, state: SignInState) -> AnyPublisher<T.ResponseType, SP2Error> {
@@ -59,15 +60,29 @@ extension SplatNet2 {
     }
 
     /// S2sHashを取得
-    internal func getS2SHash(accessToken: String, timestamp: Int, state: SignInState) -> AnyPublisher<S2SHash.Response, SP2Error> {
+    internal func getS2SHash(accessToken: String, timestamp: UInt64, state: SignInState) -> AnyPublisher<S2SHash.Response, SP2Error> {
         let request = S2SHash(accessToken: accessToken, timestamp: timestamp)
         return authorize(request, state: state)
     }
 
     /// FlapgTokenを取得
-    internal func getFlapgToken(accessToken: String, timestamp: Int, response: S2SHash.Response, type: FlapgToken.FlapgType, state: SignInState)
+    internal func getFlapgToken(accessToken: String, timestamp: UInt64, response: S2SHash.Response, type: FlapgToken.FlapgType, state: SignInState)
     -> AnyPublisher<FlapgToken.Response, SP2Error> {
         let request = FlapgToken(accessToken: accessToken, timestamp: timestamp, hash: response.hash, type: type)
+        return authorize(request, state: state)
+    }
+
+    /// IminkTokenを取得
+    internal func getIminkToken(token: AccessToken.Response, timestamp: UInt64, type: Imink.IminkType, state: SignInState)
+    -> AnyPublisher<Imink.Response, SP2Error> {
+        let request = Imink(accessToken: token.idToken, timestamp: timestamp, type: type)
+        return authorize(request, state: state)
+    }
+
+    /// IminkTokenを取得
+    internal func getIminkToken(token: SplatoonToken.Response, timestamp: UInt64, type: Imink.IminkType, state: SignInState)
+    -> AnyPublisher<Imink.Response, SP2Error> {
+        let request = Imink(accessToken: token.result.webApiServerCredential.accessToken, timestamp: timestamp, type: type)
         return authorize(request, state: state)
     }
 
@@ -79,16 +94,16 @@ extension SplatNet2 {
     }
 
     /// SplatonTokenを取得
-    internal func getSplatoonToken(response: FlapgToken.Response)
+    internal func getSplatoonToken(token: AccessToken.Response, timestamp: UInt64, f: String)
     -> AnyPublisher<SplatoonToken.Response, SP2Error> {
-        let request = SplatoonToken(from: response, version: version)
+        let request = SplatoonToken(accessToken: token.idToken, timestamp: timestamp, f: f, version: version)
         return authorize(request, state: .sessionToken(.app))
     }
 
     /// SplatoonAccessTokenを取得
-    internal func getSplatoonAccessToken(splatoonToken: String, response: FlapgToken.Response)
+    internal func getSplatoonAccessToken(token: SplatoonToken.Response, f: String, timestamp: UInt64)
     -> AnyPublisher<SplatoonAccessToken.Response, SP2Error> {
-        let request = SplatoonAccessToken(from: response, splatoonToken: splatoonToken, version: version)
+        let request = SplatoonAccessToken(accessToken: token.result.webApiServerCredential.accessToken, timestamp: timestamp, f: f, version: version)
         return authorize(request, state: .accessToken(.app))
     }
 
@@ -111,30 +126,25 @@ extension SplatNet2 {
     public func getCookie(sessionToken: String)
     -> AnyPublisher<UserInfo, SP2Error> {
         var splatoonToken: SplatoonToken.Response!
-        let timestamp = Int(Date().timeIntervalSince1970)
+        var accessToken: AccessToken.Response!
+        let timestamp: UInt64 = UInt64(Date().timeIntervalSince1970) * 1000
+        print(timestamp)
 
         return Future { promise in
             self.getAccessToken(sessionToken: sessionToken)
-                .flatMap({ response -> AnyPublisher<S2SHash.Response, SP2Error> in
-                    self.getS2SHash(accessToken: response.idToken, timestamp: timestamp, state: .s2sHash(.nso))
+                .flatMap({ response -> AnyPublisher<Imink.Response, SP2Error> in
+                    accessToken = response
+                    return self.getIminkToken(token: response, timestamp: timestamp, type: Imink.IminkType.nso, state: .flapg(.nso))
                 })
                 .flatMap({
-                    self.getFlapgToken(response: $0, type: .nso, state: .flapg(.nso))
-//                    self.getFlapgToken(accessToken: accessToken, timestamp: timestamp, response: $0, type: .nso, state: .flapg(.nso))
+                    self.getSplatoonToken(token: accessToken, timestamp: timestamp, f: $0.f)
                 })
-                .flatMap({
-                    self.getSplatoonToken(response: $0)
-                })
-                .flatMap({ response -> AnyPublisher<S2SHash.Response, SP2Error> in
+                .flatMap({ response -> AnyPublisher<Imink.Response, SP2Error> in
                     splatoonToken = response
-                    return self.getS2SHash(accessToken: splatoonToken.result.webApiServerCredential.accessToken, timestamp: timestamp, state: .s2sHash(.app))
+                    return self.getIminkToken(token: response, timestamp: timestamp, type: Imink.IminkType.app, state: .flapg(.app))
                 })
                 .flatMap({
-                    self.getFlapgToken(response: $0, type: .app, state: .flapg(.app))
-//                    self.getFlapgToken(accessToken: splatoonToken.result.webApiServerCredential.accessToken, timestamp: timestamp, response: $0, type: .app, state: .flapg(.app))
-                })
-                .flatMap({
-                    self.getSplatoonAccessToken(splatoonToken: splatoonToken.result.webApiServerCredential.accessToken, response: $0)
+                    self.getSplatoonAccessToken(token: splatoonToken, f: $0.f, timestamp: timestamp)
                 })
                 .flatMap({
                     self.getIksmSession(splatoonAccessToken: $0.result.accessToken)

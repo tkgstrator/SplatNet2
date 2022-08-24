@@ -63,6 +63,7 @@ public enum SP2Error: Error {
         case invalidToken       = "Invalid token."
         case expiredToken       = "Token expired."
         case unauthorized       = "Unauthorized."
+        case unexpectedError    = "Unexpected error."
         case tooManyRequests    = "Too many requests"
         case malformedUserAgent = "Malformed user agent"
         case entityTooLarge     = "request entity too large"
@@ -91,6 +92,8 @@ public enum SP2Error: Error {
                 return 9_407
             case .entityTooLarge:
                 return 9_413
+            case .unexpectedError:
+                return 9599
             }
         }
     }
